@@ -1,0 +1,68 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace NetworkGUI
+{
+    public partial class RandomForm : Form
+    {
+        public RandomForm()
+        {
+            InitializeComponent();
+        }
+
+
+        public int N
+        {
+            get { return int.Parse(nText.Text); }
+            set { nText.Text = value.ToString(); }
+        }
+
+        public int Year
+        {
+            get { return int.Parse(yearTextBox.Text); }
+            set { yearTextBox.Text = value.ToString(); }
+        }
+	
+
+        private void reach_TextChanged(object sender, EventArgs e)
+        {
+            int n;
+            goButton.Enabled = true;
+            if (!int.TryParse(nText.Text, out n))
+            {
+                goButton.Enabled = false;
+                return;
+            }
+        }
+
+        private void goButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int.Parse(nText.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("N must be an integer!", "Error!");
+                return;
+            }
+            this.Close();
+        }
+
+        private void yearTextBox_TextChanged(object sender, EventArgs e)
+        {
+            int n;
+            goButton.Enabled = true;
+            if (!int.TryParse(yearTextBox.Text, out n))
+            {
+                goButton.Enabled = false;
+                return;
+            }
+        }
+    }
+}

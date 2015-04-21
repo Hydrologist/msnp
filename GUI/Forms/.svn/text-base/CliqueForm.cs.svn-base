@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Network;
+
+namespace NetworkGUI
+{
+    public partial class CliqueForm : Form
+    {
+        List<Pair<string, string>> pairs;
+
+        public List<string> SVC
+        {
+            get
+            {
+                List<string> response  = new List<string>();
+                foreach (Pair<string, string> p in pairs)
+                {
+                    if (p.First == "SVC")
+                        response.Add(p.Second);
+                }
+                return response;
+            }
+        }
+
+        public List<string> DVC
+        {
+            get
+            {
+                List<string> response = new List<string>();
+                foreach (Pair<string, string> p in pairs)
+                {
+                    if (p.First == "DVC")
+                        response.Add(p.Second);
+                }
+                return response;
+            }
+        }
+
+        public string ButtonText
+        {
+            get { return button2.Text; }
+            set { button2.Text = value; }
+        }
+
+        public CliqueForm()
+        {
+            InitializeComponent();
+            pairs = new List<Pair<string, string>>();
+        }
+
+        public void ClearList()
+        {
+            list.Items.Clear();
+            pairs.Clear();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void svcButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Pair<string, string> p = new Pair<string, string>("SVC", openFileDialog.FileName);
+                pairs.Add(p);
+                list.Items.Add(p.First + ": " + p.Second);
+            }
+        }
+
+        private void dvcButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Pair<string, string> p = new Pair<string, string>("DVC", openFileDialog.FileName);
+                pairs.Add(p);
+                list.Items.Add(p.First + ": " + p.Second);
+            }
+        }
+
+        private void CliqueForm_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}

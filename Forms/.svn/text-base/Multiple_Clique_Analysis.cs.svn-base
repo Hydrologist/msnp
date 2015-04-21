@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace NetworkGUI.Forms
+{
+    public partial class Multiple_Clique_Analysis : Form
+    {
+        FileForCliqueAnalysis[] files = new FileForCliqueAnalysis[1];
+        string CutOffFileName;
+        NetworkGUI.MultipleFileForm add_files;
+        int currentlySelected;
+        bool dyadic_file=false;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        double binary_cutoff;
+        MainForm parent=null; //if C# is not referenced based, this would be terrible
+
+        public Multiple_Clique_Analysis(NetworkGUI.MainForm p)
+        {
+            parent = p;
+            InitializeComponent();
+            add_files=new MultipleFileForm(this);
+            openFileDialog = new OpenFileDialog();
+        }
+
+        private void AddFiles_Click(object sender, EventArgs e)
+        {
+            dyadic_file = false;
+            add_files = new MultipleFileForm(this);
+            openFileDialog.Multiselect = true;
+            add_files.Show();
+            add_files.Activate();
+            //add_files calls updatefiles when it is done
+
+        }
+
+        public void updatefiles(string[] file)
+        {
+            string[] fileNames = file;
+            files = new FileForCliqueAnalysis[file.Length];
+
+            //recording all of the filenames that I just got back
+            for (int i = 0; i < fileNames.Length; i++)
+            {
+                comboBox1.Items.Add(file[i]);
+                if(files[i]==null)
+                    files[i]=new FileForCliqueAnalysis();
+                //A bit ineffient, but it should be unimportant
+                files[i].fileName = new string(file[i].ToCharArray());
+            }
+        }
+
+        private void Multiple_Clique_Analysis_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //A bit ineffient, but it should be unimportant
+            currentlySelected = comboBox1.SelectedIndex;
+            if (files[currentlySelected].option == Network.CliqueExtractionType.Max)
+                maxExtraction.Checked = true;
+            if (files[currentlySelected].option == Network.CliqueExtractionType.Upper)
+                upperExtraction.Checked = true;
+            if (files[currentlySelected].option == Network.CliqueExtractionType.Lower)
+                lowerExtraction.Checked = true;
+            if (files[currentlySelected].option == Network.CliqueExtractionType.Min)
+                minExtraction.Checked = true;
+        }
+
+        private void groupBox4_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void maxExtraction_CheckedChanged(object sender, EventArgs e)
+        {
+            files[currentlySelected].option = Network.CliqueExtractionType.Max;
+        }
+
+        private void upperExtraction_CheckedChanged(object sender, EventArgs e)
+        {
+            files[currentlySelected].option = Network.CliqueExtractionType.Upper;
+        }
+
+        private void lowerExtraction_CheckedChanged(object sender, EventArgs e)
+        {
+            files[currentlySelected].option = Network.CliqueExtractionType.Lower;
+        }
+
+        private void minExtraction_CheckedChanged(object sender, EventArgs e)
+        {
+            files[currentlySelected].option = Network.CliqueExtractionType.Min;
+        }
+
+        private void binaryCutoff_TextChanged(object sender, EventArgs e)
+        {
+            files[currentlySelected].cutOff=Convert.ToDouble(binaryCutoff.Text);
+        }
+
+        private void useCutoffFileButton_Click(object sender, EventArgs e)
+        {
+            openFileDialog.ShowDialog();
+            CutOffFileName=openFileDialog.FileName;
+        }
+
+        private void done_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 5,null);
+            
+        }
+
+        private void Cancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            dyadic_file = !(dyadic_file);
+        }
+
+        private void CliqueChara_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 4,null);
+        }
+
+        private void dyadicFile_Click(object sender, EventArgs e)
+        {
+            dyadic_file = true;
+            openFileDialog.ShowDialog();
+            files[0] = new FileForCliqueAnalysis();
+            files[0].fileName = new string(openFileDialog.FileName.ToCharArray());
+            currentlySelected = 0;
+        }
+
+        private void cliqueByCliqueOverlap_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 3,null);
+        }
+
+        private void cliqueMemberShipOverLap_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 2,null);
+        }
+
+        private void WCOC_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 1,null);
+        }
+
+        private void wcmo_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 0,null);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            saveFileDialog1.DefaultExt = ".csv";
+            saveFileDialog1.ShowDialog();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 6, saveFileDialog1.FileName);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            saveFileDialog1.DefaultExt = ".csv";
+            saveFileDialog1.ShowDialog();
+            parent.DealWithMultipleCliques(files, CutOffFileName, binary_cutoff, dyadic_file, 7, saveFileDialog1.FileName);
+        }
+
+
+    }
+    public class FileForCliqueAnalysis
+    {
+        public string fileName;
+        public Network.CliqueExtractionType option;
+        public double cutOff;
+        public FileForCliqueAnalysis()
+        { }
+    }        
+}

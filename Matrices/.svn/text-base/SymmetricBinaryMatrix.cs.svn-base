@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Network.Matrices
+{
+    public class SymmetricBinaryMatrix : Matrix
+    {
+        private double _cutoff;
+
+        public SymmetricBinaryMatrix(int rows) : this(rows, double.Epsilon) { }
+        public SymmetricBinaryMatrix(int rows, double cutoff)
+            : base(rows, rows)
+        {
+            _cutoff = cutoff;
+        }
+        public SymmetricBinaryMatrix(Matrix m) : this(m, double.Epsilon, CliqueExtractionType.Upper) { }
+        public SymmetricBinaryMatrix(Matrix m, double cutoff) : this(m, cutoff, CliqueExtractionType.Upper) { }
+        public SymmetricBinaryMatrix(Matrix m, double cutoff, CliqueExtractionType cet)
+            : base(m)
+        {
+            _cutoff = cutoff;
+
+            for (int i = 0; i < _rows; i++)
+            {
+                for (int j = i; j < _cols; j++)
+                {
+                    switch (cet)
+                    {
+                        case CliqueExtractionType.Max:
+                            base[i, j] = Math.Max(m[i, j], m[j, i]);
+                            break;
+                        case CliqueExtractionType.Min:
+                            base[i, j] = Math.Min(m[i, j], m[j, i]);
+                            break;
+                        case CliqueExtractionType.Upper:
+                            base[i, j] = m[i, j];
+                            break;
+                        case CliqueExtractionType.Lower:
+                            base[i, j] = m[j, i];
+                            break;
+                    }
+
+                    if (this[i, j] > cutoff)
+                        base[i, j] = 1;
+                    else
+                        base[i, j] = 0;
+                }
+            }
+        }
+        public SymmetricBinaryMatrix(SymmetricBinaryMatrix m) : this(m, m._cutoff, CliqueExtractionType.Upper) { }
+
+        public bool GetValue(int r, int c)
+        {
+            if (r == c)
+                return true;
+
+            return base[r, c] > 0;
+        }
+        public void SetValue(int r, int c, bool value)
+        {
+            base[c, r] = base[r, c] = value ? 1 : 0;
+        }
+
+        public override double this[int r, int c]
+        {
+            get
+            {
+                if (r == c)
+                    return _cutoff + Constants.Epsilon;
+
+                return base[r, c];
+            }
+            set
+            {
+                base[r, c] = base[c, r] = value > _cutoff ? 1 : 0; // keep matrix symmetric
+            }
+        }
+
+        
+    }
+}

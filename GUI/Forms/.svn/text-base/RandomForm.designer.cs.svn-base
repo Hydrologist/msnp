@@ -1,0 +1,110 @@
+namespace NetworkGUI
+{
+    partial class RandomForm
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.goButton = new System.Windows.Forms.Button();
+            this.nText = new System.Windows.Forms.TextBox();
+            this.reachLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.yearTextBox = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // goButton
+            // 
+            this.goButton.Location = new System.Drawing.Point(175, 8);
+            this.goButton.Name = "goButton";
+            this.goButton.Size = new System.Drawing.Size(75, 24);
+            this.goButton.TabIndex = 8;
+            this.goButton.Text = "&Go";
+            this.goButton.Click += new System.EventHandler(this.goButton_Click);
+            // 
+            // nText
+            // 
+            this.nText.Location = new System.Drawing.Point(34, 12);
+            this.nText.Name = "nText";
+            this.nText.Size = new System.Drawing.Size(135, 20);
+            this.nText.TabIndex = 7;
+            this.nText.TextChanged += new System.EventHandler(this.reach_TextChanged);
+            // 
+            // reachLabel
+            // 
+            this.reachLabel.AutoSize = true;
+            this.reachLabel.Location = new System.Drawing.Point(12, 15);
+            this.reachLabel.Name = "reachLabel";
+            this.reachLabel.Size = new System.Drawing.Size(18, 13);
+            this.reachLabel.TabIndex = 6;
+            this.reachLabel.Text = "&N:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 45);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(113, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "&Network Identifier (NI):";
+            // 
+            // yearTextBox
+            // 
+            this.yearTextBox.Location = new System.Drawing.Point(131, 42);
+            this.yearTextBox.Name = "yearTextBox";
+            this.yearTextBox.Size = new System.Drawing.Size(119, 20);
+            this.yearTextBox.TabIndex = 10;
+            this.yearTextBox.Text = "1820";
+            this.yearTextBox.TextChanged += new System.EventHandler(this.yearTextBox_TextChanged);
+            // 
+            // RandomForm
+            // 
+            this.AcceptButton = this.goButton;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(259, 67);
+            this.Controls.Add(this.yearTextBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.goButton);
+            this.Controls.Add(this.nText);
+            this.Controls.Add(this.reachLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Name = "RandomForm";
+            this.Text = "Random Matrix";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Button goButton;
+        private System.Windows.Forms.TextBox nText;
+        private System.Windows.Forms.Label reachLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox yearTextBox;
+
+    }
+}

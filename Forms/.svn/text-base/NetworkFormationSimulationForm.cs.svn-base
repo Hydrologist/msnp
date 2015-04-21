@@ -1,0 +1,434 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Network;
+using Network.Matrices;
+using System.IO;
+using Network.IO;
+
+namespace NetworkGUI
+{
+    public partial class NetworkFormationSimulationForm : Form
+    {
+        private enum Status
+        {
+            Ready, Running, Cancelled
+        }
+
+        private Status _status;
+        private bool _overwrite;
+        private bool _realist;
+
+        public bool Overwrite
+        {
+            get { return _overwrite; }
+            set { _overwrite = value; }
+        }
+
+        public bool Realist
+        {
+            get { return _realist; }
+            set
+            {
+                _realist = value;
+                if (_realist)
+                {
+                    this.Height = 260;
+                    label6.Top = 182;
+                    tMaxTextBox.Top = 182;
+                    label7.Top = 182;
+                    nTextBox.Top = 182;
+                    runButton.Top = 182;
+                    closeButton.Top = 182;
+                    demoCheckBox.Visible = false;
+                    demoMatrixFile.Visible = false;
+                    label9.Visible = false;
+                    demoButton.Visible = false;
+                    jcCheckBox.Visible = false;
+                    jcMatrixFile.Visible = false;
+                    label10.Visible = false;
+                    jcButton.Visible = false;
+                }
+                else
+                {
+                    this.Height = 316;
+                    label6.Top = 234;
+                    tMaxTextBox.Top = 234;
+                    label7.Top = 234;
+                    nTextBox.Top = 234;
+                    runButton.Top = 234;
+                    closeButton.Top = 234;
+                    demoCheckBox.Visible = true;
+                    demoMatrixFile.Visible = true;
+                    label9.Visible = true;
+                    demoButton.Visible = true;
+                    jcCheckBox.Visible = true;
+                    jcMatrixFile.Visible = true;
+                    label10.Visible = true;
+                    jcButton.Visible = true;
+                }
+            }
+        }
+
+        public NetworkFormationSimulationForm()
+        {
+            InitializeComponent();
+
+            _status = Status.Ready;
+        }
+
+        private void openCababilityFile_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(capabilityMatrixFile, capabilitiesCheckBox.Checked);
+        }
+
+        private void openContiguityFile_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(contiguityMatrixFile, contiguityCheckBox.Checked);
+        }
+
+        private void openMajorPowersFile_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(majorPowersVectorFile, majorPowersCheckBox.Checked);
+        }
+
+        private void openConflictFile_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(conflictMatrixFile, conflictCheckBox.Checked);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(srgMatrixFile, srgCheckBox.Checked);
+        }
+
+        private void LoadFilenameIntoTextBox(TextBox textbox, bool random)
+        {
+            if (random && saveFileDialog.ShowDialog() == DialogResult.OK)
+                textbox.Text = saveFileDialog.FileName;
+            else if (!random && openFileDialog.ShowDialog() == DialogResult.OK)
+                textbox.Text = openFileDialog.FileName;
+        }
+
+        private bool CheckFile(string filename, bool isChecked)
+        {
+            if (!isChecked)
+                return !string.IsNullOrEmpty(filename) && File.Exists(filename);
+
+            return true;
+        }
+
+        private bool CheckFile(string filename, bool isChecked, bool isVisible)
+        {
+            if (!isChecked && isVisible)
+                return !string.IsNullOrEmpty(filename) && File.Exists(filename);
+
+            return true;
+        }
+
+        private void runButton_Click(object sender, EventArgs e)
+        {
+            if (_status == Status.Ready)
+            {
+                _status = Status.Running;
+                runButton.Enabled = false;
+                runButton.Text = "Running";
+                closeButton.Text = "Cancel";
+                progressBar.Value = 0;
+                backgroundWorker.RunWorkerAsync();
+            }
+        }
+
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                if (File.Exists(outputFile.Text))
+                    File.Delete(outputFile.Text);
+
+                int N = int.Parse(nTextBox.Text);
+                int iterations = int.Parse(tMaxTextBox.Text);
+
+                bool useSrg = CheckFile(srgMatrixFile.Text, srgCheckBox.Checked);
+                MatrixProvider capabilProvider = new MatrixProvider(capabilityMatrixFile.Text,
+                            capabilitiesCheckBox.Checked ? capabilityMatrixFile.Text : null,
+                            capabilitiesCheckBox.Checked ? MatrixProvider.Type.RandomDiagonal : MatrixProvider.Type.MatrixFile,
+                            N,
+                            N);
+                MatrixProvider contigProvider = new MatrixProvider(contiguityMatrixFile.Text,
+                            contiguityCheckBox.Checked ? contiguityMatrixFile.Text : null,
+                            useSrg ? MatrixProvider.Type.NullFile :
+                            (contiguityCheckBox.Checked ? MatrixProvider.Type.RandomSymmetric : MatrixProvider.Type.MatrixFile),
+                            N,
+                            N);
+                MatrixProvider majPowProvider = new MatrixProvider(majorPowersVectorFile.Text,
+                            majorPowersCheckBox.Checked ? majorPowersVectorFile.Text : null,
+                            useSrg ? MatrixProvider.Type.NullFile :
+                            (majorPowersCheckBox.Checked ? MatrixProvider.Type.RandomVector : MatrixProvider.Type.VectorFile),
+                            N,
+                            N);
+                MatrixProvider conflictProvider = new MatrixProvider(conflictMatrixFile.Text,
+                            null, //conflictCheckBox.Checked ? conflictMatrixFile.Text : null,
+                            conflictCheckBox.Checked ? MatrixProvider.Type.RandomSymmetric : MatrixProvider.Type.MatrixFile,
+                            N,
+                            N);
+                MatrixProvider srgProvider = new MatrixProvider(srgMatrixFile.Text,
+                            srgCheckBox.Checked ? srgMatrixFile.Text : null,
+                            useSrg ?
+                            (srgCheckBox.Checked ? MatrixProvider.Type.RandomSymmetric : MatrixProvider.Type.MatrixFile) : MatrixProvider.Type.NullFile,
+                            N,
+                            N);
+                MatrixProvider demoProvider = new MatrixProvider(demoMatrixFile.Text,
+                            demoCheckBox.Checked ? demoMatrixFile.Text : null,
+                            demoCheckBox.Visible ?
+                            (demoCheckBox.Checked ? MatrixProvider.Type.RandomWithProbRange : MatrixProvider.Type.MatrixFile) : MatrixProvider.Type.NullFile,
+                            N,
+                            N);
+                MatrixProvider jcProvider = new MatrixProvider(jcMatrixFile.Text,
+                            jcCheckBox.Checked ? jcMatrixFile.Text : null,
+                            jcCheckBox.Visible ?
+                            (jcCheckBox.Checked ? MatrixProvider.Type.RandomWithProbRange : MatrixProvider.Type.MatrixFile) : MatrixProvider.Type.NullFile,
+                            N,
+                            N);
+
+
+                if (demoCheckBox.Checked)
+                {
+                    demoProvider.Min = 0.15;
+                    demoProvider.Max = 0.35;
+                }
+                if (jcCheckBox.Checked)
+                {
+                    jcProvider.Min = 0.3;
+                    jcProvider.Max = 0.6;
+                }
+
+                capabilProvider.ForceVector = capabilitiesVectorCheckBox.Checked;
+                capabilProvider.WriteRepeatCount = 3;
+
+                if (File.Exists(conflictMatrixFile.Text) && _overwrite)
+                    File.Delete(conflictMatrixFile.Text);
+
+                if (File.Exists(outputFile.Text) && _overwrite)
+                    File.Delete(outputFile.Text);
+
+                for (int i = 1; i <= iterations; ++i)
+                {
+                    NetworkFormationSimulation.SimulateToFile(
+                        capabilProvider,
+                        contigProvider,
+                        majPowProvider,
+                        conflictProvider,
+                        outputFile.Text,
+                        conflictMatrixFile.Text,
+                        i,
+                        conflictCheckBox.Checked,
+                        contiguityCheckBox.Checked,
+                        majorPowersCheckBox.Checked,
+                        srgProvider,
+                        demoProvider,
+                        jcProvider);
+                    (sender as BackgroundWorker).ReportProgress((int)(0.5 +  Math.Ceiling(100.0 * i / (double)iterations)));
+                    if (e.Cancel)
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Error: " + exception.Message + Environment.NewLine + exception.StackTrace);
+            }
+        }
+
+        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _status = Status.Ready;
+            runButton.Text = "Run";
+            closeButton.Text = "Close";
+            runButton.Enabled = true;
+            closeButton.Enabled = true;
+        }
+
+        private void openOutputFile_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                outputFile.Text = saveFileDialog.FileName;
+            }
+        }
+
+        private void capabilityMatrixFile_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void CheckFiles()
+        {
+            int tmp;
+            if (CheckFile(capabilityMatrixFile.Text, capabilitiesCheckBox.Checked)
+                && (CheckFile(srgMatrixFile.Text, srgCheckBox.Checked)
+                || (CheckFile(contiguityMatrixFile.Text, contiguityCheckBox.Checked) && CheckFile(majorPowersVectorFile.Text, majorPowersCheckBox.Checked)))
+                && CheckFile(conflictMatrixFile.Text, conflictCheckBox.Checked)
+                && CheckFile(demoMatrixFile.Text, demoCheckBox.Checked, demoMatrixFile.Visible)
+                && CheckFile(jcMatrixFile.Text, jcCheckBox.Checked, jcMatrixFile.Visible)
+                && !string.IsNullOrEmpty(outputFile.Text)
+                && int.TryParse(tMaxTextBox.Text, out tmp)
+                && int.TryParse(nTextBox.Text, out tmp))
+            {
+                runButton.Enabled = true;
+
+            }
+            else
+                runButton.Enabled = false;
+        }
+
+        private void contiguityMatrixFile_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void majorPowersVectorFile_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void conflictMatrixFile_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void outputFile_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            if (_status == Status.Ready)
+            {
+                Close();
+            }
+            else if (_status == Status.Running)
+            {
+                _status = Status.Cancelled;
+                runButton.Text = "Cancelling";
+                closeButton.Enabled = false;
+                backgroundWorker.CancelAsync();
+            }
+            progressBar.Value = 0;
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void tMaxTextBox_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void nTextBox_TextChanged(object sender, EventArgs e)
+        {
+            CheckFiles();
+        }
+
+        private void capabilitiesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (capabilitiesCheckBox.Checked)
+                openCababilityFile.Text = "Save File...";
+            else
+                openCababilityFile.Text = "Open File...";
+
+            capabilityMatrixFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+        private void contiguityCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (contiguityCheckBox.Checked)
+               openContiguityFile.Text = "Save File...";
+            else
+               openContiguityFile.Text = "Open File...";
+
+           contiguityMatrixFile.Text = string.Empty;
+
+           CheckFiles();
+        }
+
+        private void majorPowersCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (majorPowersCheckBox.Checked)
+                openMajorPowersFile.Text = "Save File...";
+            else
+                openMajorPowersFile.Text = "Open File...";
+
+            majorPowersVectorFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+        private void conflictCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (conflictCheckBox.Checked)
+                openConflictFile.Text = "Save File...";
+            else
+                openConflictFile.Text = "Open File...";
+
+            conflictMatrixFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+        private void demoCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (demoCheckBox.Checked)
+                demoButton.Text = "Save File...";
+            else
+                demoButton.Text = "Open File...";
+
+            demoMatrixFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(jcMatrixFile, jcCheckBox.Checked);
+        }
+
+        private void jcCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (jcCheckBox.Checked)
+                jcButton.Text = "Save File...";
+            else
+                jcButton.Text = "Open File...";
+
+            jcMatrixFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            LoadFilenameIntoTextBox(demoMatrixFile, demoCheckBox.Checked);
+        }
+
+        private void srgCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (srgCheckBox.Checked)
+                button1.Text = "Save File...";
+            else
+                button1.Text = "Open File...";
+
+            srgMatrixFile.Text = string.Empty;
+
+            CheckFiles();
+        }
+
+    }
+}

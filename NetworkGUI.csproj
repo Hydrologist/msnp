@@ -1,0 +1,634 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4DD1F309-F86D-46D2-8539-6739ADE99E94}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NetworkGUI</RootNamespace>
+    <AssemblyName>NetworkGUI</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>C:\Users\Mike\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>9A48C8E9962DF60283C1BDD5C38AB52544B005CD</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>NetworkGUI_2_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bronkerbosch.cs" />
+    <Compile Include="clique.cs" />
+    <Compile Include="Forms\BlocForm2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BlocForm2.Designer.cs">
+      <DependentUpon>BlocForm2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Blocks\BlockCollection.cs" />
+    <Compile Include="Forms\Blocks\Block.cs" />
+    <Compile Include="Forms\Blocks\BlockCalculations.cs" />
+    <Compile Include="Forms\Blocks\BlockException.cs" />
+    <Compile Include="Forms\CliqueOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CliqueOptionForm.Designer.cs">
+      <DependentUpon>CliqueOptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Cliques\Clique.cs" />
+    <Compile Include="Forms\Cliques\CliqueCalculations.cs" />
+    <Compile Include="Forms\Cliques\CliqueCollection.cs" />
+    <Compile Include="Forms\Cliques\CliqueException.cs" />
+    <Compile Include="Forms\ClusteringForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ClusteringForm.Designer.cs">
+      <DependentUpon>ClusteringForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Communities\Communities.cs" />
+    <Compile Include="Forms\Communities\CommCalculations.cs" />
+    <Compile Include="Forms\Communities\CommCollection.cs" />
+    <Compile Include="Forms\Communities\CommException.cs" />
+    <Compile Include="Forms\DichotomizeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DichotomizeForm.Designer.cs">
+      <DependentUpon>DichotomizeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ABMForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ABMForm.Designer.cs">
+      <DependentUpon>ABMForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ABMConfirmForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ABMConfirmForm.Designer.cs">
+      <DependentUpon>ABMConfirmForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormException.cs" />
+    <Compile Include="Forms\NetworkSpilloverForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NetworkSpilloverForm.Designer.cs">
+      <DependentUpon>NetworkSpilloverForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\RecodeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RecodeForm.Designer.cs">
+      <DependentUpon>RecodeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FortranLibrary\Characters.cs" />
+    <Compile Include="FortranLibrary\CommonBlock.cs" />
+    <Compile Include="FortranLibrary\ConsoleLib.cs" />
+    <Compile Include="FortranLibrary\FortranLib.cs" />
+    <Compile Include="FortranLibrary\Obool.cs" />
+    <Compile Include="FortranLibrary\Ochar.cs" />
+    <Compile Include="FortranLibrary\Odouble.cs" />
+    <Compile Include="FortranLibrary\Ofloat.cs" />
+    <Compile Include="FortranLibrary\Oint.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\cbabk2.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\cbal.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\cdiv.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\cg.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\comqr.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\comqr2.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\corth.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\csroot.cs" />
+    <Compile Include="LinearAlgebra\CSEispack\pythag.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dasum.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\daxpy.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dbdsdc.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dbdsqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dcopy.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\ddisna.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\ddot.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgbsv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgbtf2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgbtrf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgbtrs.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgebak.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgebal.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgebd2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgebrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgeev.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgehd2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgehrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgelq2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgelqf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgels.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgelsd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgelsy.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgemm.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgemv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgeqp3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgeqpf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgeqr2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgeqrf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dger.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgerq2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgerqf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgesdd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgesv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgesvd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgetf2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgetrf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgetri.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgetrs.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dggglm.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgglse.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dggqrf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dggrqf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dggsvd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dggsvp.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dgtsv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dhseqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlabad.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlabrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlacon.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlacpy.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dladiv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlae2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed0.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed1.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed4.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed5.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed6.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed7.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed8.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaed9.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaeda.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaev2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaexc.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlags2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlahqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlahr2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaic1.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaln2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlals0.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlalsa.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlalsd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlamch.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlamrg.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlange.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlansb.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlanst.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlansy.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlantr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlanv2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlapll.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlapmt.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlapy2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqp2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqps.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr0.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr1.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr4.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaqr5.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlar2v.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarfb.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarfg.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarft.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarfx.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlargv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlartg.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlartv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarz.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarzb.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlarzt.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlas2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlascl.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd0.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd1.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd4.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd5.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd6.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd7.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasd8.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasda.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasdq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasdt.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaset.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasq1.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasq2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasq5.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasq6.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasrt.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlassq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasv2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlaswp.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlasy2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlatrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlatrs.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlatrz.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlazq3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dlazq4.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dnrm2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorg2l.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorg2r.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorgbr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorghr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorgl2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorglq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorgql.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorgqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorgtr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorm2l.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorm2r.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormbr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dorml2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormlq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormql.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormr2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormr3.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormrq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormrz.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dormtr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\drot.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\drscl.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsbev.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsbevd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsbtrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dscal.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dstedc.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsteqr.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsterf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dswap.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsyev.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsyevd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsymv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsyr2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsyr2k.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsytd2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dsytrd.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtbsv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtgsja.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrcon.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrevc.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrexc.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrmm.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrmv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrsm.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrsv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrti2.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrtri.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtrtrs.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\dtzrzf.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\idamax.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\ieeeck.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\ilaenv.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\iparmq.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\lsame.cs" />
+    <Compile Include="LinearAlgebra\CSLapack\xerbla.cs" />
+    <Compile Include="Matrices\CognitiveAlgebra.cs" />
+    <Compile Include="Matrices\community.cs" />
+    <Compile Include="modmax.cs" />
+    <Compile Include="NPNode.cs" />
+    <Compile Include="Forms\NetworkPowerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NetworkPowerForm.Designer.cs">
+      <DependentUpon>NetworkPowerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\McaNCoptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\McaNCoptions.Designer.cs">
+      <DependentUpon>McaNCoptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ValuedRandomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ValuedRandomForm.Designer.cs">
+      <DependentUpon>ValuedRandomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Multiple_Clique_Analysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Multiple_Clique_Analysis.designer.cs">
+      <DependentUpon>Multiple_Clique_Analysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Combinations\DataGridViewLoader.cs" />
+    <Compile Include="heap.cs" />
+    <Compile Include="IIndexable.cs" />
+    <Compile Include="int_double.cs" />
+    <Compile Include="IO\FileLoadException.cs" />
+    <Compile Include="IO\MatrixProvider.cs" />
+    <Compile Include="IO\MatrixReader.cs" />
+    <Compile Include="IO\VectorValueProvider.cs" />
+    <Compile Include="Matrices\MatrixWriter.cs" />
+    <Compile Include="IO\NetworkIdTable.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Forms\BlocForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BlocForm.Designer.cs">
+      <DependentUpon>BlocForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IO\BufferedFileReader.cs" />
+    <Compile Include="IO\BufferedFileTable.cs" />
+    <Compile Include="Forms\CentralityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CentralityForm.Designer.cs" />
+    <Compile Include="Forms\CliqueForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CliqueForm.designer.cs">
+      <DependentUpon>CliqueForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Combinations\Combinations.cs" />
+    <Compile Include="Forms\Combinations\ElementSet.cs" />
+    <Compile Include="Forms\OptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OptionsForm.Designer.cs">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\JumpToForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\JumpToForm.designer.cs">
+      <DependentUpon>JumpToForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Matrices\ComputationException.cs" />
+    <Compile Include="Matrices\Computations.cs" />
+    <Compile Include="Matrices\Matrix.cs" />
+    <Compile Include="Matrices\MatrixException.cs" />
+    <Compile Include="Matrices\MatrixLabels.cs" />
+    <Compile Include="Matrices\MatrixTable.cs" />
+    <Compile Include="Forms\MultipleFileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MultipleFileForm.designer.cs">
+      <DependentUpon>MultipleFileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MultiplicationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MultiplicationForm.Designer.cs">
+      <DependentUpon>MultiplicationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Matrices\RandomMatrix.cs" />
+    <Compile Include="Matrices\SymmetricBinaryMatrix.cs" />
+    <Compile Include="Matrices\Vector.cs" />
+    <Compile Include="maxHeap.cs" />
+    <Compile Include="MCA_Charatersistics.cs" />
+    <Compile Include="Network.cs" />
+    <Compile Include="NetworkCharacteristics.cs" />
+    <Compile Include="NetworkFormationSimulation.cs" />
+    <Compile Include="Forms\NetworkFormationSimulationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NetworkFormationSimulationForm.Designer.cs">
+      <DependentUpon>NetworkFormationSimulationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pair.cs" />
+    <Compile Include="path.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Forms\ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ProgressForm.designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sets\Set.cs" />
+    <Compile Include="Triads\Triad.cs" />
+    <Compile Include="Triads\Triads.cs" />
+    <Compile Include="vektor.cs" />
+    <EmbeddedResource Include="Forms\BlocForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BlocForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BlocForm2.resx">
+      <DependentUpon>BlocForm2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CentralityForm.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CliqueForm.resx">
+      <DependentUpon>CliqueForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CliqueOptionForm.resx">
+      <DependentUpon>CliqueOptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ClusteringForm.resx">
+      <DependentUpon>ClusteringForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DichotomizeForm.resx">
+      <DependentUpon>DichotomizeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ABMForm.resx">
+      <DependentUpon>ABMForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ABMConfirmForm.resx">
+      <DependentUpon>ABMConfirmForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\McaNCoptions.resx">
+      <DependentUpon>McaNCoptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Multiple_Clique_Analysis.resx">
+      <DependentUpon>Multiple_Clique_Analysis.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NetworkFormationSimulationForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NetworkFormationSimulationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NetworkPowerForm.resx">
+      <DependentUpon>NetworkPowerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NetworkSpilloverForm.resx">
+      <DependentUpon>NetworkSpilloverForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\JumpToForm.resx">
+      <DependentUpon>JumpToForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MultiplicationForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MultiplicationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RecodeForm.resx">
+      <DependentUpon>RecodeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ValuedRandomForm.resx">
+      <DependentUpon>ValuedRandomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BinaryRandomForm.resx">
+      <DependentUpon>BinaryRandomForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\YearRangeForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>YearRangeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="LinearAlgebra\CSEispack\CSEispack.suo" />
+    <None Include="LinearAlgebra\CSLapack\CSLapack.suo" />
+    <None Include="NetworkGUI_1_TemporaryKey.pfx" />
+    <None Include="NetworkGUI_2_TemporaryKey.pfx" />
+    <None Include="NetworkGUI_TemporaryKey.pfx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Random.cs" />
+    <Compile Include="Forms\BinaryRandomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BinaryRandomForm.designer.cs">
+      <DependentUpon>BinaryRandomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\YearRangeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\YearRangeForm.designer.cs">
+      <DependentUpon>YearRangeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Algorithms.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GUI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LinearAlgebra\CSEispack\readme.txt" />
+    <Content Include="LinearAlgebra\CSLapack\readme.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

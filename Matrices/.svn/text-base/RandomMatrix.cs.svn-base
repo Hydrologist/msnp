@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using RandomUtilities;
+
+namespace Network.Matrices
+{
+    public sealed class RandomMatrix
+    {
+        private RandomMatrix() { }
+
+        public static Matrix LoadNonSymmetric(int n)
+        {
+            Matrix m = LoadNonSymmetric(n, n);
+
+            for (int i = 0; i < m.Rows; ++i)
+                m[i, i] = 0.0;
+
+            return m;
+        }
+
+        public static Matrix LoadNonSymmetric(int rows, int cols)
+        {
+            Matrix m = new Matrix(rows, cols);
+
+            Algorithms.Fill<double>(m, RNG.RandomBinary);
+            Algorithms.Iota(m.ColLabels, 1);
+            Algorithms.Iota(m.RowLabels, 1);
+
+            return m;
+        }
+
+        public static Matrix LoadWithProbabilisticRange(int rows, int cols, double min, double max)
+        {
+            Matrix m = new Matrix(rows, cols);
+            Algorithms.Iota(m.ColLabels, 1);
+            Algorithms.Iota(m.RowLabels, 1);
+
+            for (int i = 0; i < rows; ++i)
+                for (int j = i + 1; j < cols; ++j)
+                    m[i, j] = m[j, i] = RNG.RandomBinary(RNG.RandomFloat(min, max));
+
+            return m;
+        }
+
+        public static Matrix LoadSymmetric(int n)
+        {
+            Matrix m = LoadNonSymmetric(n);
+
+            for (int i = 0; i < m.Rows; ++i)
+                for (int j = i + 1; j < m.Rows; ++j)
+                    m[j, i] = m[i, j];
+
+            return m;
+        }
+
+        public static Matrix LoadDiagonal(int n, bool normalize)
+        {
+            Matrix m = new Matrix(n);
+            Algorithms.Iota(m.ColLabels, 1);
+            Algorithms.Iota(m.RowLabels, 1);
+
+            double sum = 0.0;
+            for (int i = 0; i < m.Rows; ++i)
+            {
+                m[i, i] = RNG.RandomFloat();
+                sum += m[i, i];
+            }
+
+            if (normalize)
+                for (int i = 0; i < m.Rows; ++i)
+                    m[i, i] /= sum;
+
+            return m;
+        }
+
+        public static Vector LoadVector(int n)
+        {
+            Vector v = new Vector(n);
+            Algorithms.Iota(v.Labels, 1);
+            Algorithms.Fill<double>(v, RNG.RandomBinary);
+
+            return v;
+        }
+
+        public static Vector LoadRealUnitVector(int n)
+        {
+            Vector v = new Vector(n);
+            Algorithms.Iota(v.Labels, 1);
+            Algorithms.Fill<double>(v, RNG.RandomFloat);
+            v.Normalize();
+
+            return v;
+        }
+    }
+}

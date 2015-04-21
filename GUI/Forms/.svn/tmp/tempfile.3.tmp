@@ -1,0 +1,2062 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+using RandomUtilities;
+
+using Network;
+using Network.IO;
+using System.IO;
+using Network.Matrices;
+
+namespace NetworkGUI
+{
+    public partial class MainForm : Form
+    {
+        RandomForm _randomForm = new RandomForm();
+        CentralityForm _centralityForm = new CentralityForm();
+        CliqueForm _cliqueForm = new CliqueForm();
+        CliqueForm _blockForm = new CliqueForm();
+        OptionsForm _optionsForm = new OptionsForm();
+        MultiplicationForm _multiplicationForm = new MultiplicationForm();
+        BlocForm _blocForm = new BlocForm();
+        NetworkFormationSimulationForm _nfsForm = new NetworkFormationSimulationForm();
+        NetworkGUI.Forms.Multiple_Clique_Analysis _MCA_form;
+
+        bool _randomSymmetric = false;
+
+        Network.NetworkGUI net = new Network.NetworkGUI();
+        int startYear;
+        int currentYear;
+        string loadFrom;
+        string displayMatrix, prevDisplayMatrix;
+
+        MatrixType _displayMatrix = MatrixType.Data;
+
+        string[] fileNames; // File names for multiple files 
+
+        Network.ElementwiseFormat ef = Network.ElementwiseFormat.Matrix;
+
+        private const string versionString = "3.21";
+
+        private enum MatrixType
+        {
+            Data, Affiliation, Overlap, SEE, SEC, SESE, CBCO, Reachability, Dependency, Centrality, Characteristics, EventOverlap,
+            NationalDependency, Counter, Multiplication, CONCOR, IntercliqueDistance, Elementwise, BinaryComplement, Triadic,
+            RoleEquivalence, AffilEuclidean, AffilCorrelation, BlockPartitionS, BlockPartitionI, DensityBlockMatrix,
+            RelativeDensityBlockMatrix, BlockCohesivenessMatrix, BlockCharacteristics
+        }
+
+
+        public MainForm()
+        {
+            InitializeComponent();
+
+            startYear = -1;
+            currentYear = -1;
+            loadFrom = "";
+            displayMatrix = "Data";
+
+            SetChecked();
+
+            _optionsForm.ReachNumMatrices = -1;
+
+
+            _randomForm.N = 3;
+
+            Text = "Maoz Social Networks Program V. " + versionString;
+
+            helpProvider.HelpNamespace = "Network.chm";
+
+            _blockForm.Text = "Block Characteristics";
+            _blockForm.ButtonText = "Generate Block Characteristics";
+
+            _MCA_form = new NetworkGUI.Forms.Multiple_Clique_Analysis(this);
+        }
+
+        private void LoadData()
+        {
+            // Load matrix into GUI
+            DoStandardize();
+            DoLoadCorrect();
+            switch (displayMatrix)
+            {
+                case "Affiliation":
+                    net.LoadAffiliationIntoDataGridView(dataGrid, _optionsForm.Cutoff[currentYear], _optionsForm.InputType == "StructEquiv",
+                                                        _optionsForm.FileName, _optionsForm.InputType == "Dyadic", currentYear, _optionsForm.Density, _optionsForm.InputType != "None",
+                                                        _optionsForm.SumMean, _optionsForm.SumMeanFilename, _optionsForm.svcFile);
+                    break;
+                case "Counter":
+                    net.LoadCounterIntoDataGridView(dataGrid, currentYear, _optionsForm.Cutoff[currentYear], _optionsForm.Density,
+                        _optionsForm.InputType, _optionsForm.FileName, _optionsForm.svcFile, _optionsForm.useCohesion,
+                        _optionsForm.transitivityType, _optionsForm.counterOptions, _optionsForm.reachZero, _optionsForm.ReachNumMatrices);
+                    break;
+                case "ViableCounter":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.LoadViableCoalitions(_optionsForm.ViableCoalitionCutoff, currentYear, _optionsForm.svcCoalitionFile);
+
+                    Network.NetworkGUI viableNet = new Network.NetworkGUI(net);
+                    viableNet.LoadCounterIntoDataGridView(dataGrid, currentYear, _optionsForm.Cutoff[currentYear], _optionsForm.Density,
+                        _optionsForm.InputType, _optionsForm.FileName, _optionsForm.svcFile, _optionsForm.useCohesion,
+                        _optionsForm.transitivityType, _optionsForm.counterOptions, _optionsForm.reachZero, _optionsForm.ReachNumMatrices);
+                    break;
+                case "CONCOR":
+                    net.LoadBlocAffiliationIntoDataGridView(dataGrid, _blocForm.pos, openFileDialog.Multiselect);
+                    break;
+                case "NatDep":
+                    net.LoadNationalDependencyIntoDataGridView(dataGrid, currentYear);
+                    break;
+                case "CBCO":
+                    net.LoadCBCOverlapIntoDataGridView(dataGrid);
+                    break;
+                default:
+                    net.LoadMatrixIntoDataGridView(dataGrid, displayMatrix);
+                    break;
+            }
+
+        }
+
+        private void DoLoadCorrect()
+        {
+            switch (displayMatrix)
+            {
+                case "Affiliation":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    break;
+                case "Overlap":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    break;
+                case "CBCO":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    break;
+                case "Dependency":
+                    net.LoadDependency(prevDisplayMatrix, _optionsForm.ReachNumMatrices, _optionsForm.Density, currentYear, _optionsForm.reachZero);
+                    break;
+                case "Reachability":
+                    net.LoadReachability(_optionsForm.ReachNumMatrices, _optionsForm.reachSum, _optionsForm.reachZero, prevDisplayMatrix);
+                    break;
+                case "SEE":
+                    net.LoadStructEquiv(_optionsForm.Density, currentYear, prevDisplayMatrix);
+                    break;
+                case "SEC":
+                    net.LoadStructEquiv(_optionsForm.Density, currentYear, prevDisplayMatrix);
+                    break;
+                case "SESE":
+                    net.LoadStructEquiv(_optionsForm.Density, currentYear, prevDisplayMatrix);
+                    break;
+                case "Centrality":
+                    net.LoadCentralityIndices(currentYear, _centralityForm.Sijmax, _centralityForm.CountMember, _centralityForm.ZeroDiagonal);
+                    break;
+                case "Characteristics":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.LoadCliqueCharacteristics(_cliqueForm.SVC.ToArray(), _cliqueForm.DVC.ToArray(), currentYear);
+                    break;
+                case "NatDep":
+                    net.LoadDependency(prevDisplayMatrix, _optionsForm.ReachNumMatrices, _optionsForm.Density, currentYear, _optionsForm.reachZero);
+                    break;
+                case "Multiplication":
+                    try
+                    {
+                        net.LoadMultiplicationMatrix(_multiplicationForm.fileName, _multiplicationForm.dyadic, currentYear, "Multiplication", prevDisplayMatrix);
+                    }
+                    catch (Exception E)
+                    {
+                        MessageBox.Show("Error loading multiplication matrix: " + E.Message, "Error!");
+                        return;
+                    }
+                    break;
+                case "CONCOR":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    break;
+                case "ICD":
+                    net.LoadIntercliqueDistance(_optionsForm.Density, currentYear);
+                    break;
+                case "Elementwise":
+                    net.LoadElementwiseMultiplication(openFileDialog2.FileName, currentYear, "Elementwise", ef);
+                    break;
+                case "BinaryComplement":
+                    net.LoadBinaryComplement(prevDisplayMatrix);
+                    break;
+                case "Triadic":
+                    net.LoadTriadic(prevDisplayMatrix, currentYear);
+                    break;
+                case "RoleEquiv":
+                    net.LoadRoleEquivalence(prevDisplayMatrix);
+                    break;
+                case "BlockPartitionI":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockPartitionMatrix();
+                    break;
+                case "BlockPartitionS":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockPartitionMatrix();
+                    break;
+                case "DensityBlockMatrix":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockMatrices(_optionsForm.Density, currentYear);
+                    break;
+                case "RelativeDensityBlockMatrix":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockMatrices(_optionsForm.Density, currentYear);
+                    break;
+                case "BlockCohesivenessMatrix":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockMatrices(_optionsForm.Density, currentYear);
+                    break;
+                case "BlockCharacteristics":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                    net.LoadBlockCharacteristics(_blockForm.SVC.ToArray(), _blockForm.DVC.ToArray(), currentYear);
+                    break;
+                case "ViableCoalitions":
+                    //net.LoadStructEquiv(_optionsForm.Density, currentYear, prevDisplayMatrix);
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.LoadViableCoalitions(_optionsForm.ViableCoalitionCutoff, currentYear, _optionsForm.svcCoalitionFile);
+                    break;
+                case "CoalitionStructure":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.LoadViableCoalitions(_optionsForm.ViableCoalitionCutoff, currentYear, _optionsForm.svcCoalitionFile);
+                    break;
+                case "ViableNPI":
+                    net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                    net.LoadViableCoalitions(_optionsForm.ViableCoalitionCutoff, currentYear, _optionsForm.svcCoalitionFile);
+                    break;
+                case "Distance":
+                    net.LoadDistanceMatrix(_optionsForm.Cutoff.GetValue(currentYear));
+                    break;
+
+            }
+        }
+
+        private void SetFormTitle()
+        {
+            string file;
+            if (loadFrom == "Random")
+            {
+                this.Text = "Matrix Manipulator v" + versionString + " - Random Data";
+                return;
+            }
+            if (loadFrom == "")
+            {
+                this.Text = "Matrix Manipulator v" + versionString;
+                return;
+            }
+
+            if (openFileDialog.Multiselect)
+                file = fileNames[fileNames.Length - 1];
+            else
+                file = openFileDialog.FileName;
+            this.Text = string.Concat("Matrix Manipulator v" + versionString + " - ",
+                    file.Substring(file.LastIndexOf('\\') + 1),
+                    " - ", currentYear.ToString());
+            if (openFileDialog.Multiselect)
+                this.Text += " [Multiple Files]";
+        }
+
+
+        private uint[] RandomArray(int N)
+        {
+            uint[] a = new uint[N * N / 8 + 1];
+            for (int i = 0; i < a.Length; ++i)
+            {
+                a[i] = RNG.RandomInt();
+            }
+            return a;
+        }
+
+        private void UncheckAllItems(MenuStrip menu)
+        {
+            foreach (ToolStripMenuItem item in menu.Items)
+                UncheckAllItems(item);
+        }
+
+        private void UncheckAllItems(ToolStripMenuItem item)
+        {
+            item.Checked = false;
+            foreach (ToolStripMenuItem subItem in item.DropDownItems)
+                UncheckAllItems(subItem);
+        }
+
+        private void SetChecked()
+        {
+            UncheckAllItems(menuStrip);
+
+            if (displayMatrix != "Elementwise")
+            {
+                matrixToolStripMenuItem1.Checked = false;
+                dyadicToolStripMenuItem.Checked = false;
+                monadicFileToolStripMenuItem.Checked = false;
+            }
+
+            if (loadFrom == "Affil" && displayMatrix == "Data")
+                sociomatrixToolStripMenuItem1.Checked = true;
+            else
+            {
+                switch (displayMatrix)
+                {
+                    case "Data": dataMatrixToolStripMenuItem.Checked = true; break;
+                    case "Affiliation": cliqueAffiliationMatrixToolStripMenuItem.Checked = true; break;
+                    case "Overlap": cliqueOverlapMatrixToolStripMenuItem.Checked = true; break;
+                    case "SEE":
+                        euclideanMatrixToolStripMenuItem.Checked = true;
+                        euclideanMatrixToolStripMenuItem1.Checked = true;
+                        break;
+                    case "SEC":
+                        correlationMatrixToolStripMenuItem.Checked = true;
+                        correlationMatrixToolStripMenuItem1.Checked = true;
+                        break;
+                    case "SESE":
+                        standardizedEuclideanDistanceMatrixToolStripMenuItem.Checked = true;
+                        standardizedEuclideanDistanceMatrixToolStripMenuItem1.Checked = true;
+                        break;
+                    case "CBCO": cliquebyCliqueOverlapMatrixToolStripMenuItem.Checked = true; break;
+                    case "Dependency": dependencyMatrixToolStripMenuItem.Checked = true; break;
+                    case "Reachability": reachabilityMatrixToolStripMenuItem.Checked = true; break;
+                    case "Centrality": centralityIndicesMatrixToolStripMenuItem.Checked = true; break;
+                    case "Characteristics": cliqueCharacteristicsMatrixToolStripMenuItem.Checked = true; break;
+                    case "EventOverlap": eventOverlapMatrixToolStripMenuItem.Checked = true; break;
+                    case "NatDep": nationalDependencyMatrixToolStripMenuItem.Checked = true; break;
+                    case "Counter": counterDataToolStripMenuItem.Checked = true; break;
+                    case "Multiplication": matrixMultiplicationToolStripMenuItem.Checked = true; break;
+                    case "CONCOR": cONCORBlockAffiliationToolStripMenuItem.Checked = true; break;
+                    case "ICD": interCliqueDistanceToolStripMenuItem.Checked = true; break;
+                    case "Elementwise": elementwiseMultiplicationToolStripMenuItem.Checked = true; break;
+                    case "BinaryComplement": binaryComplementToolStripMenuItem.Checked = true; break;
+                    case "Triadic": triadicMatrixToolStripMenuItem.Checked = true; break;
+                    case "RoleEquiv": roleEquivalenceMatrixToolStripMenuItem.Checked = true; break;
+                    case "AffilEuclidean": euclideanToolStripMenuItem2.Checked = true; break;
+                    case "AffilCorrelation": correlationToolStripMenuItem2.Checked = true; break;
+                    case "BlockPartitionS": sociomatrixEntiresToolStripMenuItem.Checked = true; break;
+                    case "BlockPartitionI": toolStripMenuItem1.Checked = true; break;
+                    case "DensityBlockMatrix": densityToolStripMenuItem.Checked = true; break;
+                    case "RelativeDensityBlockMatrix": relativeDensityToolStripMenuItem.Checked = true; break;
+                    case "BlockCohesivenessMatrix": blockCoheToolStripMenuItem.Checked = true; break;
+                    case "BlockCharacteristics": blockCharacteristicToolStripMenuItem.Checked = true; break;
+                    case "Distance": distanceMatrixToolStripMenuItem.Checked = true; break;
+                }
+            }
+
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+
+        }
+
+        private void matrixFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+
+            try
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SetMode(false);
+                    startYear = currentYear = net.SmartLoad(openFileDialog.FileName, out loadFrom);
+                    //loadFrom = "Matrix";
+                    SetFormTitle();
+
+                    if (displayMatrix == "Affil")
+                        displayMatrix = "Data";
+                    LoadData();
+
+                    if (displayMatrix == "Sociomatrix")
+                        displayMatrix = "Matrix";
+                    SetChecked();
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error opening the file: " + E.Message, "Error!");
+                loadFrom = "";
+                dataGrid.Columns.Clear();
+                SetFormTitle();
+            }
+        }
+
+        private void nextYearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentYear == -1)
+                return;
+
+            ++currentYear;
+            //try
+            {
+                if (loadFrom == "Matrix")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        currentYear = net.LoadFromMultipleFiles(fileNames, currentYear);
+                    }
+                    else
+                    {
+                        currentYear = net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                    }
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        currentYear = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, currentYear);
+                    }
+                    else
+                    {
+                        currentYear = net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                    }
+                }
+                else if (loadFrom == "Affil")
+                {
+                    currentYear = net.LoadFromAffiliationFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Monadic")
+                {
+                    currentYear = net.LoadFromMonadicFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Random")
+                {
+                    net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    --currentYear;
+                }
+            }
+            /*catch (Exception E)
+            {
+                --currentYear;
+                MessageBox.Show("Unable to advance to next year: " + E.Message, "Error!");
+                return;
+            }*/
+            DoStandardize();
+            LoadData();
+            SetFormTitle();
+        }
+
+        private void previousYearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (currentYear == -1)
+                return;
+
+            try
+            {
+                if (loadFrom == "Matrix")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        currentYear = net.LoadFromMultipleFiles(fileNames, net.GetPreviousYear(fileNames[0], currentYear));
+                    }
+                    else
+                    {
+                        currentYear = net.LoadFromMatrixFile(openFileDialog.FileName, net.GetPreviousYear(openFileDialog.FileName, currentYear));
+                    }
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        currentYear = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, net.GetPreviousYear(openFileDialog.FileName, currentYear));
+                    }
+                    else
+                    {
+
+                        currentYear = net.LoadFromDyadicFile(openFileDialog.FileName, net.GetPreviousYear(openFileDialog.FileName, currentYear));
+                    }
+
+                }
+                else if (loadFrom == "Affil")
+                {
+                    currentYear = net.LoadFromAffiliationFile(openFileDialog.FileName, net.GetPreviousYear(openFileDialog.FileName, currentYear));
+                }
+                else if (loadFrom == "Monadic")
+                {
+                    currentYear = net.LoadFromMonadicFile(openFileDialog.FileName, net.GetPreviousYear(openFileDialog.FileName, currentYear));
+                }
+                else if (loadFrom == "Random")
+                {
+                    net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    ++currentYear;
+                }
+            }
+            catch (Exception E)
+            {
+                ++currentYear;
+                MessageBox.Show("Unable to advance to previous year: " + E.Message, "Error!");
+                return;
+            }
+            DoStandardize();
+            LoadData();
+            SetFormTitle();
+        }
+
+        private void jumpToYearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "Random")
+            {
+                MessageBox.Show("Cannot jump to specific year with random data!", "Error!");
+                return;
+            }
+
+            int newYear = 0;
+            if (currentYear == -1)
+                return;
+
+            JumpToForm jump = new JumpToForm();
+            jump.year = currentYear;
+            jump.ShowDialog();
+            try
+            {
+                if (jump.year != currentYear) // No need to be wasteful and reload unnecessarily
+                {
+
+                    if (loadFrom == "Matrix")
+                    {
+                        if (openFileDialog.Multiselect)
+                        {
+                            newYear = net.LoadFromMultipleFiles(fileNames, jump.year);
+                        }
+                        else
+                        {
+                            newYear = net.LoadFromMatrixFile(openFileDialog.FileName, jump.year);
+                        }
+                    }
+                    else if (loadFrom == "Dyadic")
+                    {
+                        if (openFileDialog.Multiselect)
+                        {
+                            newYear = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, jump.year);
+                        }
+                        else
+                        {
+                            newYear = net.LoadFromDyadicFile(openFileDialog.FileName, jump.year);
+                        }
+                    }
+                    else if (loadFrom == "Affil")
+                    {
+                        newYear = net.LoadFromAffiliationFile(openFileDialog.FileName, jump.year);
+                    }
+                    else if (loadFrom == "Monadic")
+                    {
+                        newYear = net.LoadFromMonadicFile(openFileDialog.FileName, jump.year);
+                    }
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("Unable to jump to year: " + E.Message, "Error!");
+                return;
+            }
+
+            if (newYear != -1)
+            {
+                currentYear = newYear;
+                DoStandardize();
+                LoadData();
+                SetFormTitle();
+            }
+            else
+            {
+                if (loadFrom == "Matrix")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        net.LoadFromMultipleFiles(fileNames, currentYear);
+                    }
+                    else
+                    {
+                        net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                    }
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    if (openFileDialog.Multiselect)
+                    {
+                        net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, currentYear);
+                    }
+                    else
+                    {
+                        net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                    }
+                }
+                else if (loadFrom == "Affil")
+                {
+                    currentYear = net.LoadFromAffiliationFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Monadic")
+                {
+                    currentYear = net.LoadFromMonadicFile(openFileDialog.FileName, currentYear);
+                }
+                MessageBox.Show("That year is not present in this file!", "Error!");
+            }
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cliqueAffiliationMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            displayMatrix = "Affiliation";
+            DisableStandardizedChecks();
+            LoadData();
+            SetChecked();
+        }
+
+        private void dataMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EnableStandardizedChecks();
+            if (loadFrom != "Affil")
+                displayMatrix = "Data";
+            else
+                displayMatrix = "Affil";
+            LoadData();
+            SetChecked();
+        }
+
+        private void SetNewDisplayMatrix(string s)
+        {
+            prevDisplayMatrix = displayMatrix;
+            displayMatrix = s;
+        }
+
+        private void cliqueOverlapMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Overlap");
+            LoadData();
+            SetChecked();
+        }
+
+        private void cliquebyCliqueOverlapMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("CBCO");
+            LoadData();
+            SetChecked();
+        }
+
+        private void dependencyMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Dependency");
+            LoadData();
+            SetChecked();
+        }
+
+        private void structuralEquivalenceMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void structuralEquivalenceEMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void matrixFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+            if (displayMatrix == "Counter")
+            {
+                counterDataFileToolStripMenuItem_Click(sender, e);
+                return;
+            }
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                int startYear, endYear;
+                YearRangeForm range = new YearRangeForm();
+
+                if (displayMatrix == "Affiliation")
+                    range.SetMode(true);
+
+                range.from = currentYear;
+                range.to = currentYear;
+                range.ShowDialog();
+                startYear = range.from;
+                endYear = range.to;
+
+                ProgressForm progress = new ProgressForm();
+                progress.endYear = endYear;
+                progress.startYear = startYear;
+                progress.curYear = 0;
+                progress.Show();
+
+                int previousYear = -1;
+                for (int year = startYear; year <= endYear; ++year)
+                {
+                    if (loadFrom == "Matrix")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultipleFiles(fileNames, -1);
+                        else
+                            year = net.LoadFromMatrixFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Dyadic")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, year);
+                        else
+                            year = net.LoadFromDyadicFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Affil")
+                    {
+                        year = net.LoadFromAffiliationFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Random")
+                    {
+                        net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    }
+                    // Should we standardize?
+                    if (byRowToolStripMenuItem.Checked == true)
+                        net.StandardizeByRow(displayMatrix);
+                    else if (byColumnToolStripMenuItem.Checked == true)
+                        net.StandardizeByColumn(displayMatrix);
+                    else if (rowToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalRow(displayMatrix);
+                    else if (columnToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalColumn(displayMatrix);
+                    else if (minimumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMinimum(displayMatrix);
+                    else if (maximumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMaximum(displayMatrix);
+
+                    // First load correct matrix
+                    /*
+                    if (displayMatrix == "SEE" || displayMatrix == "SEC" || displayMatrix == "SESE")
+                        net.LoadStructEquiv(counterForm.Density);
+                    else if (displayMatrix == "Dependency")
+                        net.LoadDependency();
+                    else if (displayMatrix == "Reachability")
+                        net.LoadReachability(ReachForm.N, ReachForm.Sum);
+                    else if (displayMatrix == "Overlap" || displayMatrix == "Affiliation")
+                        net.FindCliques(counterForm.Cutoff, counterForm.inputType != "None", counterForm.Density);
+                    else if (displayMatrix == "Centrality")
+                        net.LoadCentralityIndices(year, centralityForm.Sijmax, centralityForm.CountMember, centralityForm.ZeroDiagonal);
+                    else if (displayMatrix == "Characteristics")
+                        net.LoadCliqueCharacteristics(cliqueForm.SVC.ToArray(), cliqueForm.DVC.ToArray(), year);
+                    else if (displayMatrix == "Multiplication")
+                        net.LoadMultiplicationMatrix(multForm.fileName, multForm.dyadic, year, "Data");
+                    else if (displayMatrix == "CONCOR")
+                        net.CONCOR(blocForm.pos);
+                    else if (displayMatrix == "ICD")
+                        net.LoadIntercliqueDistance(counterForm.Cutoff, counterForm.Density);
+                    else if (displayMatrix == "Elementwise")
+                        net.LoadElementwiseMultiplication(openFileDialog2.FileName, currentYear, "Elementwise");
+                    else if (displayMatrix == "BinaryComplement")
+                        net.LoadBinaryComplement();
+                    else if (displayMatrix != "Data")
+                    {
+                        MessageBox.Show("The matrix type '" + displayMatrix + "' cannot be saved to a matrix file!", "Error!");
+                        return;
+                    }
+                     * */
+                    int prevCurrentYear = currentYear;
+                    currentYear = year;
+                    DoLoadCorrect();
+                    currentYear = prevCurrentYear;
+
+                    if (year != previousYear && year <= endYear)
+                    {
+                        if (displayMatrix == "Affiliation")
+                            net.SaveAffiliationToMatrixFile(saveFileDialog.FileName, year, _optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.InputType == "StructEquiv",
+                                                            _optionsForm.FileName, _optionsForm.InputType == "Dyadic", _optionsForm.Density, _optionsForm.SumMean, _optionsForm.SumMeanFilename,
+                                                            _optionsForm.svcFile, _optionsForm.SaveOverwrite && year == startYear);
+                        else if (displayMatrix == "Affil" && loadFrom == "Affil")
+                            net.SaveAffiliationMatrixToMatrixFile(saveFileDialog.FileName, year, _optionsForm.SaveOverwrite && year == startYear);
+                        else if (displayMatrix == "NatDep")
+                            net.SaveNationalDependencyToMatrixFile(saveFileDialog.FileName, year, _optionsForm.SaveOverwrite && year == startYear);
+                        else if (displayMatrix == "CONCOR")
+                            net.SaveBlocAffiliationToMatrixFile(saveFileDialog.FileName, year, _blocForm.pos, _optionsForm.SaveOverwrite && year == startYear, openFileDialog.Multiselect);
+                        else
+                            net.SaveMatrixToMatrixFile(saveFileDialog.FileName, year, displayMatrix, displayMatrix != "Characteristics",
+                                displayMatrix != "Characteristics" || year == startYear, _optionsForm.SaveOverwrite && year == startYear);
+                    }
+                    progress.curYear = year;
+                    previousYear = year;
+                }
+
+                if (currentYear == endYear)
+                    return;
+
+                if (loadFrom == "Matrix")
+                {
+                    net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Affil")
+                {
+                    net.LoadFromAffiliationFile(openFileDialog.FileName, currentYear);
+                }
+            }
+        }
+
+        private void dyadicFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+
+            try
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SetMode(false);
+                    //                    Matrix m = MatrixReader.ReadMatrixFromFile(openFileDialog.FileName);
+                    startYear = currentYear = net.SmartLoad(openFileDialog.FileName, out loadFrom);
+                    //loadFrom = "Dyadic";
+                    SetFormTitle();
+                    if (displayMatrix == "Affil")
+                        displayMatrix = "Data";
+
+                    LoadData();
+
+                    if (displayMatrix == "Sociomatrix")
+                        displayMatrix = "Matrix";
+                    SetChecked();
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error opening the file:" + E.Message, "Error!");
+                loadFrom = "";
+                dataGrid.Columns.Clear();
+                SetFormTitle();
+            }
+        }
+
+        private void dyadicFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                int startYear, endYear;
+                YearRangeForm range = new YearRangeForm();
+                range.from = currentYear;
+                range.to = currentYear;
+                range.ShowDialog();
+                startYear = range.from;
+                endYear = range.to;
+
+                ProgressForm p = new ProgressForm(startYear, endYear, 0);
+                p.Show();
+
+                int previousYear = -1;
+                for (int year = startYear; year <= endYear; ++year)
+                {
+                    if (loadFrom == "Matrix")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultipleFiles(fileNames, year);
+                        else
+                            year = net.LoadFromMatrixFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Dyadic")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, year);
+                        else
+                            year = net.LoadFromDyadicFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Affil")
+                    {
+                        year = net.LoadFromAffiliationFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Random")
+                    {
+                        net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    }
+
+                    // Should we standardize?
+                    if (byRowToolStripMenuItem.Checked == true)
+                        net.StandardizeByRow(displayMatrix);
+                    else if (byColumnToolStripMenuItem.Checked == true)
+                        net.StandardizeByColumn(displayMatrix);
+                    else if (rowToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalRow(displayMatrix);
+                    else if (columnToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalColumn(displayMatrix);
+                    else if (minimumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMinimum(displayMatrix);
+                    else if (maximumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMaximum(displayMatrix);
+
+                    if (year != previousYear && year <= endYear)
+                    {
+                        // First load correct matrix
+                        if (displayMatrix == "SEE" || displayMatrix == "SEC" || displayMatrix == "SESE")
+                            net.LoadStructEquiv(_optionsForm.Density, year, displayMatrix);
+                        else if (displayMatrix == "Dependency")
+                            net.LoadDependency(prevDisplayMatrix, _optionsForm.ReachNumMatrices, _optionsForm.Density, year, _optionsForm.reachZero);
+                        else if (displayMatrix == "Reachability")
+                            net.LoadReachability(_optionsForm.ReachNumMatrices, _optionsForm.reachSum, prevDisplayMatrix);
+                        else if (displayMatrix == "Overlap")
+                            net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                        else if (displayMatrix == "Centrality")
+                            net.LoadCentralityIndices(year, _centralityForm.Sijmax, _centralityForm.CountMember, _centralityForm.ZeroDiagonal);
+                        else if (displayMatrix == "Characteristics")
+                            net.LoadCliqueCharacteristics(_cliqueForm.SVC.ToArray(), _cliqueForm.DVC.ToArray(), year);
+                        else if (displayMatrix == "Multiplication")
+                            net.LoadMultiplicationMatrix(_multiplicationForm.fileName, _multiplicationForm.dyadic, year, "Multiplication", prevDisplayMatrix);
+                        else if (displayMatrix == "Elementwise")
+                            net.LoadElementwiseMultiplication(openFileDialog2.FileName, currentYear, "Elementwise", ef);
+                        else if (displayMatrix == "BinaryComplement")
+                            net.LoadBinaryComplement(prevDisplayMatrix);
+                        else if (displayMatrix == "RoleEquiv")
+                            net.LoadRoleEquivalence(prevDisplayMatrix);
+                        else if (displayMatrix == "AffilCorrelation" || displayMatrix == "AffilEuclidean")
+                            ;
+                        else if (displayMatrix != "Data")
+                        {
+                            MessageBox.Show("The matrix type '" + displayMatrix + "' cannot be saved to a dyadic file!", "Error!");
+                            return;
+                        }
+                        string s = net.MakeDefaultDyadicLabel(displayMatrix);
+                        if (year != startYear)
+                            s = null;
+                        net.SaveMatrixToDyadicFile(saveFileDialog.FileName, year, displayMatrix, s, _optionsForm.SaveOverwrite && year == startYear);
+
+                    }
+                    p.curYear = year;
+                    previousYear = year;
+                }
+
+                if (currentYear == endYear)
+                    return;
+
+                if (loadFrom == "Matrix")
+                {
+                    net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Affil")
+                {
+                    net.LoadFromAffiliationFile(openFileDialog.FileName, currentYear);
+                }
+            }
+        }
+
+        private void counterDataFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+
+
+                int startYear, endYear;
+                YearRangeForm range = new YearRangeForm();
+                range.from = currentYear;
+                range.to = currentYear;
+                range.ShowDialog();
+                startYear = range.from;
+                endYear = range.to;
+
+                ProgressForm progress = new ProgressForm();
+                progress.endYear = endYear;
+                progress.startYear = startYear;
+                progress.curYear = 0;
+                progress.Show();
+
+                int previousYear = -1;
+                for (int year = startYear; year <= endYear; ++year)
+                {
+                    if (loadFrom == "Matrix")
+                    {
+                        year = net.LoadFromMatrixFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Dyadic")
+                    {
+                        year = net.LoadFromDyadicFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Random")
+                    {
+                        net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    }
+                    if (year != previousYear && year <= endYear)
+                    {
+                        net.SaveCounterToFile(saveFileDialog.FileName, year, year == startYear, ",", _optionsForm.Cutoff[year], _optionsForm.Density,
+                            _optionsForm.InputType, _optionsForm.FileName, _optionsForm.svcFile, _optionsForm.useCohesion, _optionsForm.transitivityType,
+                            _optionsForm.counterOptions, _optionsForm.SaveOverwrite && year == startYear, _optionsForm.reachZero, _optionsForm.ReachNumMatrices);
+                    }
+                    progress.curYear = year;
+                    Application.DoEvents();
+                    previousYear = year;
+                }
+
+                if (currentYear == endYear)
+                    return;
+
+                if (loadFrom == "Matrix")
+                {
+                    net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                }
+            }
+
+        }
+
+        private void multipleFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = true;
+
+            MultipleFileForm fileForm = new MultipleFileForm(this);
+            fileForm.Show();
+        }
+
+        // This function does the actual file loading
+        // It is called by the fileForm
+        public void loadFromMultipleFiles(MultipleFileForm fileForm)
+        {
+            SetMode(true, false);
+            fileNames = fileForm.FileList;
+            try
+            {
+                currentYear = net.LoadFromMultipleFiles(fileNames, -1);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("There was an error loading from multiple files: " + e.Message, "Error!");
+            }
+            loadFrom = "Data";
+            SetFormTitle();
+            if (displayMatrix == "Affil")
+                displayMatrix = "Data";
+            LoadData();
+        }
+
+        private void correlationMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("SEC");
+            LoadData();
+            SetChecked();
+        }
+
+        private void viewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void euclideanMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("SEE");
+            LoadData();
+            SetChecked();
+        }
+
+        private void correlationMatrixToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("SEC");
+            LoadData();
+            SetChecked();
+        }
+
+        private void euclideanMatrixToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("SEE");
+            LoadData();
+            SetChecked();
+        }
+
+        private void multivariableDyadicFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+            try
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SetMode(true, true);
+                    loadFrom = "Dyadic";
+                    fileNames = openFileDialog.FileNames;
+                    currentYear = net.LoadFromMultivariableDyadicFile(fileNames[0], -1);
+                    SetFormTitle();
+                    if (displayMatrix == "Affil")
+                        displayMatrix = "Data";
+                    LoadData();
+
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error opening the multivariable dyadic file: " + E.Message, "Error!");
+                loadFrom = "";
+                dataGrid.Columns.Clear();
+                SetFormTitle();
+            }
+        }
+
+        private void SetMode(bool MultipleFiles) { SetMode(MultipleFiles, true); }
+        private void SetMode(bool MultipleFiles, bool MultiVariable)
+        {
+            if (MultipleFiles)
+            {
+                openFileDialog.Multiselect = true;
+                multivariableDyadicFileToolStripMenuItem1.Enabled = !MultiVariable;
+                multipleMatrixFilesToolStripMenuItem.Enabled = MultiVariable;
+                structuralEquivalenceToolStripMenuItem.Enabled = false;
+                multipleStructuralEquivalenceToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                openFileDialog.Multiselect = false;
+                multivariableDyadicFileToolStripMenuItem1.Enabled = false;
+                multipleMatrixFilesToolStripMenuItem.Enabled = false;
+                structuralEquivalenceToolStripMenuItem.Enabled = true;
+                multipleStructuralEquivalenceToolStripMenuItem.Enabled = false;
+            }
+            if (loadFrom == "Affil")
+                sociomatrixToolStripMenuItem.Enabled = eventOverlapMatrixToolStripMenuItem.Enabled = true;
+            else
+                sociomatrixToolStripMenuItem.Enabled = eventOverlapMatrixToolStripMenuItem.Enabled = false;
+        }
+
+        private void multipleMatrixFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+            // Get however many we will need
+            int fileCount = net.CountVarsInMultivariableDyadicFile(openFileDialog.FileName);
+
+            MessageBox.Show("The multivariable dyadic data will be saved to " + fileCount + " matrix files."
+                + " Please select them in order when prompted. You will then be able to choose the year range.", "Please Note!");
+
+            List<string> files = new List<string>();
+            while (fileCount-- > 0)
+            {
+                if (saveFileDialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                files.Add(saveFileDialog.FileName);
+            }
+
+            int startYear, endYear;
+            YearRangeForm range = new YearRangeForm();
+            range.from = currentYear;
+            range.to = currentYear;
+            range.ShowDialog();
+            startYear = range.from;
+            endYear = range.to;
+
+            for (int year = startYear; year <= endYear; ++year)
+            {
+                net.SaveToMultipleMatrixFiles(openFileDialog.FileName, files.ToArray(), year, _optionsForm.SaveOverwrite && year == startYear);
+            }
+
+        }
+
+        private void multivariableDyadicFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+
+                int startYear, endYear;
+                YearRangeForm range = new YearRangeForm();
+                range.from = currentYear;
+                range.to = currentYear;
+                range.ShowDialog();
+                startYear = range.from;
+                endYear = range.to;
+
+                int prevYear = -1;
+                for (int year = startYear; year <= endYear; ++year)
+                {
+                    prevYear = net.SaveToMultivariableDyadicFile(fileNames, saveFileDialog.FileName, year, prevYear, _optionsForm.SaveOverwrite);
+                    if (prevYear == -1)
+                        return;
+                }
+
+            }
+
+        }
+
+        private void ClearStandardizedChecks()
+        {
+            noneToolStripMenuItem.Checked = false;
+            byRowToolStripMenuItem.Checked = false;
+            byColumnToolStripMenuItem.Checked = false;
+            byDiagonalToolStripMenuItem.Checked = false;
+            rowToolStripMenuItem.Checked = false;
+            columnToolStripMenuItem.Checked = false;
+            minimumToolStripMenuItem.Checked = false;
+            maximumToolStripMenuItem.Checked = false;
+        }
+
+        private void DisableStandardizedChecks()
+        {
+            if (displayMatrix != "Affiliation")
+                net.Unstandardize(displayMatrix);
+            noneToolStripMenuItem.Enabled = false;
+            byRowToolStripMenuItem.Enabled = false;
+            byColumnToolStripMenuItem.Enabled = false;
+            byDiagonalToolStripMenuItem.Enabled = false;
+        }
+
+        private void EnableStandardizedChecks()
+        {
+            noneToolStripMenuItem.Enabled = true;
+            byRowToolStripMenuItem.Enabled = true;
+            byColumnToolStripMenuItem.Enabled = true;
+            byDiagonalToolStripMenuItem.Enabled = true;
+        }
+
+
+        private void noneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            net.Unstandardize(displayMatrix);
+            LoadData();
+        }
+
+
+        private void byRowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            byRowToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void byColumnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            byColumnToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void byDiagonalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void matrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DoStandardize()
+        {
+            try
+            {
+                if (byRowToolStripMenuItem.Checked == true)
+                    net.StandardizeByRow(displayMatrix);
+                else if (byColumnToolStripMenuItem.Checked == true)
+                    net.StandardizeByColumn(displayMatrix);
+                else if (rowToolStripMenuItem.Checked == true)
+                    net.StandardizeByDiagonalRow(displayMatrix);
+                else if (columnToolStripMenuItem.Checked == true)
+                    net.StandardizeByDiagonalColumn(displayMatrix);
+                else if (minimumToolStripMenuItem.Checked == true)
+                    net.StandardizeByDiagonalMinimum(displayMatrix);
+                else if (maximumToolStripMenuItem.Checked == true)
+                    net.StandardizeByDiagonalMaximum(displayMatrix);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Unable to standardize by diagonal: " + e.Message, "Error!");
+            }
+        }
+
+        private void affiliationFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+
+            //try
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    loadFrom = "Affil";
+                    SetMode(false);
+                    startYear = currentYear = net.LoadFromAffiliationFile(openFileDialog.FileName, -1);
+                    SetFormTitle();
+
+                    if (displayMatrix == "Data")
+                        displayMatrix = "Affil";
+
+                    LoadData();
+
+                }
+            }
+            /* catch (Exception E)
+             {
+                 MessageBox.Show("There was an error opening the affiliation file: " + E.Message, "Error!");
+                 loadFrom = "";
+                 dataGrid.Columns.Clear();
+                 SetFormTitle();
+             }*/
+
+        }
+
+        private void monadicDiagonalFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+
+            try
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SetMode(false);
+                    startYear = currentYear = net.LoadFromMonadicFile(openFileDialog.FileName, -1);
+                    loadFrom = "Monadic";
+                    SetFormTitle();
+                    if (displayMatrix == "Affil")
+                        displayMatrix = "Data";
+                    LoadData();
+
+                }
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error opening the monadic file: " + E.Message, "Error!");
+                loadFrom = "";
+                dataGrid.Columns.Clear();
+                SetFormTitle();
+            }
+        }
+
+        private void reachabilityMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_optionsForm.ReachNumMatrices == -1)
+                _optionsForm.ReachNumMatrices = dataGrid.Rows.Count - 1;
+            SetNewDisplayMatrix("Reachability");
+            LoadData();
+            SetChecked();
+        }
+
+        private void randomMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+            SetMode(false);
+            _randomForm.ShowDialog();
+            loadFrom = "Random";
+            try
+            {
+                net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error loading the random matrix: " + E.Message, "Error!");
+            }
+            SetFormTitle();
+            if (displayMatrix == "Affil")
+                displayMatrix = "Data";
+            LoadData();
+            currentYear = _randomForm.Year;
+            _optionsForm.ReachNumMatrices = _randomForm.N - 1;
+        }
+
+        private void centralityIndicesMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _centralityForm.ShowDialog();
+            displayMatrix = "Centrality";
+
+            LoadData();
+            SetChecked();
+        }
+
+        private void cliqueCharacteristicsMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _cliqueForm.ShowDialog();
+            displayMatrix = "Characteristics";
+            LoadData();
+            SetChecked();
+
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(this.Text, "About");
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aboutToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            MessageBox.Show("Matrix Manipulator v" + versionString, "About");
+        }
+
+        private void sociomatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void eventOverlapMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("EventOverlap");
+            LoadData();
+            SetChecked();
+        }
+
+        private void nationalDependencyMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_optionsForm.ReachNumMatrices == -1)
+                _optionsForm.ReachNumMatrices = dataGrid.Rows.Count - 1;
+            SetNewDisplayMatrix("NatDep");
+            LoadData();
+            SetChecked();
+        }
+
+        private void MainForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void standardizedEuclideanDistanceMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            SetNewDisplayMatrix("SESE");
+
+            LoadData();
+            SetChecked();
+        }
+
+        private void counterDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            string prevMatrix = displayMatrix;
+            //try
+            {
+                displayMatrix = "Counter";
+                LoadData();
+                SetChecked();
+            }
+            /*catch (Exception E)
+            {
+                MessageBox.Show("There was a problem displaying the network characteristics file file: " + E.Message, "Error!");
+                displayMatrix = prevMatrix;
+                LoadData();
+                SetChecked();
+            }*/
+        }
+
+        private void affiliationFileToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (loadFrom == "")
+                return;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                int startYear, endYear;
+                YearRangeForm range = new YearRangeForm();
+
+                if (displayMatrix == "Affiliation")
+                    range.SetMode(true);
+
+                range.from = currentYear;
+                range.to = currentYear;
+                range.ShowDialog();
+                startYear = range.from;
+                endYear = range.to;
+
+                ProgressForm progress = new ProgressForm();
+                progress.endYear = endYear;
+                progress.startYear = startYear;
+                progress.curYear = 0;
+                progress.Show();
+
+                int previousYear = -1;
+                for (int year = startYear; year <= endYear; ++year)
+                {
+                    if (loadFrom == "Matrix")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultipleFiles(fileNames, year);
+                        else
+                            year = net.LoadFromMatrixFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Dyadic")
+                    {
+                        if (openFileDialog.Multiselect)
+                            year = net.LoadFromMultivariableDyadicFile(openFileDialog.FileName, year);
+                        else
+                            year = net.LoadFromDyadicFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Affil")
+                    {
+                        year = net.LoadFromAffiliationFile(openFileDialog.FileName, year);
+                    }
+                    else if (loadFrom == "Random")
+                    {
+                        net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+                    }
+                    // Should we standardize?
+                    if (byRowToolStripMenuItem.Checked == true)
+                        net.StandardizeByRow(displayMatrix);
+                    else if (byColumnToolStripMenuItem.Checked == true)
+                        net.StandardizeByColumn(displayMatrix);
+                    else if (rowToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalRow(displayMatrix);
+                    else if (columnToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalColumn(displayMatrix);
+                    else if (minimumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMinimum(displayMatrix);
+                    else if (maximumToolStripMenuItem.Checked == true)
+                        net.StandardizeByDiagonalMaximum(displayMatrix);
+
+                    if (year != previousYear && year <= endYear)
+                    {
+                        if (displayMatrix != "CONCOR")
+                        {
+                            net.FindCliques(_optionsForm.Cutoff[currentYear], _optionsForm.InputType != "None", _optionsForm.Density, currentYear);
+                            net.SaveAffiliationToDyadicFile(saveFileDialog.FileName, year, year == startYear, _optionsForm.SaveOverwrite && year == startYear);
+                        }
+                        else
+                        {
+                            net.CONCOR(_blocForm.pos, openFileDialog.Multiselect);
+                            net.SaveBlocAffiliationToAffiliationFile(saveFileDialog.FileName, year, _blocForm.pos, _optionsForm.SaveOverwrite && year == startYear, openFileDialog.Multiselect);
+                        }
+                    }
+                    progress.curYear = year;
+                    previousYear = year;
+                }
+
+                if (currentYear == endYear)
+                    return;
+
+                if (loadFrom == "Matrix")
+                {
+                    net.LoadFromMatrixFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Dyadic")
+                {
+                    net.LoadFromDyadicFile(openFileDialog.FileName, currentYear);
+                }
+                else if (loadFrom == "Affil")
+                {
+                    net.LoadFromAffiliationFile(openFileDialog.FileName, currentYear);
+                }
+            }
+        }
+
+        private void matrixMultiplicationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Multiplication");
+            _multiplicationForm.ShowDialog();
+
+            LoadData();
+            SetChecked();
+        }
+
+        private void cONCORToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _blocForm.ShowDialog();
+            SetNewDisplayMatrix("CONCOR");
+
+            LoadData();
+            SetChecked();
+
+        }
+
+        private void standardizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void interCliqueDistanceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("ICD");
+
+
+            LoadData();
+            SetChecked();
+        }
+
+        private void standardizedEuclideanDistanceMatrixToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+            SetNewDisplayMatrix("SESE");
+            LoadData();
+            SetChecked();
+        }
+
+        private void elementwiseMultiplicationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void binaryComplementToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("BinaryComplement");
+
+            LoadData();
+            SetChecked();
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            net = new Network.NetworkGUI();
+            startYear = -1;
+            currentYear = -1;
+            loadFrom = "";
+            displayMatrix = "Data";
+            SetChecked();
+            _centralityForm = new CentralityForm();
+            _cliqueForm = new CliqueForm();
+            _optionsForm.ReachNumMatrices = -1;
+            _randomForm = new RandomForm();
+            _optionsForm = new OptionsForm();
+            _randomForm.N = 3;
+            _blocForm = new BlocForm();
+
+            _multiplicationForm = new MultiplicationForm();
+            dataGrid.Columns.Clear();
+
+            BufferedFileTable.Clear();
+        }
+
+        private void reset()
+        {
+            //net = new Network.NetworkGUI();
+            startYear = -1;
+            currentYear = -1;
+            loadFrom = "";
+            displayMatrix = "Data";
+            SetChecked();
+            _centralityForm = new CentralityForm();
+            _cliqueForm = new CliqueForm();
+            _optionsForm.ReachNumMatrices = -1;
+            _randomForm = new RandomForm();
+            _optionsForm = new OptionsForm();
+            _randomForm.N = 3;
+            _blocForm = new BlocForm();
+
+            _multiplicationForm = new MultiplicationForm();
+            dataGrid.Columns.Clear();
+
+            BufferedFileTable.Clear();
+        }
+
+
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_optionsForm.net == null)
+                _optionsForm.net = net;
+            _optionsForm.ShowDialog();
+            if (_optionsForm.Density == -1.0)
+                net.LoadDensityVector(_optionsForm.densityFile);
+            if (_optionsForm.ReachNumMatrices == -1)
+                net.LoadReachNumVector(_optionsForm.reachFile);
+            if (_optionsForm.ViableCoalitionCutoff == -1.0)
+                net.LoadViableCutoffVector(_optionsForm.viableCoalitionFile);
+            saveFileDialog.OverwritePrompt = _optionsForm.SaveOverwrite;
+        }
+
+        private void triadicMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Triadic");
+            LoadData();
+            SetChecked();
+        }
+
+        private void roleEquivalenceMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("RoleEquiv");
+            LoadData();
+            SetChecked();
+        }
+
+        private void sociomatrixToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Data");
+            LoadData();
+            SetChecked();
+        }
+
+        private void correlationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("AffilCorrelation");
+            LoadData();
+            SetChecked();
+        }
+
+        private void euclideanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("AffilEuclidean");
+            LoadData();
+            SetChecked();
+        }
+
+        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Help.ShowHelp(this, helpProvider.HelpNamespace);
+        }
+
+        private void matrixToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            matrixToolStripMenuItem1.Checked = true;
+            dyadicToolStripMenuItem.Checked = false;
+            monadicFileToolStripMenuItem.Checked = false;
+            ef = Network.ElementwiseFormat.Matrix;
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                SetNewDisplayMatrix("Elementwise");
+
+                LoadData();
+                SetChecked();
+            }
+        }
+
+        private void dyadicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            matrixToolStripMenuItem1.Checked = false;
+            dyadicToolStripMenuItem.Checked = true;
+            monadicFileToolStripMenuItem.Checked = false;
+            ef = Network.ElementwiseFormat.Dyadic;
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                SetNewDisplayMatrix("Elementwise");
+
+                LoadData();
+                SetChecked();
+            }
+        }
+
+        private void monadicFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            matrixToolStripMenuItem1.Checked = false;
+            dyadicToolStripMenuItem.Checked = false;
+            monadicFileToolStripMenuItem.Checked = true;
+            ef = Network.ElementwiseFormat.Monadic;
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                SetNewDisplayMatrix("Elementwise");
+
+                LoadData();
+                SetChecked();
+            }
+        }
+
+        private void cONCORBlockAffiliationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _blocForm.ShowDialog();
+            SetNewDisplayMatrix("CONCOR");
+            LoadData();
+            SetChecked();
+
+        }
+
+        private void sociomatrixEntiresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("BlockPartitionS");
+            LoadData();
+            SetChecked();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("BlockPartitionI");
+            LoadData();
+            SetChecked();
+        }
+
+        private void densityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("DensityBlockMatrix");
+            LoadData();
+            SetChecked();
+        }
+
+        private void relativeDensityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("RelativeDensityBlockMatrix");
+            LoadData();
+            SetChecked();
+        }
+
+        private void blockCoheToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("BlockCohesivenessMatrix");
+            LoadData();
+            SetChecked();
+        }
+
+        private void blockCharacteristicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _blockForm.ShowDialog();
+            if (_blockForm.SVC.Count + _blockForm.DVC.Count >= 0)
+            {
+                SetNewDisplayMatrix("BlockCharacteristics");
+                LoadData();
+                SetChecked();
+            }
+        }
+
+        private void protoCoalitionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Affiliation");
+            LoadData();
+            SetChecked();
+        }
+
+        private void viableCoalitionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("ViableCoalitions");
+            LoadData();
+            SetChecked();
+        }
+
+        private void coalitionStructureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("CoalitionStructure");
+            LoadData();
+            SetChecked();
+        }
+
+        private void rowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            rowToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void columnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            columnToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void minimumToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            minimumToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void maximumToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearStandardizedChecks();
+            maximumToolStripMenuItem.Checked = true;
+            DoStandardize();
+
+            LoadData();
+        }
+
+        private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BufferedFileTable.RemoveFile(openFileDialog.FileName);
+        }
+
+        private void networkFormationSimulationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _nfsForm.ShowDialog();
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void distanceMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void symmetricToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+            SetMode(false);
+            _randomForm.ShowDialog();
+            loadFrom = "Random";
+            _randomSymmetric = true;
+            try
+            {
+                net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error loading the random matrix: " + E.Message, "Error!");
+            }
+            SetFormTitle();
+            if (displayMatrix == "Affil")
+                displayMatrix = "Data";
+            LoadData();
+            currentYear = _randomForm.Year;
+            _optionsForm.ReachNumMatrices = _randomForm.N - 1;
+        }
+
+        private void nonsymmetricToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.Multiselect = false;
+            SetMode(false);
+            _randomForm.ShowDialog();
+            loadFrom = "Random";
+            _randomSymmetric = false;
+            try
+            {
+                net.LoadRandom(_randomForm.N, "Data", _randomSymmetric);
+            }
+            catch (Exception E)
+            {
+                MessageBox.Show("There was an error loading the random matrix: " + E.Message, "Error!");
+            }
+            SetFormTitle();
+            if (displayMatrix == "Affil")
+                displayMatrix = "Data";
+            LoadData();
+            currentYear = _randomForm.Year;
+            _optionsForm.ReachNumMatrices = _randomForm.N - 1;
+        }
+
+        private void multipleCliqueAnalysisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _MCA_form = new NetworkGUI.Forms.Multiple_Clique_Analysis(this);
+            _MCA_form.Show();
+        }
+
+        public void DealWithMultipleCliques(NetworkGUI.Forms.FileForCliqueAnalysis[] files, String cutOffFileName, double binary_cut_off,bool dyadic, int opt, string fileName)
+        {
+            
+            List<clique> cliques = new List<clique>();
+
+            if (files[0] != null)
+            {
+                net.mTable.Clear();
+                List<clique> temp;
+                List<List<clique>> cliqueList = new List<List<clique>>();
+                string Null; //Does nothing
+
+
+                if (!dyadic)
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        net.SmartLoad(files[i].fileName, out Null);
+                        net.cet = files[i].option;
+                        temp = clique.convertClique(net.FindCliques(files[i].cutOff, false, 0.0, 0xFFFF));
+                        net.merge(cliques, temp);
+                        cliqueList.Add(temp);
+                        net.data.Add(net.mTable["Data"]);
+                    }
+                else
+                {
+                    int variableCount = BufferedFileTable.GetFile(files[0].fileName).CountVarsInDyadicFile() - 1;
+                    for (int curVar = variableCount; curVar >= 0; --curVar)
+                    {
+                        net.cet = files[0].option;
+                        net.mTable["Data"] = MatrixReader.ReadMatrixFromFile(files[0].fileName, -1, curVar);
+                        temp = clique.convertClique(net.FindCliques(files[0].cutOff, false, 0.0, 0xFFFF));
+                        net.merge(cliques, temp);
+                        cliqueList.Add(temp);
+                        net.data.Add(net.mTable["Data"]);
+                    }
+                }
+
+                foreach (clique C in cliques)
+                {
+                    C.find_num_networks(cliqueList);
+                }
+
+                cliques.Sort(delegate(clique p1, clique p2) { return p1.CompareTo(p2); });
+
+                Matrix affil = clique.GenerateAffiliationMatrix(cliques);
+                net.mTable.Add("Affiliation", affil);
+                Matrix chara = clique.GenerateCharacteristicsMatrix(cliques);
+                net.mTable.Add("chara", chara);
+                affil = clique.GenerateOverLapTable(cliques);
+                net.mTable.Add("overlap", affil);
+                net.LoadCliqueByCliqueOverlap(cliques);
+                affil = clique.GenerateWeightedAffiliationMatrix(cliques);
+                chara = clique.GenerateWeightedCOCMatrix(cliques, net.mTable["CBCO"]);
+                net.mTable.Add("wcoc", chara);
+                chara = affil * (affil.GetTranspose());
+                net.mTable.Add("wcmo", chara);
+            }
+
+            if (opt==0)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "wcmo");
+                return;
+            }
+
+            if (opt==1)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "wcoc");
+                return;
+            }
+
+            if (opt==2)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "overlap");
+                return;
+            }
+
+
+            if (opt==3)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "CBCO");
+                return;
+            }
+
+            if (opt==5)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "Affiliation");
+                SetChecked();
+                return;
+            }
+            if(opt==4)
+            {
+                net.LoadMatrixIntoDataGridView(dataGrid, "chara");
+            }
+
+            if (opt == 6)
+            {
+                net.SaveAffiliationMatrixToFile(fileName, cliques);
+            }
+
+            if (opt == 7)
+            {
+                net.SaveToMultivariableDyadicFile(net.data.ToArray(), fileName);
+            }
+            
+        }
+
+        private void distanceMatrixToolStripMenuItem1_Click_1(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("Distance");
+            LoadData();
+            SetChecked();
+        }
+
+        private void cheapestCostMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            net.generateLowestCostMatrix();
+            net.LoadMatrixIntoDataGridView(dataGrid, "Cheapest");
+        }
+
+        private void strengthMatrixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //net.generateStrengthMatrix();
+            net.LoadMatrixIntoDataGridView(dataGrid, "Strength");
+        }
+
+        private void nPIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetNewDisplayMatrix("ViableCounter");
+            LoadData();
+            SetChecked();
+        }
+    }
+}

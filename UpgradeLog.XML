@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="NetworkGUI">
+</Property><Property Name="Solution File" Value="C:\Users\Pete\Desktop\newNetworkGUI\NetworkGUI.sln">
+</Property><Property Name="User Options File" Value="C:\Users\Pete\Desktop\newNetworkGUI\NetworkGUI.suo">
+</Property><Property Name="Date" Value="Thursday, May 27, 2010">
+</Property><Property Name="Time" Value="19:25 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="NetworkGUI.sln" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NetworkGUI.sln">
+</Event><Event ErrorLevel="0" Project="" Source="NetworkGUI.suo" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NetworkGUI.suo">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NetworkGUI.csproj" Description="Project file successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NetworkGUI.csproj">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="clique.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\clique.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueOptionForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueOptionForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueOptionForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueOptionForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Cliques\Clique.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Cliques\Clique.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Cliques\CliqueCalculations.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Cliques\CliqueCalculations.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Cliques\CliqueCollection.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Cliques\CliqueCollection.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Cliques\CliqueException.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Cliques\CliqueException.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ClusteringForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ClusteringForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ClusteringForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ClusteringForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NPNode.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NPNode.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkPowerForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkPowerForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkPowerForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkPowerForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\McaNCoptions.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\McaNCoptions.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\McaNCoptions.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\McaNCoptions.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ValuedRandomForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ValuedRandomForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ValuedRandomForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ValuedRandomForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Multiple_Clique_Analysis.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Multiple_Clique_Analysis.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Multiple_Clique_Analysis.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Multiple_Clique_Analysis.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="GUI\DataGridViewLoader.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\GUI\DataGridViewLoader.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="heap.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\heap.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IIndexable.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IIndexable.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="int_double.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\int_double.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\FileLoadException.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\FileLoadException.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\MatrixProvider.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\MatrixProvider.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\MatrixReader.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\MatrixReader.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\VectorValueProvider.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\VectorValueProvider.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\MatrixWriter.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\MatrixWriter.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\NetworkIdTable.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\NetworkIdTable.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Constants.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Constants.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BlocForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BlocForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BlocForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BlocForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\BufferedFileReader.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\BufferedFileReader.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="IO\BufferedFileTable.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\IO\BufferedFileTable.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CentralityForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CentralityForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CentralityForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CentralityForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Combinations\Combinations.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Combinations\Combinations.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Combinations\ElementSet.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Combinations\ElementSet.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\OptionsForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\OptionsForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\OptionsForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\OptionsForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\JumpToForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\JumpToForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\JumpToForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\JumpToForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MainForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MainForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MainForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MainForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\ComputationException.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\ComputationException.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\Computations.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\Computations.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\Matrix.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\Matrix.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\MatrixException.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\MatrixException.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\MatrixLabels.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\MatrixLabels.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\MatrixTable.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\MatrixTable.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MultipleFileForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MultipleFileForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MultipleFileForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MultipleFileForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MultiplicationForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MultiplicationForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MultiplicationForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MultiplicationForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\RandomMatrix.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\RandomMatrix.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\SymmetricBinaryMatrix.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\SymmetricBinaryMatrix.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Matrices\Vector.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Matrices\Vector.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="maxHeap.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\maxHeap.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="MCA_Charatersistics.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\MCA_Charatersistics.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Network.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Network.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NetworkCharacteristics.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NetworkCharacteristics.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NetworkFormationSimulation.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\NetworkFormationSimulation.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkFormationSimulationForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkFormationSimulationForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkFormationSimulationForm.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkFormationSimulationForm.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Pair.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Pair.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="path.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\path.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Program.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Program.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ProgressForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ProgressForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ProgressForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ProgressForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Properties\AssemblyInfo.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Properties\Resources.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Properties\Resources.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Properties\Settings.Designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Properties\Settings.Designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Random.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Random.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BinaryRandomForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BinaryRandomForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BinaryRandomForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BinaryRandomForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\YearRangeForm.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\YearRangeForm.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\YearRangeForm.designer.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\YearRangeForm.designer.cs">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Algorithms.cs" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Algorithms.cs">
+</Event><Event ErrorLevel="2" Project="NetworkGUI" Source="ClassDiagram1.cd" Description="Failed to backup file as C:\Users\Pete\Desktop\newNetworkGUI\Backup\ClassDiagram1.cd">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Properties\Settings.settings" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Properties\Settings.settings">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BlocForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BlocForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CentralityForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CentralityForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\CliqueOptionForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\CliqueOptionForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ClusteringForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ClusteringForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\McaNCoptions.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\McaNCoptions.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\Multiple_Clique_Analysis.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\Multiple_Clique_Analysis.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkFormationSimulationForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkFormationSimulationForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\NetworkPowerForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\NetworkPowerForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\OptionsForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\OptionsForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\JumpToForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\JumpToForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MainForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MainForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\MultiplicationForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\MultiplicationForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ProgressForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ProgressForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\ValuedRandomForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\ValuedRandomForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Properties\Resources.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Properties\Resources.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\BinaryRandomForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\BinaryRandomForm.resx">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="Forms\YearRangeForm.resx" Description="File successfully backed up as C:\Users\Pete\Desktop\newNetworkGUI\Backup\Forms\YearRangeForm.resx">
+</Event><Event ErrorLevel="1" Project="NetworkGUI" Source="NetworkGUI.csproj" Description="Your project is targeting .NET Framework 2.0 or 3.0. If your project uses assemblies requiring a newer .NET Framework, your project will fail to build. You can change the .NET Framework version by clicking Properties on the project menu and then selecting a new version in the '.NET Framework' dropdown box. (In Visual Basic, this is located on the Compile tab by clicking the 'Advanced Compiler Options...' button.)">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NetworkGUI.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="NetworkGUI" Source="NetworkGUI.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="NetworkGUI.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="NetworkGUI.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="NetworkGUI" Source="NetworkGUI.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

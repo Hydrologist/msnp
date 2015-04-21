@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Network.IO;
+
+namespace Network.Matrices
+{
+    public class MatrixProvider
+    {
+        public enum Type
+        {
+            MatrixFile, VectorFile, RandomSymmetric, RandomNonSymmetric, RandomDiagonal, 
+            RandomVector, RandomWithProbRange, NullFile
+        }
+
+        private string _sourceFile, _outputFile;
+        private Type _type;
+        private int _networkId, _rows, _cols;
+        private bool _forceVector;
+        private int _writeRepeatCount;
+        private double _min, _max;
+
+        public double Max
+        {
+            get { return _max; }
+            set { _max = value; }
+        }
+
+        public double Min
+        {
+            get { return _min; }
+            set { _min = value; }
+        }
+
+
+        public int WriteRepeatCount
+        {
+            get { return _writeRepeatCount; }
+            set { _writeRepeatCount = value; }
+        }
+
+        public bool ForceVector
+        {
+            get { return _forceVector; }
+            set { _forceVector = value; }
+        }
+
+        public MatrixProvider(string sourceFile, string outputFile, Type type, int rows, int cols)
+        {
+            _networkId = 1;
+            _sourceFile = sourceFile;
+            _outputFile = outputFile;
+            _type = type;
+            _rows = rows;
+            _cols = cols;
+            _forceVector = false;
+            _writeRepeatCount = 1;
+        }
+
+        public bool IsFromFile
+        {
+            get { return _type == Type.MatrixFile || _type == Type.VectorFile; }
+        }
+
+        public Matrix ReadNext()
+        {
+            Matrix m = null;
+            switch (_type)
+            {
+                case Type.MatrixFile:
+                    m = MatrixReader.ReadMatrixFromFile(_sourceFile, _networkId);
+                    break;
+
+                case Type.VectorFile:
+                    m = MatrixReader.ReadVectorFromFile(_sourceFile, _networkId);
+                    break;
+
+                case Type.RandomDiagonal:
+                    m = RandomMatrix.LoadDiagonal(_rows, true);
+                    m.NetworkId = _networkId;
+                    break;
+
+                case Type.RandomSymmetric:
+                    m = RandomMatrix.LoadSymmetric(_rows);
+                    m.NetworkId = _networkId;
+                    break;
+                    
+                case Type.RandomNonSymmetric:
+                    m = RandomMatrix.LoadNonSymmetric(_rows, _cols);
+                    m.NetworkId = _networkId;
+                    break;
+
+                case Type.RandomVector:
+                    m = RandomMatrix.LoadVector(_rows);
+                    m.NetworkId = _networkId;
+                    break;
+
+                case Type.RandomWithProbRange:
+                    m = RandomMatrix.LoadWithProbabilisticRange(_rows, _cols, _min, _max);
+                    m.NetworkId = _networkId;
+                    break;
+
+                case Type.NullFile:
+                    return null;
+            }
+
+            _networkId = m.NetworkId + 1;
+
+            if (!string.IsNullOrEmpty(_outputFile) && _type != Type.NullFile)
+                WriteMatrixToFile(m);
+
+            return m;
+        }
+
+        private void WriteMatrixToFile(Matrix m)
+        {
+            int oldID = m.NetworkId;
+            for (int i = 0; i < _writeRepeatCount; ++i)
+            {
+                if (_writeRepeatCount > 1)
+                    m.NetworkId = int.Parse(oldID.ToString() + (i + 1).ToString());
+                if (m is Vector)
+                    MatrixWriter.WriteVectorToVectorFile(m as Vector, _outputFile, false);
+                else if (_forceVector)
+                    MatrixWriter.WriteVectorToVectorFile(m.GetDiagonalVector(), _outputFile, false);
+                else
+                    MatrixWriter.WriteMatrixToMatrixFile(m, _outputFile, false);
+
+            }
+            m.NetworkId = oldID;
+        }
+    }
+}

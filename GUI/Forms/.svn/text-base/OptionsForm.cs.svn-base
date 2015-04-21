@@ -1,0 +1,489 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Network.Matrices;
+using Network.IO;
+using Network;
+
+namespace NetworkGUI
+{
+    public partial class OptionsForm : Form
+    {
+        private VectorValueProvider _cutoffVector;
+
+        public OptionsForm()
+        {
+            InitializeComponent();
+            EnableButton();
+
+            d = 1.0;
+            v = 1.0;
+            r = 0;
+            net = null;
+
+            UpdateCheckBoxes();
+        }
+
+        public Network.NetworkGUI net;
+
+        double d, v;
+        int r;
+
+        public string FileName
+        {
+            get { return openFileDialog.FileName; }
+        }
+
+        public string InputType
+        {
+            get
+            {
+                if (inputTypeDyadic.Checked)
+                    return "Dyadic";
+                else if (inputTypeMatrix.Checked)
+                    return "Matrix";
+                else if (inputTypeStructEquiv.Checked)
+                    return "StructEquiv";
+                else
+                    return "None";
+            }
+        }
+
+        public bool SaveOverwrite
+        {
+            get { return saveOverwrite.Checked; }
+        }
+
+        public string SumMean
+        {
+            get
+            {
+                if (noneButton.Checked)
+                    return "None";
+                else if (dvcMeanButton.Checked)
+                    return "DVCMean";
+                else if (dvcSumButton.Checked)
+                    return "DVCSum";
+                else if (svcMeanButton.Checked)
+                    return "SVCMean";
+                else if (svcSumButton.Checked)
+                    return "SVCSum";
+                else
+                    return "None";
+            }
+        }
+
+        public string SumMeanFilename
+        {
+            get { return sumMeanFileDialog.FileName; } 
+        }
+
+        public double Density
+        {
+            get
+            {
+                if (calcAutoDensity.Checked)
+                    return -2.0;
+                else
+                    return d;
+            }
+        }
+        public VectorValueProvider Cutoff
+        {
+            get
+            {
+                if (_cutoffVector == null)
+                {
+                    if (binaryCutoff.Text == Constants.FileSelected)
+                        _cutoffVector = new VectorValueProvider(cutoffFileDialog.FileName);
+                    else
+                        _cutoffVector = new VectorValueProvider(double.Parse(binaryCutoff.Text));
+                }
+
+                return _cutoffVector;
+            }
+        }
+        public double ViableCoalitionCutoff
+        {
+            get { return v; }
+        }
+
+        public int ReachNumMatrices
+        {
+            get { return r; }
+            set { r = value; reachNumMatrices.Text = value.ToString();  }
+        }
+
+        public string svcFile
+        {
+            get
+            {
+                if (NPOLACheckBox.Checked == false)
+                    return null;
+                else
+                    return svcFileDialog.FileName;
+            }
+        }
+
+        public string svcCoalitionFile
+        {
+            get { return svcFileDialog.FileName; }
+        }
+
+        public bool useCohesion
+        {
+            get
+            {
+                return NPOLACohesion.Checked;
+            }
+        }
+
+        public string densityFile
+        {
+            get
+            {
+                return densityFileDialog.FileName;
+            }
+        }
+
+        public string viableCoalitionFile
+        {
+            get
+            {
+                return viableCoalitionFileDialog.FileName;
+            }
+        }
+
+        public string reachFile
+        {
+            get
+            {
+                return reachFileDialog.FileName;
+            }
+        }
+
+        public bool reachSum
+        {
+            get { return sumBox.Checked; }
+        }
+        public bool reachZero
+        {
+            get { return zeroDiagonal.Checked; }
+        }
+
+
+        private void EnableButton()
+        {
+            goButton.Enabled = false;
+            if (inputTypeNone.Checked || inputTypeStructEquiv.Checked)
+                goButton.Enabled = true;
+            else if (openFileDialog.FileName != "")
+                goButton.Enabled = true;
+
+            if (NPOLACheckBox.Checked && svcFileDialog.FileName == "")
+                goButton.Enabled = false;
+
+            if (noneButton.Checked == false && sumMeanFileDialog.FileName == "")
+                goButton.Enabled = false;
+        }
+
+        private void fileSelectButton_Click(object sender, EventArgs e)
+        {
+            openFileDialog.ShowDialog();
+            EnableButton();
+        }
+
+        private void goButton_Click(object sender, EventArgs e)
+        {
+            if (maxExtraction.Checked)
+                net.cet = Network.CliqueExtractionType.Max;
+            else if (minExtraction.Checked)
+                net.cet = Network.CliqueExtractionType.Min;
+            else if (upperExtraction.Checked)
+                net.cet = Network.CliqueExtractionType.Upper;
+            else if (lowerExtraction.Checked)
+                net.cet = Network.CliqueExtractionType.Lower;
+
+            double tmp;
+            if ((binaryCutoff.Text != Constants.FileSelected && !double.TryParse(binaryCutoff.Text, out tmp)
+                || (densityMax.Text != Constants.FileSelected && !double.TryParse(densityMax.Text, out d)))
+                || (reachNumMatrices.Text != Constants.FileSelected && !int.TryParse(reachNumMatrices.Text, out r))
+                || (viableCoalitionValue.Text != Constants.FileSelected && !double.TryParse(viableCoalitionValue.Text, out v)))
+            {
+                MessageBox.Show("You have not entered proper real numbers!", "Error!");
+            }
+            else
+            {
+                if (densityMax.Text == Constants.FileSelected)
+                    d = -1.0;
+                if (reachNumMatrices.Text == Constants.FileSelected)
+                    r = -1;
+                if (viableCoalitionValue.Text == Constants.FileSelected)
+                    v = -1;
+                this.Close();
+            }
+        }
+
+        private void inputTypeDyadic_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void inputTypeStructEquiv_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        public MatrixComputations.TransitivityType transitivityType
+        {
+            get
+            {
+                if (simpleTransitivity.Checked)
+                    return MatrixComputations.TransitivityType.Simple;
+                else if (weakTransitivity.Checked)
+                    return MatrixComputations.TransitivityType.Weak;
+                else
+                    return MatrixComputations.TransitivityType.Strong;
+            }
+        }
+
+        private bool TCB(CheckBox cb)
+        {
+            return cb.Enabled && cb.Checked;
+        }
+
+        public bool[] counterOptions
+        {
+            get
+            {
+                bool[] options = new bool[21];
+                options[0] = TCB(netIdentCheck);
+                options[1] = TCB(nCheck);
+                options[2] = TCB(noClqCheck);
+                options[3] = TCB(csCheck);
+                options[4] = TCB(cmCheck);
+                options[5] = TCB(npolCheck);
+                options[6] = TCB(cmoiCheck);
+                options[7] = TCB(npiCheck);
+                options[8] = TCB(clqOverlpCheck);
+                options[9] = TCB(complexClqOverlpCheck);
+                options[10] = TCB(npolStarCheck);
+                options[11] = TCB(npiStarCheck);
+                options[12] = TCB(npiOneStarCheck);
+                options[13] = TCB(npolSizeCheck);
+                options[14] = TCB(npolCohesionSize);
+                options[15] = TCB(npiTwoStarCheck);
+                options[16] = TCB(npiThreeStarCheck);
+                options[17] = TCB(depCheck);
+                options[18] = TCB(sysdepCheck);
+                options[19] = TCB(densityCheck);
+                options[20] = TCB(transCheck);
+                return options;
+            }
+        }
+
+        private void inputTypeNone_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void inputTypeMatrix_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void NPOLACheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void svcButton_Click(object sender, EventArgs e)
+        {
+            svcFileDialog.ShowDialog();
+            EnableButton();
+        }
+
+        private void CounterForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NPOLACohesion_CheckedChanged(object sender, EventArgs e)
+        {
+            NPOLACheckBox.Checked = true;
+            EnableButton();
+        }
+
+        private void sumMeanFileSelectButton_Click(object sender, EventArgs e)
+        {
+            sumMeanFileDialog.ShowDialog();
+            EnableButton();
+        }
+
+        private void dvcSumButton_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void svcSumButton_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void noneButton_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void dvcMeanButton_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void svcMeanButton_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableButton();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (cutoffFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                binaryCutoff.Text = Constants.FileSelected;
+                _cutoffVector = null;
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            if (densityFileDialog.ShowDialog() == DialogResult.OK)
+                densityMax.Text = Constants.FileSelected;
+        }
+
+        private void npolStarCheck_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void inputTypeNone_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void  SetCohesion(bool val)
+        {
+            npolStarCheck.Enabled = npiStarCheck.Enabled = npiOneStarCheck.Enabled = npolCohesionSize.Enabled = npiTwoStarCheck.Enabled = npiThreeStarCheck.Enabled = val;
+        }
+        private void SetSize(bool val)
+        {
+            npolSizeCheck.Enabled = npolCohesionSize.Enabled = npiTwoStarCheck.Enabled = npiThreeStarCheck.Enabled = val;
+        }
+
+        private void UpdateCheckBoxes()
+        {
+            bool cohesion = !inputTypeNone.Checked;
+            bool size = NPOLACheckBox.Checked;
+
+            if (cohesion && size)
+            {
+                SetCohesion(cohesion);
+                SetSize(size);
+            }
+            else if (cohesion)
+            {
+                SetCohesion(cohesion);
+                SetSize(size);
+            }
+            else
+            {
+                SetSize(size);
+                SetCohesion(cohesion);
+            }
+            
+        }
+
+        private void NPOLACheckBox_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void NPOLACohesion_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void inputTypeStructEquiv_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void inputTypeDyadic_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void inputTypeMatrix_CheckedChanged_1(object sender, EventArgs e)
+        {
+            UpdateCheckBoxes();
+        }
+
+        private void fileSelectButton_Click_1(object sender, EventArgs e)
+        {
+            openFileDialog.ShowDialog();
+            EnableButton();
+        }
+
+        private void svcButton_Click_1(object sender, EventArgs e)
+        {
+            svcFileDialog.ShowDialog();
+            EnableButton();
+        }
+
+        private void reachabilityUseFile_Click(object sender, EventArgs e)
+        {
+            if (cutoffFileDialog.ShowDialog() == DialogResult.OK)
+                reachNumMatrices.Text = Constants.FileSelected;
+        }
+
+        private void densityMax_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void densityFileButton_Click(object sender, EventArgs e)
+        {
+            if (densityFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                densityMax.Text = Constants.FileSelected;
+                calcAutoDensity.Checked = false;
+            }
+
+        }
+
+        private void calcAutoDensity_CheckedChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void useViableCoalitionFileButton_Click(object sender, EventArgs e)
+        {
+            if (viableCoalitionFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                viableCoalitionValue.Text = Constants.FileSelected;
+            }
+        }
+
+        private void binaryCutoff_TextChanged(object sender, EventArgs e)
+        {
+            _cutoffVector = null;
+        }
+
+        private void saveOverwrite_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
