@@ -5680,51 +5680,65 @@ namespace Network
             int iteration = 1;
             int rewseq = 0;
             List<int> selectednodes = new List<int>();
-            for (int i = 0; i < nodecount * nodecount; i++)
-            {
-                modeldata[i, 11] = 0;
-                modeldata[i, 12] = 0;
-            }
+            
             int sequence = 1;
             int lastoutput = 0;
-            while (rewireloopcount < 3 * nodecount && (!rewired && selectednodes.Count != nodecount))
+            while (rewireloopcount < 6 * nodecount)// && (!rewired && selectednodes.Count != nodecount))
             {
+                rewired = false;
+                if (rewireloopcount % nodecount == 0)
+                {
+                    sequence = 1;
+                    for (int i = 0; i < nodecount * nodecount; i++)
+                    {
+                        modeldata[i, 11] = 0;
+                        modeldata[i, 12] = 0;
+                        modeldata[i, 13] = 0; //offerr
+                        modeldata[i, 14] = 0;  //offerc
+                        modeldata[i, 16] = 0;//accc
+                        modeldata[i, 15] = 0;//accr
+                        modeldata[i, 17] = 0;//droppedc
+                        modeldata[i, 18] = 0;//droppedr
+                    }
+                }
                 rewiringnode = RNGen.Next(nodecount);
                 for (int i = 0; i < nodecount; i++)
                 {
                     modeldata[rewiringnode * nodecount + i, 1] = iteration;
+                    modeldata[rewiringnode * nodecount + i, 11] = sequence;
+                    modeldata[i * nodecount + rewiringnode, 12] = sequence;
                 }
                 iteration++;
                 if (!selectednodes.Contains(rewiringnode))
                 {
                     selectednodes.Add(rewiringnode);
                 }
-
-                if (tiecapacity[1][rewiringnode] > 0) //if node has tie capacity left
+                /*for (int i = 0; i < nodecount * nodecount; i++)
                 {
-                    for (int i = 0; i < nodecount * nodecount; i++)
+                    if (((int)i / nodecount) == rewiringnode)
                     {
-                        if (((int)i / nodecount) == rewiringnode)
-                        {
-                            modeldata[i, 11] = sequence;
-                        }
-                        if (((int)i % nodecount) == rewiringnode)
-                        {
-                            modeldata[i, 12] = sequence;
-                        }
+                        modeldata[i, 11] = sequence;
                     }
-                    sequence++;
+                    if (((int)i % nodecount) == rewiringnode)
+                    {
+                        modeldata[i, 12] = sequence;
+                    }
+                }*/
+                sequence++;
+                //if (tiecapacity[1][rewiringnode] > 0) //if node has tie capacity left
+                //{
+                    
                     int offercount = 0;
-                    while (offercount < nodecount && tiecapacity[1][rewiringnode] > 0)
+                    while (offercount < nodecount)
                     {
                         List<int> maxutil = maxUtility(utilitytable, rewiringnode, nodecount);
                         if (maxutil.Count == 0)
                             break;
-                        while (maxutil.Count > 0 && tiecapacity[1][rewiringnode] > 0)
+                        while (maxutil.Count > 0)
                         {
                             int offerednode = maxutil[RNGen.Next(maxutil.Count)];
                             offercount++;
-                            if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 && modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
+                            if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 || modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
                             {
                                 utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
                                 utilitytable[offerednode * nodecount + rewiringnode, 7] = 1;
@@ -5738,11 +5752,13 @@ namespace Network
                                 int dropnode = minUtil[RNGen.Next(minUtil.Count)];
                                 if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0 && tiecapacity[2][rewiringnode] > 0)
                                 {
-                                    if (rewseq < 10)
+                                    //if (rewseq < 10)
                                         System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
                                             ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
-                                            + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + Environment.NewLine);
+                                            + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
                                     rewseq++;
+                                    modeldata[rewiringnode * nodecount + offerednode, 13] = 1; //offerr
+                                    modeldata[offerednode * nodecount + rewiringnode, 14] = 1;  //offerc
                                     utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
                                     modeldata[rewiringnode * nodecount + offerednode, 16] = 1;
                                     modeldata[offerednode * nodecount + rewiringnode, 15] = 1;
@@ -5756,9 +5772,10 @@ namespace Network
                                     utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
                                     tiecapacity[1][offerednode] -= 1;
                                     tiecapacity[2][offerednode] += 1;
+                                    rewired = true;
                                     netedges++;
                                 }
-                                else if (/*modeldata[offerednode * nodecount + dropnode, 4] == 1 && */utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[2][offerednode] > 0)
+                                else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[2][offerednode] > 0 && tiecapacity[1][rewiringnode] > 0)
                                 {
 
                                     modeldata[rewiringnode * nodecount + offerednode, 13] = 1; //offerr
@@ -5769,11 +5786,11 @@ namespace Network
                                     modeldata[offerednode * nodecount + dropnode, 16] = 0;//accc
                                     modeldata[dropnode * nodecount + offerednode, 15] = 0;//accr
                                     modeldata[offerednode * nodecount + dropnode, 4] = 0;//remove edge
-                                    modeldata[offerednode * nodecount + dropnode, 17] = 1;//droppedr
+                                    modeldata[offerednode * nodecount + dropnode, 18] = 1;//droppedc
                                     utilitytable[offerednode * nodecount + dropnode, 6] = 0;//edge
                                     utilitytable[offerednode * nodecount + dropnode, 8] = 0;//accept
                                     modeldata[dropnode * nodecount + offerednode, 4] = 0;//remove edge
-                                    modeldata[dropnode * nodecount + offerednode, 18] = 1;//droppedc
+                                    modeldata[dropnode * nodecount + offerednode, 17] = 1;//droppedr
                                     utilitytable[dropnode * nodecount + offerednode, 6] = 0;//edge
                                     utilitytable[dropnode * nodecount + offerednode, 8] = 0;//accept
                                     tiecapacity[1][dropnode] += 1;
@@ -5791,10 +5808,11 @@ namespace Network
                                     modeldata[offerednode * nodecount + rewiringnode, 4] = 1;
                                     utilitytable[offerednode * nodecount + rewiringnode, 6] = 1;
                                     utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
-                                    if (rewseq < 10)
+                                    //if (rewseq < 10)
+                                    rewired = true;
                                         System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRE: Node " + (offerednode + 1) + " in network with runno " + runno + " added node " + (rewiringnode + 1) + " and dropped node " + (dropnode + 1)
                                             + ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
-                                            + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + Environment.NewLine);
+                                            + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
                                     rewseq++;
                                     if (modeldata[offerednode * nodecount + dropnode, 4] == 1 || modeldata[dropnode * nodecount + offerednode, 4] == 1)
                                         System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not drop node " + (dropnode + 1) + "." + Environment.NewLine);
@@ -5806,19 +5824,21 @@ namespace Network
                             utilitytable = updateUtility(utilitytable, tiecapacity, nodecount, netedges, netnodes);
                         }
                     }
+                    rewireloopcount++;
+                    if (rewireloopcount % nodecount == 0)
+                    {
+                        System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                        lastoutput++;
+                    }
                 }
 
-                rewireloopcount++;
-                if (rewireloopcount % nodecount == 0)
-                {
-                    System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
-                    lastoutput++;
-                }
-            }
-            for (int i = lastoutput; i < 3; i++)
-            {
-                System.IO.File.AppendAllText(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
-            }
+
+            //}
+            //for (int i = lastoutput; i < 6; i++)
+            //{
+                //System.IO.File.AppendAllText(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            //}
+            System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRING: Rewiring stage finished after " + rewireloopcount + "iterations." + Environment.NewLine);
         }
 
 

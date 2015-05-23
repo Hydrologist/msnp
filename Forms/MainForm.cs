@@ -4176,7 +4176,7 @@ namespace NetworkGUI
                 System.IO.File.WriteAllText(words[0] + "-netform." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
                 System.IO.File.WriteAllText(words[0] + "-shock." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
                 
-                for (int i = 1; i <= 3; i++)
+                for (int i = 1; i <= 6; i++)
                 {
                     System.IO.File.WriteAllText(words[0] + "-" + i + "N." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
                     System.IO.File.WriteAllText(words[0] + "-" + i + "NC." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
