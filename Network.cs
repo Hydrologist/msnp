@@ -5447,6 +5447,8 @@ namespace Network
                                     }
                                     sequence++;
                                 }
+                                if (tiecapacity[2][newnode] == 0)
+                                    netnodes++;
                                 utilitytable[newnode * nodecount + potentialnode, 7] = 1; //offer
                                 modeldata[newnode * nodecount + potentialnode, 16] = 1; //accc
                                 modeldata[potentialnode * nodecount + newnode, 15] = 1; //accr
@@ -5595,6 +5597,10 @@ namespace Network
                      tiecapacity[2][selectedNode] -= 1;
                      tiecapacity[1][shockNode] += 1;
                      tiecapacity[2][shockNode] -= 1;
+                     if (tiecapacity[2][selectedNode] <= 0)
+                         netnodes++;
+                     if (tiecapacity[2][shockNode] <= 0)
+                         netnodes++;
                      netedges--;
                      System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
                                          + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
@@ -5666,18 +5672,22 @@ namespace Network
         public List<int> maxUtility(Matrix utilitytable, int node, int nodecount)
         {
             double maxutil = 0;
+            //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", "UTILITY {");
             for (int i = node * nodecount; i < node * nodecount + nodecount; i++)
             {
+                //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", utilitytable[i, 2] + " ");
                 if (i % nodecount != node && utilitytable[i, 2] > maxutil && utilitytable[i, 6] != 1 && utilitytable[i, 7] != 1)
                     maxutil = utilitytable[i, 2]; 
             }
             List<int> maxutillist = new List<int>();
+            //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", "Node " + node + " 's Max utility was " + maxutil + ".");
             for (int i = node * nodecount; i < node * nodecount + nodecount; i++)
             {
                 if (utilitytable[i, 2] == maxutil && i % nodecount != node)
                     maxutillist.Add(i % nodecount);
 
             }
+            //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", " " + maxutillist.Count + " }" + Environment.NewLine);
             return maxutillist;
         }
 
@@ -5794,6 +5804,10 @@ namespace Network
                                             ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
                                             + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
                                     rewseq++;
+                                    if (tiecapacity[2][rewiringnode] == 0)
+                                        netnodes++;
+                                    if (tiecapacity[2][offerednode] == 0)
+                                        netnodes++;
                                     modeldata[rewiringnode * nodecount + offerednode, 13] = 1; //offerr
                                     modeldata[offerednode * nodecount + rewiringnode, 14] = 1;  //offerc
                                     utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
@@ -5815,6 +5829,8 @@ namespace Network
                                 else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[2][offerednode] > 0 && tiecapacity[1][rewiringnode] > 0)
                                 {
 
+                                    if (tiecapacity[2][rewiringnode] == 0)
+                                        netnodes++;
                                     modeldata[rewiringnode * nodecount + offerednode, 13] = 1; //offerr
                                     modeldata[offerednode * nodecount + rewiringnode, 14] = 1;  //offerc
 
@@ -5832,6 +5848,8 @@ namespace Network
                                     utilitytable[dropnode * nodecount + offerednode, 8] = 0;//accept
                                     tiecapacity[1][dropnode] += 1;
                                     tiecapacity[2][dropnode] -= 1;
+                                    if (tiecapacity[2][dropnode] <= 0)
+                                        netnodes--;
 
                                     //add edge with new node offering greater utility
                                     utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
@@ -5906,6 +5924,8 @@ namespace Network
                             modeldata[i, 15] = 0;//accr
                             modeldata[i, 17] = 0;//droppedc
                             modeldata[i, 18] = 0;//droppedr
+                            utilitytable[i, 7] = 0;
+                            utilitytable[i, 8] = 0;
                         }
                     }
                     rewiringnode = nodeselection[k];
@@ -5923,15 +5943,15 @@ namespace Network
                     while (offercount < nodecount)
                     {
                         List<int> maxutil = maxUtility(utilitytable, rewiringnode, nodecount);
-                        System.IO.File.AppendAllText(words[0] + "-log.txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                         if (maxutil.Count == 0)
                             break;
                         while (maxutil.Count > 0)
                         {
                             int offerednode = maxutil[RNGen.Next(maxutil.Count)];
-                            System.IO.File.AppendAllText(words[0] + "-log.txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                             offercount++;
-                            System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                             if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 || modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
                             {
                                 utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
@@ -5944,8 +5964,8 @@ namespace Network
                                     break;
                                 }
                                 int dropnode = minUtil[RNGen.Next(minUtil.Count)];
-                                System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                                if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0 && tiecapacity[2][rewiringnode] > 0)
+                                //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                                if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)// && tiecapacity[2][rewiringnode] > 0)
                                 {
                                     //if (rewseq < 10)
                                     System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
@@ -5970,7 +5990,7 @@ namespace Network
                                     rewired = true;
                                     netedges++;
                                 }
-                                else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[2][offerednode] > 0 && tiecapacity[1][rewiringnode] > 0)
+                                else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] /*&& tiecapacity[2][offerednode] > 0*/ && tiecapacity[1][rewiringnode] > 0)
                                 {
 
                                     modeldata[rewiringnode * nodecount + offerednode, 13] = 1; //offerr
