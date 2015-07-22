@@ -50,16 +50,18 @@ namespace NetworkGUI.Forms
             set { minbox.Text = value.ToString(); }
         }
 
+        public bool homophily;
+
         public bool useparams;
     
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(nText.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -94,10 +96,10 @@ namespace NetworkGUI.Forms
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(netIdent.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -105,10 +107,10 @@ namespace NetworkGUI.Forms
         private void netText_TextChanged(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(netText.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -116,10 +118,10 @@ namespace NetworkGUI.Forms
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(stepbox.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -127,10 +129,10 @@ namespace NetworkGUI.Forms
         private void minbox_TextChanged(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(minbox.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -138,10 +140,10 @@ namespace NetworkGUI.Forms
         private void maxbox_TextChanged(object sender, EventArgs e)
         {
             int n;
-            goButton.Enabled = true;
+            //goButton.Enabled = true;
             if (!int.TryParse(maxbox.Text, out n))
             {
-                goButton.Enabled = false;
+                //goButton.Enabled = false;
                 return;
             }
         }
@@ -156,6 +158,7 @@ namespace NetworkGUI.Forms
                 int.Parse(netText.Text);
                 int.Parse(netIdent.Text);
                 useparams = true;
+                homophily = homophilyButton.Checked;
             }
             catch (Exception)
             {
@@ -163,6 +166,11 @@ namespace NetworkGUI.Forms
                 return;
             }
             this.Close();
+        }
+
+        private void prefAttachButton_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

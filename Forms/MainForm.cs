@@ -4028,6 +4028,7 @@ namespace NetworkGUI
 
         private void agentShocksModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            /*
             openFileDialog.Multiselect = false;
             SetMode(false);
             _ABMForm.ShowDialog();
@@ -4058,23 +4059,12 @@ namespace NetworkGUI
             {
                 net.mList = new List<Matrix>();
                 Matrix m;
-                /*if (false)
-                {
-                    for (int i = 0; i < netcount; i++)
-                    {
-                        m = net.ABMShocksNetworkFormation(nodecount, 0, saveFileDialog.FileName);
-                        m.ColLabels.SetLabels(labels);
-                        net.mList.Add(m);
-                    }
-                }
-                else
-                {*/
                 int runno = _ABMForm.netID;
                 for (int i = min; i <= max; i += step)
                 {
                     for (int j = 0; j < netcount; j++)
                     {
-                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++);
+                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, false);
                         m.ColLabels.SetLabels(labels);
                         net.mList.Add(m);
                     }
@@ -4087,6 +4077,7 @@ namespace NetworkGUI
             {
                 MessageBox.Show("Invalid file name.");
             }
+             */
 
         }
 
@@ -4102,6 +4093,7 @@ namespace NetworkGUI
 
         private void agentBasedModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //used
             openFileDialog.Multiselect = false;
             SetMode(false);
             _ABMForm.ShowDialog();
@@ -4127,7 +4119,7 @@ namespace NetworkGUI
             displayMatrix = "Data";
             currentYear = _ABMForm.netID;
             _optionsForm.ReachNumMatrices = _ABMForm.N - 1;
-            string[] labels = new string[20] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial" };
+            string[] labels = new string[27] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "demrow", "enmyenmyrow", "cultismrow", "demcol", "enmyenmycol", "cultismcol", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial", "uij"};
             DialogResult result = saveFileDialog.ShowDialog();
             if (result == DialogResult.Yes || result == DialogResult.OK)
             {
@@ -4173,14 +4165,20 @@ namespace NetworkGUI
                 }
                 else
                 {*/
-                System.IO.File.WriteAllText(words[0] + "-netform." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
-                System.IO.File.WriteAllText(words[0] + "-shock." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                sb.Append(labels[0]);
+                for (int i = 1; i < labels.Length; i++)
+                {
+                    sb.Append("," + labels[i]);
+                }
+                System.IO.File.WriteAllText(words[0] + "-netform." + words[1], sb.ToString() + Environment.NewLine);
+                System.IO.File.WriteAllText(words[0] + "-shock." + words[1], sb.ToString() + Environment.NewLine);
                 
                 for (int i = 1; i <= 6; i++)
                 {
-                    System.IO.File.WriteAllText(words[0] + "-" + i + "N." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
-                    System.IO.File.WriteAllText(words[0] + "-" + i + "NC." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
-                    System.IO.File.WriteAllText(words[0] + "-" + i + "NT." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + i + "N." + words[1], sb.ToString() + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + i + "NC." + words[1], sb.ToString() + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + i + "NT." + words[1], sb.ToString() + Environment.NewLine);
                     
                 }
                 int runno = 1;
@@ -4188,7 +4186,7 @@ namespace NetworkGUI
                 {
                     for (int j = 0; j < netcount; j++)
                     {
-                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++);
+                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily);
                         m.ColLabels.SetLabels(labels);
                         net.mList.Add(m);
                     }

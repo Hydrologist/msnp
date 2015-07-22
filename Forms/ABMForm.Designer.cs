@@ -32,7 +32,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.netText = new System.Windows.Forms.TextBox();
-            this.goButton = new System.Windows.Forms.Button();
             this.netIdent = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.minbox = new System.Windows.Forms.TextBox();
@@ -43,6 +42,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.paramsButton = new System.Windows.Forms.Button();
+            this.prefAttachButton = new System.Windows.Forms.RadioButton();
+            this.homophilyButton = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // nText
@@ -86,18 +89,6 @@
             this.netText.TabIndex = 2;
             this.netText.Text = "10";
             this.netText.TextChanged += new System.EventHandler(this.netText_TextChanged);
-            // 
-            // goButton
-            // 
-            this.goButton.Enabled = false;
-            this.goButton.Location = new System.Drawing.Point(86, 61);
-            this.goButton.Name = "goButton";
-            this.goButton.Size = new System.Drawing.Size(75, 23);
-            this.goButton.TabIndex = 3;
-            this.goButton.Text = "Go";
-            this.goButton.UseVisualStyleBackColor = true;
-            this.goButton.Visible = false;
-            this.goButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // netIdent
             // 
@@ -182,7 +173,7 @@
             // 
             // paramsButton
             // 
-            this.paramsButton.Location = new System.Drawing.Point(86, 117);
+            this.paramsButton.Location = new System.Drawing.Point(83, 169);
             this.paramsButton.Name = "paramsButton";
             this.paramsButton.Size = new System.Drawing.Size(75, 23);
             this.paramsButton.TabIndex = 7;
@@ -190,11 +181,44 @@
             this.paramsButton.UseVisualStyleBackColor = true;
             this.paramsButton.Click += new System.EventHandler(this.paramsButton_Click);
             // 
+            // prefAttachButton
+            // 
+            this.prefAttachButton.AutoSize = true;
+            this.prefAttachButton.Checked = true;
+            this.prefAttachButton.Location = new System.Drawing.Point(3, 0);
+            this.prefAttachButton.Name = "prefAttachButton";
+            this.prefAttachButton.Size = new System.Drawing.Size(135, 17);
+            this.prefAttachButton.TabIndex = 15;
+            this.prefAttachButton.TabStop = true;
+            this.prefAttachButton.Text = "Preferential Attachment";
+            this.prefAttachButton.UseVisualStyleBackColor = true;
+            this.prefAttachButton.CheckedChanged += new System.EventHandler(this.prefAttachButton_CheckedChanged);
+            // 
+            // homophilyButton
+            // 
+            this.homophilyButton.AutoSize = true;
+            this.homophilyButton.Location = new System.Drawing.Point(3, 23);
+            this.homophilyButton.Name = "homophilyButton";
+            this.homophilyButton.Size = new System.Drawing.Size(74, 17);
+            this.homophilyButton.TabIndex = 16;
+            this.homophilyButton.Text = "Homophily";
+            this.homophilyButton.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.prefAttachButton);
+            this.panel1.Controls.Add(this.homophilyButton);
+            this.panel1.Location = new System.Drawing.Point(40, 118);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(152, 45);
+            this.panel1.TabIndex = 17;
+            // 
             // ABMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(243, 204);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.paramsButton);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -205,13 +229,14 @@
             this.Controls.Add(this.minbox);
             this.Controls.Add(this.netIdent);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.goButton);
             this.Controls.Add(this.netText);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.nText);
             this.Name = "ABMForm";
             this.Text = "ABM Model";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -223,7 +248,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox netText;
-        private System.Windows.Forms.Button goButton;
         private System.Windows.Forms.TextBox netIdent;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox minbox;
@@ -234,5 +258,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button paramsButton;
+        private System.Windows.Forms.RadioButton prefAttachButton;
+        private System.Windows.Forms.RadioButton homophilyButton;
+        private System.Windows.Forms.Panel panel1;
     }
 }
