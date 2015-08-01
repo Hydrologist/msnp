@@ -4181,12 +4181,27 @@ namespace NetworkGUI
                     System.IO.File.WriteAllText(words[0] + "-" + i + "NT." + words[1], sb.ToString() + Environment.NewLine);
                     
                 }
-                int runno = 1;
+                int runno = 1, runno2 = 1;
+                List<int> runnos = new List<int>(), iterations = new List<int>();
                 for (int i = min; i <= max; i += step)
                 {
                     for (int j = 0; j < netcount; j++)
                     {
-                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily);
+                        runnos.Add(runno2++);
+                        iterations.Add(18 * i);
+                    }
+                }
+
+                runnos[0] = 1;
+                iterations[0] = iterations[0];
+
+                ABMProgressForm apform = new ABMProgressForm(runnos, iterations);
+                apform.Show();
+                for (int i = min; i <= max; i += step)
+                {
+                    for (int j = 0; j < netcount; j++)
+                    {
+                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform);
                         m.ColLabels.SetLabels(labels);
                         net.mList.Add(m);
                     }

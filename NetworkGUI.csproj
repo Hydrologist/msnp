@@ -48,12 +48,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\Documents\My Dropbox\Public\Work\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>9A48C8E9962DF60283C1BDD5C38AB52544B005CD</ManifestCertificateThumbprint>
@@ -131,6 +133,12 @@
     </Compile>
     <Compile Include="Forms\ABMConfirmForm.Designer.cs">
       <DependentUpon>ABMConfirmForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ABMProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ABMProgressForm.Designer.cs">
+      <DependentUpon>ABMProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormException.cs" />
     <Compile Include="Forms\NetworkSpilloverForm.cs">
@@ -507,6 +515,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ABMConfirmForm.resx">
       <DependentUpon>ABMConfirmForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ABMProgressForm.resx">
+      <DependentUpon>ABMProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\McaNCoptions.resx">
       <DependentUpon>McaNCoptions.cs</DependentUpon>

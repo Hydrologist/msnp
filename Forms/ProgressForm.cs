@@ -41,6 +41,7 @@ namespace NetworkGUI
                 this.Close();
         }
 
+
         public int startYear
         {
             set

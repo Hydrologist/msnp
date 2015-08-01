@@ -70,7 +70,7 @@ namespace Network
     //};
 
     public class Network
-    { 
+    {
         protected List<List<int>> Blocks;
         protected List<int[]> communities;
         protected List<int[]> maxSeparationcommunities;
@@ -152,7 +152,7 @@ namespace Network
         protected List<Matrix> multipleMatrixList;
 
         protected Matrix blocOverlap = null;
-        public  Matrix commOverlap = null;
+        public Matrix commOverlap = null;
         protected string prevTransitivityType = "";
         protected List<double> NPOLA_Sums;
         protected CliqueCollection _cliques = null;
@@ -162,7 +162,7 @@ namespace Network
         protected CliqueCollection comcliques = null;
         protected BlockCollection comblocks = null;
         protected CommCollection comComm = null;
-        
+
         protected const int cocCutoff = 5000; // Max K to use for FULL COC matrix
 
         protected enum StdValues { None, Row, Column, Diagonal };
@@ -193,9 +193,9 @@ namespace Network
         public List<int> mcanetwork = new List<int>();
         public List<double> mcaweight = new List<double>();
         public string weightVectorFile = "";
-        public List<int> npnetwork= new List<int>();
-        public List<int> npnode= new List<int>();
-        public List<double> npattribute= new List<double>();
+        public List<int> npnetwork = new List<int>();
+        public List<int> npnode = new List<int>();
+        public List<double> npattribute = new List<double>();
         public string attributeVectorFile = "";
 
         public List<Matrix> data;
@@ -230,7 +230,7 @@ namespace Network
             mTable["Data"] = null;
             cet = CliqueExtractionType.Max;
         }
-        
+
 
         public void Initialize(int rows, int cols)
         {
@@ -331,7 +331,7 @@ namespace Network
             get { return _cohesionMatrix; }
             set { _cohesionMatrix = value; }
         }
-        
+
         // Calculations 
         public double AverageCliqueSize
         {
@@ -370,8 +370,8 @@ namespace Network
         // modified to accomodate new communities
         public double comNPOL
         {
-            get 
-            { 
+            get
+            {
                 // old code
                 //return CommCalculations.NPOL(_communities, mTable["Data"]); 
 
@@ -551,7 +551,7 @@ namespace Network
                 }
                 sum /= _blockDensity.Rows * (_blockDensity.Rows - 1);
                 return sum;*/
-                
+
             }
         }
 
@@ -624,7 +624,7 @@ namespace Network
         public double NPI
         {
             get
-            {                
+            {
                 return cNPOL * COI;
             }
         }
@@ -793,11 +793,11 @@ namespace Network
             ReachabilityN = -1;
 
             cet = CliqueExtractionType.Max;
-            
+
             Blocks = null;
             communities = null;
             comList = null;
-            comSize = 0; 
+            comSize = 0;
             commAffil = null;
             commDensity = null;
             cliqueDensity = null;
@@ -865,7 +865,7 @@ namespace Network
         protected double[] maxSepq_array;
         protected int maxSepq_size;
 
-         public double calculateNullCoefficientFromNullModel(Matrix nullmodel, int groupCount, string type)
+        public double calculateNullCoefficientFromNullModel(Matrix nullmodel, int groupCount, string type)
         {
             /*List<double> sumlist = new List<double>();
             for (int i = 0; i < nullmodel.Rows; i++)
@@ -877,7 +877,7 @@ namespace Network
             {
                 for (int j = 0; j < nullmodel.Cols; j++)
                 {
-                    sum += nullmodel[i,i] - nullmodel[i, j];
+                    sum += nullmodel[i, i] - nullmodel[i, j];
                 }
             }
             double result;
@@ -1035,7 +1035,7 @@ namespace Network
                     }
                     break;
             }
-  
+
             double septotaldegree = 0;
             double cohtotaldegree = 0;
 
@@ -1173,7 +1173,7 @@ namespace Network
             nullSeparation = calculateNullCoefficientFromNullModel(nulldensity, groupCount, type);
             nullCohesion = calculateNullCoefficientFromNullModel(nullcohesion, groupCount, type);
             switch (type)
-            { 
+            {
                 case "Communities":
                     TCohesion = CalculateCommGC() / Math.Abs(nullCohesion);
                     TSeparation = CalculateCommSC(communities) / Math.Abs(nullSeparation);
@@ -1851,17 +1851,17 @@ namespace Network
                     }
                 }
 
-                
+
 
             }
             // add Final value of modularity coefficient q to the q_array
 
-                /*q_array = new double[nvertices];
-                for (int i = 0; i < nvertices; i++)
-                    q_array[i] = maxSepq_array[i];
-                q_size = maxSepq_size;*/
+            /*q_array = new double[nvertices];
+            for (int i = 0; i < nvertices; i++)
+                q_array[i] = maxSepq_array[i];
+            q_size = maxSepq_size;*/
 
-                q_array[q_size] = q;
+            q_array[q_size] = q;
 
         }
 
@@ -1891,7 +1891,7 @@ namespace Network
                         tempComm[j] = 0;
                 }
                 communities.Add(tempComm);
-            }            
+            }
         }
 
 
@@ -1951,7 +1951,7 @@ namespace Network
         }
 
         protected int GetRealCMinMember(int cmin, int year)
-        { 
+        {
             if (cmin == -1)
                 if (!cliqueMinVector.ContainsKey(year))
                     throw new Exception("Cannot use clique min member vector for year " + year.ToString());
@@ -1972,22 +1972,22 @@ namespace Network
 
         public CliqueCollection LoadComponents(double cutoff, bool calcSE, double maxik, int year, int cmin, int n, bool doSum, bool zeroDiagonal, bool useCliq)
         {
- 
+
             mTable["Temp"] = new Matrix(mTable["Data"]);
             n = mTable["Data"].Rows;
             Matrix diag = mTable["Data"].GetDiagonalMatrix();
-            mTable["Temp"].Binarize(); 
-       
+            mTable["Temp"].Binarize();
+
             Matrix mat = new Matrix(mTable["Temp"]);
- 
+
             for (int i = 0; i < mTable["Temp"].Rows; ++i)
                 mat[i, i] = 0.0;
-      
+
             // Generate R (dependency) matrix:
             Matrix sum = new Matrix(mTable["Temp"]);
-            Matrix power = new Matrix(mat); 
- 
- 
+            Matrix power = new Matrix(mat);
+
+
             for (int i = 2; i <= n; ++i)
             {
                 power.Binarize();
@@ -1997,9 +1997,9 @@ namespace Network
 
                 Application.DoEvents();
             }
- 
-            sum.CloneTo(mTable["Temp"]); 
-            ReachabilityN = mTable["Temp"].Rows-1;
+
+            sum.CloneTo(mTable["Temp"]);
+            ReachabilityN = mTable["Temp"].Rows - 1;
             mTable["Temp"].Binarize();
 
             if (calcSE)
@@ -2085,7 +2085,7 @@ namespace Network
                 MBinary = new SymmetricBinaryMatrix(mTable["Temp"], cutoff);
             List<Block> blocList = new List<Block>();
             blocList = _blocks._blocks;
-             comblocks = new BlockCollection(MBinary, cmin, blocList);
+            comblocks = new BlockCollection(MBinary, cmin, blocList);
 
             if (calcSE)
             {
@@ -2152,7 +2152,7 @@ namespace Network
             List<Comm> commList = new List<Comm>();
             commList = _communities._communities;
             comComm = new CommCollection(MBinary, cmin, commList);
-            
+
 
             if (calcSE)
             {
@@ -2410,7 +2410,7 @@ namespace Network
         //
         // Calculation of statistics for Overlapping Communities is at bottom of code
         //
-        
+
 
         //
         // Calculating the Density Matrices
@@ -2432,7 +2432,7 @@ namespace Network
             }
 
             int cliqueNum = cliques.Count;
-            Matrix Density = new Matrix(cliqueNum, cliqueNum);            
+            Matrix Density = new Matrix(cliqueNum, cliqueNum);
 
             for (int i = 0; i < cliqueNum; i++)
             {
@@ -2495,7 +2495,7 @@ namespace Network
 
             int B = Blocks.Count;
             Matrix Density = new Matrix(B, B);
-            
+
             for (int i = 0; i < B; ++i)
             {
                 for (int j = 0; j < B; ++j)
@@ -2523,7 +2523,7 @@ namespace Network
                     Density[i, j] = summationValue;
 
                     double denominator;
-                    
+
                     if (isAllZeros)
                         denominator = (numNodes_m * numNodes_k) - same_nodes;
                     else
@@ -2532,7 +2532,7 @@ namespace Network
                     if (numNodes_m == 1 && numNodes_k == 1)
                         denominator = 1;
                     //Density[i, j] /= ((numNodes_m * numNodes_k) - same_nodes);
-                    Density[i, j] = (denominator == 0) ? 0 : Density[i, j] / denominator;   
+                    Density[i, j] = (denominator == 0) ? 0 : Density[i, j] / denominator;
                 }
             }
             return Density;
@@ -2697,7 +2697,7 @@ namespace Network
             return sum;
         }
 
-        public double CalculateCommSC(List<int[]>communities)
+        public double CalculateCommSC(List<int[]> communities)
         {
             if (communities == null)
                 throw new Exception("No communities have been found");
@@ -2743,13 +2743,13 @@ namespace Network
         public Matrix computeCliqueCohesiveMatrix()
         {
             Matrix cohesiveMatrix = new Matrix(_cliques.Count, _cliques.Count);
-            
+
             // for external files
             if (cohesionFilename != null)
             {
                 // Read matrix file
                 Matrix ext = CohesionMatrix;
-                
+
                 for (int i = 0; i < _cliques.Count; i++)
                 {
                     for (int j = 0; j < _cliques.Count; j++)
@@ -2811,7 +2811,7 @@ namespace Network
                     }
                 }
             }
-            
+
             return cohesiveMatrix;
         }
 
@@ -2881,7 +2881,7 @@ namespace Network
                     }
                 }
             }
-            
+
             return cohesiveMatrix;
         }
 
@@ -2895,7 +2895,7 @@ namespace Network
             {
                 // Read matrix file                
                 Matrix ext = CohesionMatrix;
-                
+
                 for (int i = 0; i < comNum; i++)
                 {
                     int size_i = 0;
@@ -2978,7 +2978,7 @@ namespace Network
                     }
                 }
             }
-            
+
             return cohesiveMatrix;
         }
 
@@ -2991,7 +2991,7 @@ namespace Network
             {
                 // Read matrix file
                 Matrix ext = CohesionMatrix;
-                
+
                 for (int i = 0; i < overlapComm.Count; i++)
                 {
                     for (int j = 0; j < overlapComm.Count; j++)
@@ -3050,7 +3050,7 @@ namespace Network
                     }
                 }
             }
-            
+
             return cohesiveMatrix;
         }
 
@@ -3153,7 +3153,7 @@ namespace Network
             if (!mTable["Data"].IsSquareMatrix)
                 throw new MatrixException("Cannot find cliques for non-square matrix.");
 
-       //     Thread temp = new Thread(new ThreadStart( _cliques.LoadCliqueByCliqueOverlap));
+            //     Thread temp = new Thread(new ThreadStart( _cliques.LoadCliqueByCliqueOverlap));
             //temp.Start();
             //FindCliques(m);
             //while (!temp.IsAlive) ;
@@ -3162,7 +3162,7 @@ namespace Network
 
             cliqueOrder = GetRealKCliqueValue(cliqueOrder, year);
 
-            if (cliqueOrder > mTable["Data"].Rows - 1|| cliqueOrder < 1)
+            if (cliqueOrder > mTable["Data"].Rows - 1 || cliqueOrder < 1)
             {
                 MessageBox.Show("K value in K-clique order cannot be less than 1 or greater than rows - 1. Now assume k is 1.");
                 cliqueOrder = 1;
@@ -3207,7 +3207,7 @@ namespace Network
                 _cliques = new CliqueCollection(MBinary, cmin);
 
             }//else if k-clique order
- 
+
             if (loadCOC)
             {
                 //Thread s = new Thread(_cliques.LoadCliqueByCliqueOverlap);
@@ -3257,16 +3257,16 @@ namespace Network
 
         public CommCollection FindComm(double cutoff, List<int[]> Comms, int cmin)  // TODO: Convert array to list and finish up with comms
         {
-            
+
             if (Comms == null)
                 throw new Exception("No Communities found!");
-            
+
             SymmetricBinaryMatrix MBinary = new SymmetricBinaryMatrix(mTable["Data"], cutoff);
             List<Comm> commList = new List<Comm>();
             Comm newComm;
-            
+
             List<int> tempComm = new List<int>();
-            for(int i = 0; i < comNum; ++i)
+            for (int i = 0; i < comNum; ++i)
             {
                 tempComm.Clear();
                 for (int j = 0; j < mTable["Data"].Rows; ++j)
@@ -3275,10 +3275,10 @@ namespace Network
                         tempComm.Add(Comms[i][j] - 1);
                 }
                 tempComm.Sort();
-               newComm = new Comm(tempComm, mTable["Data"].Rows);
-               commList.Add(newComm);
+                newComm = new Comm(tempComm, mTable["Data"].Rows);
+                commList.Add(newComm);
             }
-            
+
             commList.Sort();
             _communities = new CommCollection(MBinary, cmin, commList);
 
@@ -3299,7 +3299,7 @@ namespace Network
                 Comm tempCommunity = new Comm(tempList, group.Length);
                 _communities.new_communities.Add(tempCommunity);
             }
-            
+
             return _communities;
         }
 
@@ -3668,7 +3668,7 @@ namespace Network
             }
             Blocks.Sort(new BlockComparer());
         }
- 
+
         public void LoadBlockPartitionMatrix()
         {
             if (Blocks == null)
@@ -3708,7 +3708,7 @@ namespace Network
         {
             if (Blocks == null)
                 throw new Exception("You must find the blocks before you can partition them!");
- 
+
             Matrix CP = mTable.AddMatrix("ClusterPartition", mTable["Data"].Rows, mTable["Data"].Cols);
 
             int rowAdd = 0, colAdd = 0;
@@ -3721,10 +3721,10 @@ namespace Network
                     {
                         for (int j = 0; j < Blocks[col].Count; ++j)
                         {
-                            CP[i + rowAdd, j + colAdd] = mTable["Data"][Blocks[row][i], Blocks[col][j]]; 
+                            CP[i + rowAdd, j + colAdd] = mTable["Data"][Blocks[row][i], Blocks[col][j]];
                             // this is not efficient 
                             CP.ColLabels[j + colAdd] = mTable["Data"].ColLabels[Blocks[col][j]];
-                        } 
+                        }
                         CP.RowLabels[i + rowAdd] = mTable["Data"].ColLabels[Blocks[row][i]];
 
                     }
@@ -3737,11 +3737,11 @@ namespace Network
 
         public void LoadClustering(string method, int maxcluster, int year, double maxik)
         {
-            Blocks = new List<List<int>>();  
+            Blocks = new List<List<int>>();
             string m = "Data";
-            maxik = GetRealDensity(maxik, year, m);  
-            
-            int n = mTable[m].Rows; 
+            maxik = GetRealDensity(maxik, year, m);
+
+            int n = mTable[m].Rows;
 
             if (method == "Correlation")
                 mTable["Temp"] = MatrixComputations.StructuralEquivalenceCorrelation(mTable[m]);
@@ -3749,7 +3749,7 @@ namespace Network
                 mTable["Temp"] = MatrixComputations.StructuralEquivalenceEuclidean(mTable[m]);
             else
                 mTable["Temp"] = MatrixComputations.StructuralEquivalenceStandardizedEuclidean(mTable[m], maxik);
- 
+
 
             if (method != "ED")
             {
@@ -3793,34 +3793,34 @@ namespace Network
                         int found2 = -1; //block index of secondnode
                         for (int i = 0; i < Blocks.Count && (found1 == -1 || found2 == -1); i++)// loop until firstnode and second node are found
                         {
-                            if (Blocks[i].Contains(firstnode)) 
-                                found1 = i;  
-                            if (Blocks[i].Contains(secondnode)) 
-                                found2 = i; 
+                            if (Blocks[i].Contains(firstnode))
+                                found1 = i;
+                            if (Blocks[i].Contains(secondnode))
+                                found2 = i;
                         }
 
                         if (found1 != -1 && found2 != -1)
                         {
-                         //   MessageBox.Show("firstnode = " + firstnode + "secondenode = " + secondnode + "found1 = " + found1 + "found2 = " + found2);
+                            //   MessageBox.Show("firstnode = " + firstnode + "secondenode = " + secondnode + "found1 = " + found1 + "found2 = " + found2);
                             Blocks[found1].AddRange(Blocks[found2]);
                             Blocks.RemoveAt(found2);
                         }
                         else if (found1 != -1 && found2 == -1)
-                        { 
+                        {
                             Blocks[found1].Add(secondnode);
                         }
                         else if (found1 == -1 && found2 != -1)
-                        { 
+                        {
                             Blocks[found2].Add(firstnode);
-                        } 
+                        }
                         else if (found1 == -1 && found2 == -1) //none of first or second node found
-                        { 
-                                List<int> newBlock = new List<int>();
-                                newBlock.Add(firstnode);
-                                newBlock.Add(secondnode);
-                                Blocks.Add(newBlock);
-                          }  
-                        } 
+                        {
+                            List<int> newBlock = new List<int>();
+                            newBlock.Add(firstnode);
+                            newBlock.Add(secondnode);
+                            Blocks.Add(newBlock);
+                        }
+                    }
 
                     //update Temp Matrix
                     if (secondnode != 0) //it should not be zero
@@ -3841,7 +3841,7 @@ namespace Network
                             mTable["Temp"][secondnode, i] = -int.MaxValue;
                         }
                     }
- 
+
                 }//for each cluster
 
 
@@ -3941,7 +3941,7 @@ namespace Network
 
 
             }
-             
+
 
             //add cluster for leftout node
             for (int i = 0; i < n; ++i)
@@ -3994,7 +3994,7 @@ namespace Network
                     double same_nodes = 0;
                     double summationValue = 0;
                     for (int k = 0; k < mTable["Data"].Rows; k++)
-                    {                        
+                    {
                         if (!Blocks[i].Contains(k))
                             continue;
                         if (Blocks[i].Contains(k) && Blocks[j].Contains(k))
@@ -4015,10 +4015,10 @@ namespace Network
                         denominator = 1;
                     //Density[i, j] /= ((numNodes_m * numNodes_k) - same_nodes);
                     D[i, j] = (denominator == 0) ? 0 : D[i, j] / denominator;
-                    
+
                     //D[i, j] = MatrixComputations.SubmatrixDensity(mTable["BlockPartitionS"], rowCount, rowCount + Blocks[i].Count, colCount, colCount + Blocks[j].Count , density, i == j ? true : false);
                     RD[i, j] = D[i, j] / d;
-                    BC[i, j] = MatrixComputations.SubmatrixDensity(mTable["SESE"], rowCount, rowCount + Blocks[i].Count , colCount, colCount + Blocks[j].Count , density, i == j ? true : false);
+                    BC[i, j] = MatrixComputations.SubmatrixDensity(mTable["SESE"], rowCount, rowCount + Blocks[i].Count, colCount, colCount + Blocks[j].Count, density, i == j ? true : false);
                     colCount += Blocks[j].Count;
                 }
                 rowCount += Blocks[i].Count;
@@ -4026,7 +4026,7 @@ namespace Network
             }
 
         }
- 
+
         public void LoadClusterMatrices(double density, int year)
         {
             if (Blocks == null)
@@ -4041,16 +4041,16 @@ namespace Network
             Matrix CRD = mTable.AddMatrix("RelativeDensityClusterMatrix", B, B);
             Matrix CC = mTable.AddMatrix("ClusterCohesivenessMatrix", B, B);
 
-            double d = MatrixComputations.Density(mTable["Data"], density); 
+            double d = MatrixComputations.Density(mTable["Data"], density);
             int rowCount = 0;
             for (int i = 0; i < B; ++i)
             {
                 int colCount = 0;
                 for (int j = 0; j < B; ++j)
-                { 
-                    CD[i, j] = MatrixComputations.SubmatrixDensity(mTable["ClusterPartition"], rowCount, rowCount + Blocks[i].Count , colCount, colCount + Blocks[j].Count , density, i == j ? true: false);
+                {
+                    CD[i, j] = MatrixComputations.SubmatrixDensity(mTable["ClusterPartition"], rowCount, rowCount + Blocks[i].Count, colCount, colCount + Blocks[j].Count, density, i == j ? true : false);
                     CRD[i, j] = CD[i, j] / d;
-                    CC[i, j] = MatrixComputations.SubmatrixDensity(mTable["SESE"], rowCount, rowCount + Blocks[i].Count , colCount, colCount + Blocks[j].Count  , density, i == j ? true: false);
+                    CC[i, j] = MatrixComputations.SubmatrixDensity(mTable["SESE"], rowCount, rowCount + Blocks[i].Count, colCount, colCount + Blocks[j].Count, density, i == j ? true : false);
                     colCount += Blocks[j].Count;
                 }
                 rowCount += Blocks[i].Count;
@@ -4113,7 +4113,7 @@ namespace Network
 
 
             maxik = GetRealDensity(maxik, year, "Data");
-            
+
 
             if (zeroDiagonal)
             {
@@ -4124,7 +4124,7 @@ namespace Network
                 maxik = GetRealDensity(-2.0, year, temp);
 
 
-                        // Set up final matrix
+                // Set up final matrix
                 int N = mTable["Data"].Rows;
                 mTable["Dependency"] = new Matrix(mTable["Data"].Rows + 1);
                 for (int i = 0; i < mTable["Data"].Rows; ++i)
@@ -4204,16 +4204,16 @@ namespace Network
             //mTable[m].Unstandardize();
 
 
- 
+
             // Setup labels
             mTable["Dependency"].RowLabels.CopyFrom(mTable["Data"].RowLabels);
             mTable["Dependency"].ColLabels.CopyFrom(mTable["Data"].ColLabels);
 
             mTable["Dependency"].ColLabels[mTable["Dependency"].Cols - 1] = "OUTDi";
-                 
+
             mTable["Dependency"].RowLabels[mTable["Dependency"].Rows - 1] = "ONDj";
-  
- 
+
+
 
             // SYSIN
             mTable["Dependency"][mTable["Dependency"].Rows - 1, mTable["Dependency"].Cols - 1] = GetSYSIN(zeroDiagonal, maxik, year, maxN);
@@ -4237,7 +4237,7 @@ namespace Network
             for (int i = 0; i < numNodes; ++i)
             {
                 OUT = mTable["Dependency"][i, numNodes];
-                ON =  mTable["Dependency"][numNodes, i];
+                ON = mTable["Dependency"][numNodes, i];
                 Dii = mTable["Dependency"][i, i];
                 db = (OUT - ON) / (OUT + ON + Dii);
                 try
@@ -4265,7 +4265,7 @@ namespace Network
             mTable[m].ColLabels[5] = "Dep. Balance";
 
             //mTable[m].RowLabels.CopyFrom(mTable["Data"].ColLabels);
-            
+
         }
 
         public double Dependency
@@ -4281,14 +4281,14 @@ namespace Network
             get
             {
                 List<double> values = new List<double>();
-                    for (int i = 0; i < mTable["Centrality"].Rows; ++i)
-                        values.Add(mTable["Centrality"][i, 3] * (mTable["Centrality"].Rows - 1)); 
-                
+                for (int i = 0; i < mTable["Centrality"].Rows; ++i)
+                    values.Add(mTable["Centrality"][i, 3] * (mTable["Centrality"].Rows - 1));
+
                 double max = Algorithms.MaxValue(values);
                 double dig = max * mTable["Centrality"].Rows;
                 for (int i = 0; i < mTable["Centrality"].Rows; ++i)
                     dig -= mTable["Centrality"][i, 3] * (mTable["Centrality"].Rows - 1);
-                dig = dig /((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
+                dig = dig / ((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
                 return dig;
             }
         }
@@ -4305,7 +4305,7 @@ namespace Network
                 double dog = max * mTable["Centrality"].Rows;
                 for (int i = 0; i < mTable["Centrality"].Rows; ++i)
                     dog -= mTable["Centrality"][i, 2] * (mTable["Centrality"].Rows - 1);
-                dog = dog /((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
+                dog = dog / ((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
                 return dog;
             }
         }
@@ -4322,7 +4322,7 @@ namespace Network
                 double cig = max * mTable["Centrality"].Rows;
                 for (int i = 0; i < mTable["Centrality"].Rows; ++i)
                     cig -= mTable["Centrality"][i, 5] * (mTable["Centrality"].Rows - 1);
-                cig = cig * (2*mTable["Centrality"].Rows-3) / ((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
+                cig = cig * (2 * mTable["Centrality"].Rows - 3) / ((mTable["Centrality"].Rows - 1) * (mTable["Centrality"].Rows - 2));
                 return cig;
             }
         }
@@ -4416,7 +4416,7 @@ namespace Network
         {
             get
             {
-               
+
                 return comcliques.Count;
             }
         }
@@ -4448,10 +4448,10 @@ namespace Network
             get
             {
                 Vector v = new Vector(comcliques.Count);
-                for(int i = 0; i<comcliques.Count;++i)
-                    v[i]=comcliques[i].Size;
+                for (int i = 0; i < comcliques.Count; ++i)
+                    v[i] = comcliques[i].Size;
                 return Algorithms.MaxValue(v) / GetMatrix("Data").Rows;
-            }           
+            }
         }
 
         public double GetbGn
@@ -4487,17 +4487,17 @@ namespace Network
                 return Algorithms.MaxValue(v) / GetMatrix("Data").Rows;
             }
         }
-        
+
 
         public double GetAvgDO
         {
             get
-            {  
+            {
                 double avgdo = 0.0;
-                for(int i=0;i< mTable["Centrality"].Rows;++i)
-                  avgdo += mTable["Centrality"][i,2];
+                for (int i = 0; i < mTable["Centrality"].Rows; ++i)
+                    avgdo += mTable["Centrality"][i, 2];
                 return avgdo / mTable["Centrality"].Rows;
-               
+
             }
         }
 
@@ -4507,9 +4507,9 @@ namespace Network
             {
                 double avgdi = 0.0;
                 for (int i = 0; i < mTable["Centrality"].Rows; ++i)
-                   avgdi += mTable["Centrality"][i, 3];
+                    avgdi += mTable["Centrality"][i, 3];
                 return avgdi / mTable["Centrality"].Rows;
-              
+
             }
         }
 
@@ -4547,7 +4547,7 @@ namespace Network
             LoadReachability(n, doSum, true, m, year, reachBinary);
         }
         public void LoadReachability(int n, bool doSum, bool zeroDiagonal, string m, int year, bool reachBinary)
-        { 
+        {
             n = GetRealReachNum(n, year);
             //if (m == "Reachability")
             //{
@@ -4587,12 +4587,12 @@ namespace Network
 
             for (int i = 2; i <= n; ++i)
             {
-                power *= mat;      
+                power *= mat;
                 sum += power;
                 Application.DoEvents();
             }
             //power.ZeroDiagonal();
-          
+
             if (reachBinary)
                 for (int i = 0; i < sum.Length; i++)
                     if (sum[i] > 1)
@@ -4723,14 +4723,14 @@ namespace Network
         // deprecated
         protected double ComputeER1(bool useCohesion, bool useSize, int clique)
         {
-            
+
             double p = 1.0 + (useCohesion ? _cliques[clique].Cohesion : 1.0);
             double d = useSize ? NPOLA_Sums[clique] : _cliques[clique].Size / (double)mTable["Data"].Rows;
             return Math.Pow(d, p);
-            
+
             //double d = useSize ? NPOLA_Sums[clique] : _cliques[clique].Size / (double)mTable["Data"].Rows;
             //return useCohesion ? _cliques[clique].Cohesion : 1.0;
-             
+
         }
         // deprecated
         protected double bComputeER1(bool useCohesion, bool useSize, int block)
@@ -4804,7 +4804,7 @@ namespace Network
             else
                 cohesion = (2.0 * cohesion) / (Size * (Size - 1));
             */
-            
+
 
             int Size = 0;
             for (int i = 0; i < comSize; i++)
@@ -4830,7 +4830,7 @@ namespace Network
             {
                 cohesion = Algorithms.Mean(cohesionList);
             }
-            
+
             return cohesion;
         }
 
@@ -4840,12 +4840,12 @@ namespace Network
         {
             double erpol = 0.0;
             double[] erpolTerms = new double[_cliques.Count];
-                
+
             for (int i = 0; i < _cliques.Count; i++)
-            {   
+            {
                 double firstTerm = 0.0, secondTerm = 0.0;
                 double expTerm = 0.0, sum = 0.0;
-                    
+
                 for (int j = 0; j < cliqueSize; j++)
                 {
                     sum += _cliques[i].IntContains(j);
@@ -4975,8 +4975,8 @@ namespace Network
             }
             return erpol;
         }
-          
-        
+
+
 
 
 
@@ -5067,7 +5067,7 @@ namespace Network
                             j--;
                         }
                     }
-                  
+
                     return false;
                 }
             }
@@ -5153,7 +5153,7 @@ namespace Network
         }
 
         //private void insertPaths(int node, List<double> best, double cost, LiyeLib.heap<path> Heap, Matrices.Matrix map)
-        private void insertPaths(int node, double[] best, double cost, LiyeLib.heap<path> Heap, Matrices.Matrix map)        
+        private void insertPaths(int node, double[] best, double cost, LiyeLib.heap<path> Heap, Matrices.Matrix map)
         {
             //for (int i = 0; i < best.Capacity; i++)
             for (int i = 0; i < best.Length; i++)
@@ -5286,7 +5286,7 @@ namespace Network
             tiecapacity[2][addednode] += 1; //increment degree
         }
 
-        public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily)
+        public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily, ref ABMProgressForm apform)
         {
             Matrix modeldata = new Matrix(nodecount * nodecount, 27);
             Matrix utilitytable = new Matrix(nodecount * nodecount, 9);
@@ -5294,14 +5294,15 @@ namespace Network
             List<int> initialnodes = new List<int>();
             //System.IO.File.AppendAllText(filename, "NETWORK " + network + " OF SIZE " + nodecount + Environment.NewLine);
             string modelstr;
-            
+
+
             tiecapacity.Add(new int[nodecount]);
             tiecapacity.Add(new int[nodecount]);
             tiecapacity.Add(new int[nodecount]);
             tiecapacity.Add(new int[nodecount]);
-            List<int> democracyNodes = getSequence(nodecount).GetRange(0, (int) ((RNGen.NextDouble() * .2 + .2) * nodecount));
-            List<int> enmyenmyNodes = getSequence(nodecount).GetRange(0, (int) ((RNGen.NextDouble() * .25 + .1) * nodecount));
-            List<int> cultismNodes = getSequence(nodecount).GetRange(0, (int) ((RNGen.NextDouble() * .6 + .2) * nodecount));
+            List<int> democracyNodes = getSequence(nodecount).GetRange(0, (int)((RNGen.NextDouble() * .2 + .2) * nodecount));
+            List<int> enmyenmyNodes = getSequence(nodecount).GetRange(0, (int)((RNGen.NextDouble() * .25 + .1) * nodecount));
+            List<int> cultismNodes = getSequence(nodecount).GetRange(0, (int)((RNGen.NextDouble() * .6 + .2) * nodecount));
 
             for (int i = 0; i < nodecount; i++)
             {
@@ -5314,7 +5315,7 @@ namespace Network
                 tiecapacity[2][i] = 0;// degree
                 tiecapacity[3][i] = 0;
             }
-            
+
             for (int i = 0; i < nodecount * nodecount; i++)
             {
                 modeldata[i, 7] = 0;
@@ -5358,13 +5359,13 @@ namespace Network
                     networknodes.Add(randomint);
                     count++;
                 }
-                
+
             }
             int netedges, netnodes;
             netedges = 0;
             netnodes = 0;
             int x, y;
-            for (int i = 0; i < networknodes.Count; i++)
+            for (int i = 0; i < networknodes.Count; i++) //nodecount ^ 2 iterations
             {
                 x = networknodes[i];
                 for (int j = 0; j < networknodes.Count; j++)
@@ -5399,11 +5400,11 @@ namespace Network
                     }
                 }
             }
-            for(int i = 0; i < nodecount; i++)
+            for (int i = 0; i < nodecount; i++)
             {
-                if(initialnodes.Contains(i))
+                if (initialnodes.Contains(i))
                 {
-                    for(int j = 0; j < nodecount; j++)
+                    for (int j = 0; j < nodecount; j++)
                     {
                         modeldata[i * nodecount + j, 25] = 1;
                     }
@@ -5415,13 +5416,13 @@ namespace Network
             utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
             int netnodesize;
             if (nodecount >= 100)
-                netnodesize = (int)nodecount/10;
+                netnodesize = (int)nodecount / 10;
             else
-                netnodesize = (int) nodecount/5;
+                netnodesize = (int)nodecount / 5;
             List<int> offeringnodes = new List<int>();
             for (int i = 0; i < nodecount; i++)
             {
-                if(tiecapacity[1][i] > 0 && !initialnodes.Contains(i))
+                if (tiecapacity[1][i] > 0 && !initialnodes.Contains(i))
                     offeringnodes.Add(i);
             }
             int sequence = 1;
@@ -5454,7 +5455,7 @@ namespace Network
                 {
                     List<int> maxutil = maxUtility(utilitytable, newnode, nodecount);
 
-                    for (int i = 0; i < maxutil.Count; i++) 
+                    for (int i = 0; i < maxutil.Count; i++)
                     {
                         if (offernodes.Contains(maxutil[i]))
                             offernodes.Remove(maxutil[i]);
@@ -5463,7 +5464,7 @@ namespace Network
                     {
                         break;
                     }
-                    while(maxutil.Count > 0)
+                    while (maxutil.Count > 0)
                     {
                         potentialnode = maxutil[RNGen.Next(0, maxutil.Count)];
                         utilitytable[newnode * nodecount + potentialnode, 7] = 1;
@@ -5474,7 +5475,7 @@ namespace Network
                             if (maxutil.Count == 0)
                             {
                                 offeringnodes.Remove(newnode);
-                                break; 
+                                break;
                             }
                             continue;
                         }
@@ -5487,24 +5488,24 @@ namespace Network
                             offermade = true;
                             //if(tiecapacity[1][potentialnode] > 0)
                             //{
-                                if (tiecapacity[2][newnode] == 0) //if degree is 0, increment network node count
+                            if (tiecapacity[2][newnode] == 0) //if degree is 0, increment network node count
+                            {
+                                netnodes++;
+                                for (int i = 0; i < nodecount * nodecount; i++)
                                 {
-                                    netnodes++;
-                                    for (int i = 0; i < nodecount * nodecount; i++)
+                                    if (((int)i / nodecount) == newnode)
                                     {
-                                        if (((int)i / nodecount) == newnode)
-                                        {
-                                            modeldata[i, 17] = sequence;
-                                        }
-                                        if (((int)i % nodecount) == newnode)
-                                            modeldata[i, 18] = sequence;
+                                        modeldata[i, 17] = sequence;
                                     }
-                                    sequence++;
+                                    if (((int)i % nodecount) == newnode)
+                                        modeldata[i, 18] = sequence;
                                 }
-                                if (tiecapacity[2][newnode] == 0)
-                                    netnodes++;
+                                sequence++;
+                            }
+                            if (tiecapacity[2][newnode] == 0)
+                                netnodes++;
 
-                                addEdge(ref modeldata, ref utilitytable, ref tiecapacity, newnode, potentialnode, nodecount);
+                            addEdge(ref modeldata, ref utilitytable, ref tiecapacity, newnode, potentialnode, nodecount);
                             /*
                                 utilitytable[newnode * nodecount + potentialnode, 7] = 1; //offer
                                 modeldata[newnode * nodecount + potentialnode, 22] = 1; //accc
@@ -5520,7 +5521,7 @@ namespace Network
                                 tiecapacity[1][potentialnode] -= 1; //decrement tie capacity
                                 tiecapacity[2][potentialnode] += 1; //increment degree
                               */
-                                netedges++;   
+                            netedges++;
                             //}
                         }
                         maxutil.Remove(potentialnode);
@@ -5558,8 +5559,8 @@ namespace Network
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily);
-           
+            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily, ref apform);
+
             Matrix controlMatrix = new Matrix(modeldata);
             Matrix controlUtilityTable = new Matrix(utilitytable);
             List<int[]> controlTieCapacity = new List<int[]>();
@@ -5607,7 +5608,7 @@ namespace Network
                 shockSize = RNGen.NextDouble();
                 oldcap = tiecapacity[0][shockedNodes[i]];
                 //tiecapacity[0][shockedNodes[i]] = tiecapacity[0][shockedNodes[i]];
-                tiecapacity[0][shockedNodes[i]] = (int) (tiecapacity[0][shockedNodes[i]] * shockSize);
+                tiecapacity[0][shockedNodes[i]] = (int)(tiecapacity[0][shockedNodes[i]] * shockSize);
                 //tiecapacity[0][shockedNodes[i]] = tiecapacity[0][shockedNodes[i]];
                 for (int j = 0; j < nodecount * nodecount; j++)
                 {
@@ -5621,7 +5622,7 @@ namespace Network
                         modeldata[j, 15] = tiecapacity[0][shockedNodes[i]];
                     }
                 }
-                System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockedNodes[i] + 1) + " in network with runno " + runno + "'s tie capacity was reduced by " + ((1-shockSize) * 100) + "% (" + (oldcap - tiecapacity[0][shockedNodes[i]]) + ") due to a shock. New tie capacity: " + tiecapacity[0][shockedNodes[i]] + Environment.NewLine);
+                System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockedNodes[i] + 1) + " in network with runno " + runno + "'s tie capacity was reduced by " + ((1 - shockSize) * 100) + "% (" + (oldcap - tiecapacity[0][shockedNodes[i]]) + ") due to a shock. New tie capacity: " + tiecapacity[0][shockedNodes[i]] + Environment.NewLine);
             }
             /*System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: list = {" );
             for (int i = 0; i < shockedNodes.Count; i++)
@@ -5637,24 +5638,24 @@ namespace Network
                 int shockNodeCapacity = tiecapacity[0][shockNode] - tiecapacity[2][shockNode];
                 while (tiecapacity[0][shockNode] - tiecapacity[2][shockNode] < 0)//shockNodeCapacity < 0)
                 {
-                     List<int> minUtil = minUtility(utilitytable, modeldata, shockNode, nodecount, words);
-                     if (minUtil.Count == 0)
-                     {
-                         if (continuecount < 5)
-                         {
-                             continuecount++;
-                             continue;
-                         }
-                         else
-                         {
-                             System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + shockNode + " in network with runno " + runno + " failed to drop nodes when shocked." + Environment.NewLine);
-                             break;
-                         }
-                     }
-                     int selectedNode = minUtil[RNGen.Next(minUtil.Count)];
+                    List<int> minUtil = minUtility(utilitytable, modeldata, shockNode, nodecount, words);
+                    if (minUtil.Count == 0)
+                    {
+                        if (continuecount < 5)
+                        {
+                            continuecount++;
+                            continue;
+                        }
+                        else
+                        {
+                            System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + shockNode + " in network with runno " + runno + " failed to drop nodes when shocked." + Environment.NewLine);
+                            break;
+                        }
+                    }
+                    int selectedNode = minUtil[RNGen.Next(minUtil.Count)];
 
-                     //drop edge with node offering least utility
-                     dropEdge(ref modeldata, ref utilitytable, ref tiecapacity, shockNode, selectedNode, nodecount);
+                    //drop edge with node offering least utility
+                    dropEdge(ref modeldata, ref utilitytable, ref tiecapacity, shockNode, selectedNode, nodecount);
                     /*
                      utilitytable[shockNode * nodecount + selectedNode, 7] = 0;//offer
                      modeldata[selectedNode * nodecount + selectedNode, 22] = 0;//accc
@@ -5672,35 +5673,35 @@ namespace Network
                      tiecapacity[1][shockNode] += 1;
                      tiecapacity[2][shockNode] -= 1;
                      */
-                     if (tiecapacity[2][selectedNode] <= 0)
-                         netnodes++;
-                     if (tiecapacity[2][shockNode] <= 0)
-                         netnodes++;
-                     netedges--;
-                     System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
+                    if (tiecapacity[2][selectedNode] <= 0)
+                        netnodes++;
+                    if (tiecapacity[2][shockNode] <= 0)
+                        netnodes++;
+                    netedges--;
+                    System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
                                          + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
 
-                     utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
-                     shockNodeCapacity++;             
+                    utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
+                    shockNodeCapacity++;
                 }
                 shockedNodes.Remove(shockNode);
 
-            } 
+            }
             System.IO.File.AppendAllText(words[0] + "-shock." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
             rewiringSequence = getSequence(nodecount);
             for (int i = 0; i < 5; ++i)
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily);
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily);
-                       
+            networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily, ref apform);
+            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily, ref apform);
+
 
 
             int actualdegree, tcap;//, dropped;
             for (int i = 0; i < nodecount; i++)
             {
-                tcap = (int) modeldata[i * nodecount, 5];
+                tcap = (int)modeldata[i * nodecount, 5];
                 actualdegree = 0;
                 //dropped = 0;
                 for (int j = 0; j < nodecount; j++)
@@ -5716,7 +5717,7 @@ namespace Network
         }
         public int outofNetwork(List<int[]> tiecap)
         {
-            int count = 0;  
+            int count = 0;
             for (int i = 0; i < tiecap[2].Length; i++)
             {
                 if (tiecap[2][i] == 0)
@@ -5727,7 +5728,7 @@ namespace Network
             return count;
 
         }
-        public List<int> minUtility(Matrix utilitytable, Matrix modeldata, int node, int nodecount, string [] words)
+        public List<int> minUtility(Matrix utilitytable, Matrix modeldata, int node, int nodecount, string[] words)
         {
             double minutil = 9999999999;
             for (int i = node * nodecount; i < node * nodecount + nodecount; i++)
@@ -5744,7 +5745,7 @@ namespace Network
                 if (modeldata[i, 4] == 1)
                     degree++;
             }
-            if(degree != 0 && minutillist.Count == 0)
+            if (degree != 0 && minutillist.Count == 0)
                 System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + node + "had nonzero degree but no minimum utility edges. Minimum utility = " + minutil + " Degree = " + degree + Environment.NewLine);
             return minutillist;
         }
@@ -5757,7 +5758,7 @@ namespace Network
             {
                 //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", utilitytable[i, 2] + " ");
                 if (i % nodecount != node && utilitytable[i, 2] > maxutil && utilitytable[i, 6] != 1 && utilitytable[i, 7] != 1)
-                    maxutil = utilitytable[i, 2]; 
+                    maxutil = utilitytable[i, 2];
             }
             List<int> maxutillist = new List<int>();
             //System.IO.File.AppendAllText("C:\\Users\\Mike\\Desktop\\Testing\\log.txt", "Node " + node + " 's Max utility was " + maxutil + ".");
@@ -5773,7 +5774,7 @@ namespace Network
 
         public double calcUtility(int degj, int netedges, int netnodes)
         {
-            return (double) (degj + 1) / (netedges + netnodes);
+            return (double)(degj + 1) / (netedges + netnodes);
         }
 
         public double calculateHomophilyUtility(int node1, int node2, Matrix modeldata)
@@ -5804,20 +5805,19 @@ namespace Network
                 if (homophily)
                 {
                     utilitytable[i, 2] = calculateHomophilyUtility((int)i / nodecount, i % nodecount, modeldata);
-                    modeldata[i, 26] = utilitytable[i, 2];
                 }
                 else
                 {
                     utilitytable[i, 2] = calcUtility(tiecapacity[2][i % nodecount], nete, netn);//update utility
-                    modeldata[i, 26] = 0;
                 }
+                modeldata[i, 26] = utilitytable[i, 2];
             }
             return utilitytable;
         }
 
-        
 
-        public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily)
+
+        public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily, ref ABMProgressForm apform)
         {
             System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRING STAGE FOR NETWORK OF TYPE \"" + type + "\" BEGUN." + Environment.NewLine);
             int rewireloopcount = 0;
@@ -5829,154 +5829,155 @@ namespace Network
 
             int sequence = 1;
             int lastoutput = 0;
-                for (int k = 0; k < nodeselection.Count; ++k)
+            for (int k = 0; k < nodeselection.Count; ++k)
+            {
+                rewired = false;
+                if (rewireloopcount % nodecount == 0)
                 {
-                    rewired = false;
-                    if (rewireloopcount % nodecount == 0)
+                    sequence = 1;
+                    for (int i = 0; i < nodecount * nodecount; i++)
                     {
-                        sequence = 1;
-                        for (int i = 0; i < nodecount * nodecount; i++)
-                        {
-                            modeldata[i, 17] = 0;
-                            modeldata[i, 18] = 0;
-                            modeldata[i, 19] = 0; //offerr
-                            modeldata[i, 20] = 0;  //offerc
-                            modeldata[i, 22] = 0;//accc
-                            modeldata[i, 21] = 0;//accr
-                            modeldata[i, 23] = 0;//droppedc
-                            modeldata[i, 24] = 0;//droppedr
-                            utilitytable[i, 7] = 0;
-                            utilitytable[i, 8] = 0;
-                        }
-                    }
-                    rewiringnode = nodeselection[k];
-                    for (int i = 0; i < nodecount; i++)
-                    {
-                        modeldata[rewiringnode * nodecount + i, 1] = iteration;
-                        modeldata[rewiringnode * nodecount + i, 17] = sequence;
-                        modeldata[i * nodecount + rewiringnode, 18] = sequence;
-                    }
-                    System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " was selected for rewiring with sequence number " + sequence + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                    iteration++;
-                    sequence++;
-
-                    int offercount = 0;
-                    while (offercount < nodecount)
-                    {
-                        List<int> maxutil = maxUtility(utilitytable, rewiringnode, nodecount);
-                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                        if (maxutil.Count == 0)
-                            break;
-                        while (maxutil.Count > 0)
-                        {
-                            int offerednode = maxutil[RNGen.Next(maxutil.Count)];
-                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                            offercount++;
-                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                            if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 || modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
-                            {
-                                utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
-                                utilitytable[offerednode * nodecount + rewiringnode, 7] = 1;
-
-                                List<int> minUtil = minUtility(utilitytable, modeldata, offerednode, nodecount, words);
-                                if (minUtil.Count == 0)
-                                {
-                                    maxutil.Remove(offerednode);
-                                    break;
-                                }
-                                int dropnode = minUtil[RNGen.Next(minUtil.Count)];
-                                //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
-                                if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)// && tiecapacity[2][rewiringnode] > 0)
-                                {
-                                    //if (rewseq < 10)
-                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
-                                        ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
-                                        + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
-                                    rewseq++;
-                                    addEdge(ref modeldata, ref utilitytable, ref tiecapacity, rewiringnode, offerednode, nodecount);
-                                    /*
-                                    modeldata[rewiringnode * nodecount + offerednode, 19] = 1; //offerr
-                                    modeldata[offerednode * nodecount + rewiringnode, 20] = 1;  //offerc
-                                    utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
-                                    modeldata[rewiringnode * nodecount + offerednode, 22] = 1;
-                                    modeldata[offerednode * nodecount + rewiringnode, 21] = 1;
-                                    modeldata[rewiringnode * nodecount + offerednode, 4] = 1;
-                                    utilitytable[rewiringnode * nodecount + offerednode, 6] = 1;
-                                    utilitytable[rewiringnode * nodecount + offerednode, 8] = 1;
-                                    tiecapacity[1][rewiringnode] -= 1;
-                                    tiecapacity[2][rewiringnode] += 1;
-                                    modeldata[offerednode * nodecount + rewiringnode, 4] = 1;
-                                    utilitytable[offerednode * nodecount + rewiringnode, 6] = 1;
-                                    utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
-                                    tiecapacity[1][offerednode] -= 1;
-                                    tiecapacity[2][offerednode] += 1;
-                                    */
-                                    rewired = true;
-                                    netedges++;
-                                }
-                                else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)
-                                {
-
-                                    modeldata[rewiringnode * nodecount + offerednode, 19] = 1; //offerr
-                                    modeldata[offerednode * nodecount + rewiringnode, 20] = 1;  //offerc
-
-                                    //drop edge with node offering least utility
-                                    dropEdge(ref modeldata, ref utilitytable, ref tiecapacity, offerednode, dropnode, nodecount);
-                                    /*
-                                    utilitytable[offerednode * nodecount + dropnode, 7] = 0;//offer
-                                    modeldata[offerednode * nodecount + dropnode, 22] = 0;//accc
-                                    modeldata[dropnode * nodecount + offerednode, 21] = 0;//accr
-                                    modeldata[offerednode * nodecount + dropnode, 4] = 0;//remove edge
-                                    modeldata[offerednode * nodecount + dropnode, 24] = 1;//droppedc
-                                    utilitytable[offerednode * nodecount + dropnode, 6] = 0;//edge
-                                    utilitytable[offerednode * nodecount + dropnode, 8] = 0;//accept
-                                    modeldata[dropnode * nodecount + offerednode, 4] = 0;//remove edge
-                                    modeldata[dropnode * nodecount + offerednode, 23] = 1;//droppedr
-                                    utilitytable[dropnode * nodecount + offerednode, 6] = 0;//edge
-                                    utilitytable[dropnode * nodecount + offerednode, 8] = 0;//accept
-                                    tiecapacity[1][dropnode] += 1;
-                                    tiecapacity[2][dropnode] -= 1;
-                                    */
-
-                                    //add edge with new node offering greater utility
-                                    addEdge(ref modeldata, ref utilitytable, ref tiecapacity, rewiringnode, offerednode, nodecount);
-                                    /*
-                                    utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
-                                    modeldata[rewiringnode * nodecount + offerednode, 22] = 1;
-                                    modeldata[offerednode * nodecount + rewiringnode, 21] = 1;
-                                    modeldata[rewiringnode * nodecount + offerednode, 4] = 1;
-                                    utilitytable[rewiringnode * nodecount + offerednode, 6] = 1;
-                                    utilitytable[rewiringnode * nodecount + offerednode, 8] = 1;
-                                    tiecapacity[1][rewiringnode] -= 1;
-                                    tiecapacity[2][rewiringnode] += 1;
-                                    modeldata[offerednode * nodecount + rewiringnode, 4] = 1;
-                                    utilitytable[offerednode * nodecount + rewiringnode, 6] = 1;
-                                    utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
-                                    */
-                                    //if (rewseq < 10)
-                                    rewired = true;
-                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (offerednode + 1) + " in network with runno " + runno + " added node " + (rewiringnode + 1) + " and dropped node " + (dropnode + 1)
-                                        + ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
-                                        + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
-                                    rewseq++;
-                                    if (modeldata[offerednode * nodecount + dropnode, 4] == 1 || modeldata[dropnode * nodecount + offerednode, 4] == 1)
-                                        System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not drop node " + (dropnode + 1) + "." + Environment.NewLine);
-                                    if (modeldata[rewiringnode * nodecount + offerednode, 4] != 1 || modeldata[offerednode * nodecount + rewiringnode, 4] != 1)
-                                        System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not gain an edge with " + (rewiringnode + 1) + "." + Environment.NewLine);
-                                }
-                            }
-                            maxutil.Remove(offerednode);
-                            utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
-                        }
-                    }
-                    rewireloopcount++;
-                    if (rewireloopcount % nodecount == 0)
-                    {
-                        System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
-                        lastoutput++;
+                        modeldata[i, 17] = 0;
+                        modeldata[i, 18] = 0;
+                        modeldata[i, 19] = 0; //offerr
+                        modeldata[i, 20] = 0;  //offerc
+                        modeldata[i, 22] = 0;//accc
+                        modeldata[i, 21] = 0;//accr
+                        modeldata[i, 23] = 0;//droppedc
+                        modeldata[i, 24] = 0;//droppedr
+                        utilitytable[i, 7] = 0;
+                        utilitytable[i, 8] = 0;
                     }
                 }
-            
+                rewiringnode = nodeselection[k];
+                for (int i = 0; i < nodecount; i++)
+                {
+                    modeldata[rewiringnode * nodecount + i, 1] = iteration;
+                    modeldata[rewiringnode * nodecount + i, 17] = sequence;
+                    modeldata[i * nodecount + rewiringnode, 18] = sequence;
+                }
+                System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " was selected for rewiring with sequence number " + sequence + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                iteration++;
+                sequence++;
+
+                int offercount = 0;
+                while (offercount < nodecount)
+                {
+                    List<int> maxutil = maxUtility(utilitytable, rewiringnode, nodecount);
+                    //System.IO.File.AppendAllText(words[0] + "-log.txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                    if (maxutil.Count == 0)
+                        break;
+                    while (maxutil.Count > 0)
+                    {
+                        int offerednode = maxutil[RNGen.Next(maxutil.Count)];
+                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                        offercount++;
+                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                        if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 || modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
+                        {
+                            utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
+                            utilitytable[offerednode * nodecount + rewiringnode, 7] = 1;
+
+                            List<int> minUtil = minUtility(utilitytable, modeldata, offerednode, nodecount, words);
+                            if (minUtil.Count == 0)
+                            {
+                                maxutil.Remove(offerednode);
+                                break;
+                            }
+                            int dropnode = minUtil[RNGen.Next(minUtil.Count)];
+                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                            if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)// && tiecapacity[2][rewiringnode] > 0)
+                            {
+                                //if (rewseq < 10)
+                                System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
+                                    ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
+                                    + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
+                                rewseq++;
+                                addEdge(ref modeldata, ref utilitytable, ref tiecapacity, rewiringnode, offerednode, nodecount);
+                                /*
+                                modeldata[rewiringnode * nodecount + offerednode, 19] = 1; //offerr
+                                modeldata[offerednode * nodecount + rewiringnode, 20] = 1;  //offerc
+                                utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
+                                modeldata[rewiringnode * nodecount + offerednode, 22] = 1;
+                                modeldata[offerednode * nodecount + rewiringnode, 21] = 1;
+                                modeldata[rewiringnode * nodecount + offerednode, 4] = 1;
+                                utilitytable[rewiringnode * nodecount + offerednode, 6] = 1;
+                                utilitytable[rewiringnode * nodecount + offerednode, 8] = 1;
+                                tiecapacity[1][rewiringnode] -= 1;
+                                tiecapacity[2][rewiringnode] += 1;
+                                modeldata[offerednode * nodecount + rewiringnode, 4] = 1;
+                                utilitytable[offerednode * nodecount + rewiringnode, 6] = 1;
+                                utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
+                                tiecapacity[1][offerednode] -= 1;
+                                tiecapacity[2][offerednode] += 1;
+                                */
+                                rewired = true;
+                                netedges++;
+                            }
+                            else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)
+                            {
+
+                                modeldata[rewiringnode * nodecount + offerednode, 19] = 1; //offerr
+                                modeldata[offerednode * nodecount + rewiringnode, 20] = 1;  //offerc
+
+                                //drop edge with node offering least utility
+                                dropEdge(ref modeldata, ref utilitytable, ref tiecapacity, offerednode, dropnode, nodecount);
+                                /*
+                                utilitytable[offerednode * nodecount + dropnode, 7] = 0;//offer
+                                modeldata[offerednode * nodecount + dropnode, 22] = 0;//accc
+                                modeldata[dropnode * nodecount + offerednode, 21] = 0;//accr
+                                modeldata[offerednode * nodecount + dropnode, 4] = 0;//remove edge
+                                modeldata[offerednode * nodecount + dropnode, 24] = 1;//droppedc
+                                utilitytable[offerednode * nodecount + dropnode, 6] = 0;//edge
+                                utilitytable[offerednode * nodecount + dropnode, 8] = 0;//accept
+                                modeldata[dropnode * nodecount + offerednode, 4] = 0;//remove edge
+                                modeldata[dropnode * nodecount + offerednode, 23] = 1;//droppedr
+                                utilitytable[dropnode * nodecount + offerednode, 6] = 0;//edge
+                                utilitytable[dropnode * nodecount + offerednode, 8] = 0;//accept
+                                tiecapacity[1][dropnode] += 1;
+                                tiecapacity[2][dropnode] -= 1;
+                                */
+
+                                //add edge with new node offering greater utility
+                                addEdge(ref modeldata, ref utilitytable, ref tiecapacity, rewiringnode, offerednode, nodecount);
+                                /*
+                                utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
+                                modeldata[rewiringnode * nodecount + offerednode, 22] = 1;
+                                modeldata[offerednode * nodecount + rewiringnode, 21] = 1;
+                                modeldata[rewiringnode * nodecount + offerednode, 4] = 1;
+                                utilitytable[rewiringnode * nodecount + offerednode, 6] = 1;
+                                utilitytable[rewiringnode * nodecount + offerednode, 8] = 1;
+                                tiecapacity[1][rewiringnode] -= 1;
+                                tiecapacity[2][rewiringnode] += 1;
+                                modeldata[offerednode * nodecount + rewiringnode, 4] = 1;
+                                utilitytable[offerednode * nodecount + rewiringnode, 6] = 1;
+                                utilitytable[offerednode * nodecount + rewiringnode, 8] = 1;
+                                */
+                                //if (rewseq < 10)
+                                rewired = true;
+                                System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (offerednode + 1) + " in network with runno " + runno + " added node " + (rewiringnode + 1) + " and dropped node " + (dropnode + 1)
+                                    + ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
+                                    + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
+                                rewseq++;
+                                if (modeldata[offerednode * nodecount + dropnode, 4] == 1 || modeldata[dropnode * nodecount + offerednode, 4] == 1)
+                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not drop node " + (dropnode + 1) + "." + Environment.NewLine);
+                                if (modeldata[rewiringnode * nodecount + offerednode, 4] != 1 || modeldata[offerednode * nodecount + rewiringnode, 4] != 1)
+                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not gain an edge with " + (rewiringnode + 1) + "." + Environment.NewLine);
+                            }
+                        }
+                        maxutil.Remove(offerednode);
+                        utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
+                    }
+                }
+                rewireloopcount++;
+                if (rewireloopcount % nodecount == 0)
+                {
+                    System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                    lastoutput++;
+                }
+                apform.updateProgress();
+            }
+
 
 
             //}
@@ -5986,8 +5987,6 @@ namespace Network
             //}
             System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRING: Rewiring stage finished after " + rewireloopcount + "iterations." + Environment.NewLine);
         }
-
-
 
     }
 
