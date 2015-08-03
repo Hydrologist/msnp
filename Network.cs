@@ -5804,7 +5804,7 @@ namespace Network
             double utility, cost, netutility;
             for (int i = 0; i < nodecount; ++i)
             {
-                utility = netedges + netnodes > 0 ? (getDegree(node1, nodecount, modeldata) + 1) / (netedges + netnodes) : 0;
+                utility = netedges + netnodes > 0 ? (double) (getDegree(node1, nodecount, modeldata) + 1) / (netedges + netnodes) : 0;
                 cost = netnodes > 0 ? utility / netnodes : 0;
                 netutility = utility - cost > 0 ? utility - cost : 0;
                 netutilityvector.Add(netutility);
@@ -6064,7 +6064,7 @@ namespace Network
                                 rewired = true;
                                 netedges++;
                             }
-                            else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)
+                            else if (modeldata[offerednode * nodecount + dropnode, 4] == 1 && utilitytable[offerednode * nodecount + dropnode, 2] < utilitytable[offerednode * nodecount + rewiringnode, 2] && tiecapacity[1][rewiringnode] > 0)
                             {
 
                                 modeldata[rewiringnode * nodecount + offerednode, 19] = 1; //offerr
