@@ -5286,6 +5286,19 @@ namespace Network
             tiecapacity[2][addednode] += 1; //increment degree
         }
 
+        public int getDegree(int node, int nodecount, Matrix modeldata)
+        {
+            int degree = 0;
+            for (int i = node * nodecount; i < node * nodecount + nodecount; ++i)
+            {
+                if (modeldata[i, 4] == 1)
+                {
+                    degree += 1;
+                }
+            }
+            return degree;
+        }
+
         public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily, ref ABMProgressForm apform)
         {
             Matrix modeldata = new Matrix(nodecount * nodecount, 27);
@@ -5772,17 +5785,154 @@ namespace Network
             return maxutillist;
         }
 
-        public double calcUtility(int degj, int netedges, int netnodes)
+        public double calcUtility(int node1, int node2, int nodecount,/*int degj,*/ int netedges, int netnodes, Matrix modeldata)
         {
-            return (double)(degj + 1) / (netedges + netnodes);
+            //return (double)(degj + 1) / (netedges + netnodes);
+            List<int> firstordermodellist = new List<int>();
+            for (int i = 0; i < nodecount; ++i)
+            {
+                if (i != node1)
+                {
+                    firstordermodellist.Add((int)modeldata[node2 * nodecount + i, 4]);
+                }
+                else
+                {
+                    firstordermodellist.Add(0);
+                }
+            }
+            List<double> netutilityvector = new List<double>();
+            double utility, cost, netutility;
+            for (int i = 0; i < nodecount; ++i)
+            {
+                utility = netedges + netnodes > 0 ? (getDegree(node1, nodecount, modeldata) + 1) / (netedges + netnodes) : 0;
+                cost = netnodes > 0 ? utility / netnodes : 0;
+                netutility = utility - cost > 0 ? utility - cost : 0;
+                netutilityvector.Add(netutility);
+            }
+            double secondorderutility = 0;
+            for (int i = 0; i < nodecount; ++i)
+            {
+                secondorderutility += netutilityvector[i] * firstordermodellist[i];
+            }
+            return netutilityvector[node1] * firstordermodellist[node1] + secondorderutility * secondorderutility;
+
+            /*
+            Matrix firstordermodel = new Matrix(nodecount, nodecount);
+            for (int i = 0; i < nodecount * nodecount; ++i)
+            {
+                if (i % nodecount == node1 || i / nodecount == node1)
+                {
+                    firstordermodel[i / nodecount, i % nodecount] = 0;
+                }
+                else
+                {
+                    firstordermodel[i / nodecount, i % nodecount] = modeldata[i, 4];
+                }
+            }
+
+            double utility;// = (getDegree(node2, nodecount, modeldata) + 1) / (netedges + netnodes);
+            double cost, netutil;
+            Matrix utilitymatrix = new Matrix(nodecount, nodecount);
+            for (int i = 0; i < nodecount; ++i)
+            {
+                if (netedges == 0 || netnodes == 0)
+                    utility = 0.0;
+                else
+                    utility = (double) (getDegree(i, nodecount, modeldata) - 1) / (netedges + netnodes);
+                cost = utility / netnodes;
+                netutil = utility - cost > 0 ? utility - cost : 0;
+                for (int j = 0; j < nodecount; ++j)
+                {
+                    utilitymatrix[j, i] = i != node1 && j != node1 ? netutil : 0;
+                }
+            }
+            for(int i = 0; i < nodecount; ++i)
+            {
+                for(int j = 0; j < nodecount; ++j)
+                {
+                    utilitymatrix[i, j] = utilitymatrix[i, j] * firstordermodel[i, j];
+                }
+            }
+            double firstorderutility = utilitymatrix[1, node2];
+            double secondorderutility = 0;
+            for (int i = 0; i < nodecount; ++i)
+            {
+                secondorderutility += utilitymatrix[node2, i];
+            }
+            return firstorderutility + secondorderutility * secondorderutility;
+             */
         }
 
-        public double calculateHomophilyUtility(int node1, int node2, Matrix modeldata)
+        public double calculateHomophilyUtility(int node1, int node2, int nodecount, int netnodes, Matrix modeldata)
         {
-            if (modeldata[node1, 7] == 1)
+            /*if (modeldata[node1, 7] == 1)
                 return 0.5 * modeldata[node2, 10] + .3 * modeldata[node2, 11] + .2 * modeldata[node2, 12];
             else
-                return 0.2 * modeldata[node2, 10] + .5 * modeldata[node2, 11] + .3 * modeldata[node2, 12];
+                return 0.2 * modeldata[node2, 10] + .5 * modeldata[node2, 11] + .3 * modeldata[node2, 12];*/
+
+            Matrix firstordermodel = new Matrix(nodecount, nodecount);
+            for (int i = 0; i < nodecount * nodecount; ++i)
+            {
+                if (i % nodecount == node1 || i / nodecount == node1)
+                {
+                    firstordermodel[i / nodecount, i % nodecount] = 0;
+                }
+                else
+                {
+                    firstordermodel[i / nodecount, i % nodecount] = modeldata[i, 4];
+                }
+            }
+
+            Matrix firstorderutility = new Matrix(nodecount, nodecount);
+            for (int i = 0; i < nodecount * nodecount; ++i)
+            {
+                if (modeldata[i, 4] == 1 && i / nodecount != node1 && i % nodecount != node1)
+                {
+                    if (modeldata[i, 7] == 1)
+                        firstorderutility[i / nodecount, i % nodecount] = 0.5 * modeldata[i % nodecount, 10] + .3 * modeldata[i % nodecount, 11] + .2 * modeldata[i % nodecount, 12];
+                    else
+                        firstorderutility[i / nodecount, i % nodecount] = 0.2 * modeldata[i % nodecount, 10] + .5 * modeldata[i % nodecount, 11] + .3 * modeldata[i % nodecount, 12];
+                }
+                else
+                {
+                    firstorderutility[i / nodecount, i % nodecount] = 0.0;
+                }
+            }
+            Matrix secondorderutility = new Matrix(nodecount, nodecount);
+            double utility, cost, netutility, secondutility;
+            for (int i = 0; i < nodecount; ++i)
+            {
+                utility = 0.0;
+                for (int j = 0; j < nodecount; ++j)
+                {
+                    utility += firstorderutility[i, j];
+                }
+                cost = utility / netnodes;
+                netutility = utility - cost > 0 ? utility - cost : 0;
+                for (int j = 0; j < nodecount; ++j)
+                {
+                    if (i != node1 && j != node1 && firstordermodel[j, i] == 1)
+                    {
+                        secondorderutility[j, i] = netutility;
+                    }
+                    else
+                    {
+                        secondorderutility[j, i] = 0;
+                    }
+                }
+            }
+            secondutility = 0;
+            utility = 0;
+            for (int i = 0; i < nodecount; ++i)
+            {
+                utility += firstorderutility[node1, i];
+                secondutility += secondorderutility[node1, i];
+            }
+            cost = utility / netnodes;
+            netutility = utility - cost > 0 ? utility - cost : 0;
+
+            return netutility + secondutility * secondutility;
+
         }
 
         public Matrix updateModel(Matrix modeldata, List<int[]> tiecapacity, int nodecount)
@@ -5804,11 +5954,11 @@ namespace Network
                 utilitytable[i, 4] = utilitytable[i, 3] - utilitytable[i, 5];//update degree
                 if (homophily)
                 {
-                    utilitytable[i, 2] = calculateHomophilyUtility((int)i / nodecount, i % nodecount, modeldata);
+                    utilitytable[i, 2] = calculateHomophilyUtility((int)i / nodecount, i % nodecount, nodecount, netn, modeldata);
                 }
                 else
                 {
-                    utilitytable[i, 2] = calcUtility(tiecapacity[2][i % nodecount], nete, netn);//update utility
+                    utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, modeldata);//update utility
                 }
                 modeldata[i, 26] = utilitytable[i, 2];
             }
@@ -5975,7 +6125,7 @@ namespace Network
                     System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
                     lastoutput++;
                 }
-                apform.updateProgress();
+                apform.Invoke(apform.abmdelegate);
             }
 
 

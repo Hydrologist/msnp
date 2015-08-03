@@ -13,6 +13,7 @@ using Network.Matrices;
 using NetworkGUI.Forms;
 using NetworkGUI;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace NetworkGUI
 {
@@ -4091,7 +4092,7 @@ namespace NetworkGUI
 
         }
 
-        private void agentBasedModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void agentBasedModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //used
             openFileDialog.Multiselect = false;
@@ -4201,7 +4202,7 @@ namespace NetworkGUI
                 {
                     for (int j = 0; j < netcount; j++)
                     {
-                        m = net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform);
+                        m = await Task.Run(() => net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform));
                         m.ColLabels.SetLabels(labels);
                         net.mList.Add(m);
                     }
