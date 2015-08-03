@@ -5649,6 +5649,7 @@ namespace Network
                 int continuecount = 0;
                 //System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Active Node: " + shockNode + Environment.NewLine);
                 int shockNodeCapacity = tiecapacity[0][shockNode] - tiecapacity[2][shockNode];
+                tiecapacity[1][shockNode] = shockNodeCapacity;
                 while (tiecapacity[0][shockNode] - tiecapacity[2][shockNode] < 0)//shockNodeCapacity < 0)
                 {
                     List<int> minUtil = minUtility(utilitytable, modeldata, shockNode, nodecount, words);
@@ -5714,7 +5715,7 @@ namespace Network
             int actualdegree, tcap;//, dropped;
             for (int i = 0; i < nodecount; i++)
             {
-                tcap = (int)modeldata[i * nodecount, 5];
+                tcap = (int)modeldata[i * nodecount, 15];
                 actualdegree = 0;
                 //dropped = 0;
                 for (int j = 0; j < nodecount; j++)
@@ -5785,7 +5786,7 @@ namespace Network
             return maxutillist;
         }
 
-        public double calcUtility(int node1, int node2, int nodecount,/*int degj,*/ int netedges, int netnodes, Matrix modeldata)
+        public double calcUtility(int node1, int node2, int nodecount,/*int degj,*/ int netedges, int netnodes, Matrix modeldata, List<int[]> tiecapacity)
         {
             //return (double)(degj + 1) / (netedges + netnodes);
             List<int> firstordermodellist = new List<int>();
@@ -5804,7 +5805,7 @@ namespace Network
             double utility, cost, netutility;
             for (int i = 0; i < nodecount; ++i)
             {
-                utility = netedges + netnodes > 0 ? (double) (getDegree(node1, nodecount, modeldata) + 1) / (netedges + netnodes) : 0;
+                utility = netedges + netnodes > 0 ? (double) (tiecapacity[2][i] + 1) / (netedges + netnodes) : 0;
                 cost = netnodes > 0 ? utility / netnodes : 0;
                 netutility = utility - cost > 0 ? utility - cost : 0;
                 netutilityvector.Add(netutility);
@@ -5958,7 +5959,7 @@ namespace Network
                 }
                 else
                 {
-                    utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, modeldata);//update utility
+                    utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, modeldata, tiecapacity);//update utility
                 }
                 modeldata[i, 26] = utilitytable[i, 2];
             }
