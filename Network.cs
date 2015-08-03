@@ -5908,7 +5908,7 @@ namespace Network
                 {
                     utility += firstorderutility[i, j];
                 }
-                cost = utility / netnodes;
+                cost = utility / (double) netnodes;
                 netutility = utility - cost > 0 ? utility - cost : 0;
                 for (int j = 0; j < nodecount; ++j)
                 {
@@ -5929,7 +5929,7 @@ namespace Network
                 utility += firstorderutility[node1, i];
                 secondutility += secondorderutility[node1, i];
             }
-            cost = utility / netnodes;
+            cost = utility / (double) netnodes;
             netutility = utility - cost > 0 ? utility - cost : 0;
 
             return netutility + secondutility * secondutility;
