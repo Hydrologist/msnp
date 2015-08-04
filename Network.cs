@@ -5864,7 +5864,7 @@ namespace Network
              */
         }
 
-        public double calculateHomophilyUtility(int node1, int node2, int nodecount, int netnodes, Matrix modeldata)
+        public List<double> calculateHomophilyUtility(int node1, int nodecount, int netnodes, Matrix modeldata)
         {
             /*if (modeldata[node1, 7] == 1)
                 return 0.5 * modeldata[node2, 10] + .3 * modeldata[node2, 11] + .2 * modeldata[node2, 12];
@@ -5899,6 +5899,7 @@ namespace Network
                     firstorderutility[i / nodecount, i % nodecount] = 0.0;
                 }
             }
+
             Matrix secondorderutility = new Matrix(nodecount, nodecount);
             double utility, cost, netutility, secondutility;
             for (int i = 0; i < nodecount; ++i)
@@ -5922,17 +5923,22 @@ namespace Network
                     }
                 }
             }
-            secondutility = 0;
-            utility = 0;
-            for (int i = 0; i < nodecount; ++i)
+            List<double> utilityvector = new List<double>();
+            for (int j = 0; j < nodecount; ++j)
             {
-                utility += firstorderutility[node1, i];
-                secondutility += secondorderutility[node1, i];
+                secondutility = 0;
+                utility = 0;
+                for (int i = 0; i < nodecount; ++i)
+                {
+                    utility += firstorderutility[j, i];
+                    secondutility += secondorderutility[j, i];
+                }
+                cost = utility / (double)netnodes;
+                netutility = utility - cost > 0 ? utility - cost : 0;
+                utilityvector.Add(netutility);
             }
-            cost = utility / (double) netnodes;
-            netutility = utility - cost > 0 ? utility - cost : 0;
 
-            return netutility + secondutility * secondutility;
+            return utilityvector;
 
         }
 
@@ -5949,19 +5955,29 @@ namespace Network
 
         public Matrix updateUtility(Matrix utilitytable, Matrix modeldata, List<int[]> tiecapacity, int nodecount, int nete, int netn, bool homophily)
         {
-            for (int i = 0; i < nodecount * nodecount; i++)
+            if (homophily)
             {
-                utilitytable[i, 5] = tiecapacity[1][i % nodecount];//update tie capacity
-                utilitytable[i, 4] = utilitytable[i, 3] - utilitytable[i, 5];//update degree
-                if (homophily)
+                List<double> utilityvector;
+                for (int i = 0; i < nodecount; ++i)
                 {
-                    utilitytable[i, 2] = calculateHomophilyUtility((int)i / nodecount, i % nodecount, nodecount, netn, modeldata);
+                    utilityvector = calculateHomophilyUtility(i, nodecount, nete, modeldata);
+                    for (int j = 0; j < nodecount; ++j)
+                    {
+                        utilitytable[i * nodecount + j, 5] = tiecapacity[1][j];
+                        utilitytable[i * nodecount + j, 4] = utilitytable[i * nodecount + j, 3] - utilitytable[i * nodecount + j, 5];
+                        utilitytable[i * nodecount + j, 2] = utilityvector[j];
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (int i = 0; i < nodecount * nodecount; i++)
                 {
+                    utilitytable[i, 5] = tiecapacity[1][i % nodecount];//update tie capacity
+                    utilitytable[i, 4] = utilitytable[i, 3] - utilitytable[i, 5];//update degree
                     utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, modeldata, tiecapacity);//update utility
+                    modeldata[i, 26] = utilitytable[i, 2];
                 }
-                modeldata[i, 26] = utilitytable[i, 2];
             }
             return utilitytable;
         }
