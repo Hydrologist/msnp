@@ -5687,7 +5687,7 @@ namespace Network
             }
             int sequence = 1;
             int lastoutput = 0;
-            while (rewireloopcount < 3 * nodecount && (!rewired && selectednodes.Count != nodecount))
+            while (rewireloopcount < 6 * nodecount && (!rewired && selectednodes.Count != nodecount))
             {
                 rewiringnode = RNGen.Next(nodecount);
                 for (int i = 0; i < nodecount; i++)
@@ -5815,9 +5815,10 @@ namespace Network
                     lastoutput++;
                 }
             }
-            for (int i = lastoutput; i < 3; i++)
+            for (int i = lastoutput; i < 6; i++)
             {
                 System.IO.File.AppendAllText(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                //System.IO.File.Delete(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1]);
             }
         }
 
