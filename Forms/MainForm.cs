@@ -4120,7 +4120,7 @@ namespace NetworkGUI
             displayMatrix = "Data";
             currentYear = _ABMForm.netID;
             _optionsForm.ReachNumMatrices = _ABMForm.N - 1;
-            string[] labels = new string[27] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "demrow", "enmyenmyrow", "cultismrow", "demcol", "enmyenmycol", "cultismcol", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial", "uij"};
+            string[] labels = new string[29] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "demrow", "enmyenmyrow", "cultismrow", "demcol", "enmyenmycol", "cultismcol", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial", "uij", "cij", "ujk^2"};
             DialogResult result = saveFileDialog.ShowDialog();
             if (result == DialogResult.Yes || result == DialogResult.OK)
             {

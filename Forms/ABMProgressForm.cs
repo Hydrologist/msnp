@@ -17,6 +17,8 @@ namespace NetworkGUI.Forms
 
         public delegate void updateDelegate();
         public updateDelegate abmdelegate;
+        public delegate void quitDelegate();
+        public quitDelegate quitdelegate;
 
         public ABMProgressForm(List<int> _runnos, List<int> _iters)
         {
@@ -35,6 +37,7 @@ namespace NetworkGUI.Forms
             label1.Text = "Currently simulating runno " + runnos[currentno] + " of " + runnos.Count;
             label1.Update();
             abmdelegate = new updateDelegate(updateProgress);
+            quitdelegate = new quitDelegate(quit);
         }
 
         public void updateProgress()
@@ -42,7 +45,6 @@ namespace NetworkGUI.Forms
             iterbar.Value += 1;
             if (currentno == runnos.Count - 1 && iterbar.Value == iterbar.Maximum)
             {
-                Thread.Sleep(2000);
                 this.Close();
             }
             if (iterbar.Value == iterbar.Maximum && runnobar.Value < runnobar.Maximum)
@@ -56,6 +58,12 @@ namespace NetworkGUI.Forms
                 iterbar.Value = 0;
                 return;
             }
+        }
+
+        public void quit()
+        {
+            iterbar.Value = ((iterbar.Value / (iterbar.Maximum / 3) + 1) * (iterbar.Maximum / 3)) - 1;
+            updateProgress();
         }
 
         private void label2_Click(object sender, EventArgs e)
