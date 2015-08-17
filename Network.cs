@@ -5301,7 +5301,7 @@ namespace Network
 
         public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily, ref ABMProgressForm apform)
         {
-            Matrix modeldata = new Matrix(nodecount * nodecount, 27);
+            Matrix modeldata = new Matrix(nodecount * nodecount, 29);
             Matrix utilitytable = new Matrix(nodecount * nodecount, 9);
             List<int[]> tiecapacity = new List<int[]>();
             List<int> initialnodes = new List<int>();
@@ -5426,7 +5426,7 @@ namespace Network
             //System.IO.File.AppendAllText(filename, "INITAL NETWORK" + Environment.NewLine + "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,dropped,initial" + Environment.NewLine);
             //System.IO.File.AppendAllText(filename, modeldata.ToCSV(initialnodes, nodecount) + Environment.NewLine);
             //modeldata = updateModel(modeldata, tiecapacity, nodecount);
-            utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
+            utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
             int netnodesize;
             if (nodecount >= 100)
                 netnodesize = (int)nodecount / 10;
@@ -5538,7 +5538,7 @@ namespace Network
                             //}
                         }
                         maxutil.Remove(potentialnode);
-                        utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
+                        utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
                     }
                     if (tiecapacity[1][newnode] <= 0 || offernodes.Count == 0 || maxutil.Count == 0)
                     {
@@ -5695,7 +5695,7 @@ namespace Network
                     System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
                                          + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
 
-                    utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
+                    utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
                     shockNodeCapacity++;
                 }
                 shockedNodes.Remove(shockNode);
@@ -5786,7 +5786,7 @@ namespace Network
             return maxutillist;
         }
 
-        public double calcUtility(int node1, int node2, int nodecount,/*int degj,*/ int netedges, int netnodes, Matrix modeldata, List<int[]> tiecapacity)
+        public double calcUtility(int node1, int node2, int nodecount,/*int degj,*/ int netedges, int netnodes, ref Matrix modeldata, List<int[]> tiecapacity)
         {
             //return (double)(degj + 1) / (netedges + netnodes);
             List<int> firstordermodellist = new List<int>();
@@ -5803,18 +5803,24 @@ namespace Network
             }
             List<double> netutilityvector = new List<double>();
             double utility, cost, netutility;
+            double firstutil = 0, firstcost = 0;
             for (int i = 0; i < nodecount; ++i)
             {
                 utility = netedges + netnodes > 0 ? (double) (tiecapacity[2][i] + 1) / (netedges + netnodes) : 0;
+                firstutil += utility;
                 cost = netnodes > 0 ? utility / netnodes : 0;
+                firstcost += cost;
                 netutility = utility - cost > 0 ? utility - cost : 0;
                 netutilityvector.Add(netutility);
             }
+            modeldata[node1 * nodecount + node2, 26] = firstutil;
+            modeldata[node1 * nodecount + node2, 27] = firstcost;
             double secondorderutility = 0;
             for (int i = 0; i < nodecount; ++i)
             {
                 secondorderutility += netutilityvector[i] * firstordermodellist[i];
             }
+            modeldata[node1 * nodecount + node2, 28] = secondorderutility * secondorderutility;
             return netutilityvector[node1] * firstordermodellist[node1] + secondorderutility * secondorderutility;
 
             /*
@@ -5864,82 +5870,59 @@ namespace Network
              */
         }
 
-        public List<double> calculateHomophilyUtility(int node1, int nodecount, int netnodes, Matrix modeldata)
+        public double calculateHomophilyUtility(int row, int col, int nodecount, int netnodes, ref Matrix modeldata)
         {
-            /*if (modeldata[node1, 7] == 1)
-                return 0.5 * modeldata[node2, 10] + .3 * modeldata[node2, 11] + .2 * modeldata[node2, 12];
-            else
-                return 0.2 * modeldata[node2, 10] + .5 * modeldata[node2, 11] + .3 * modeldata[node2, 12];*/
-
-            Matrix firstordermodel = new Matrix(nodecount, nodecount);
-            for (int i = 0; i < nodecount * nodecount; ++i)
-            {
-                if (i % nodecount == node1 || i / nodecount == node1)
-                {
-                    firstordermodel[i / nodecount, i % nodecount] = 0;
-                }
-                else
-                {
-                    firstordermodel[i / nodecount, i % nodecount] = modeldata[i, 4];
-                }
-            }
-
-            Matrix firstorderutility = new Matrix(nodecount, nodecount);
-            for (int i = 0; i < nodecount * nodecount; ++i)
-            {
-                if (modeldata[i, 4] == 1 && i / nodecount != node1 && i % nodecount != node1)
-                {
-                    if (modeldata[i, 7] == 1)
-                        firstorderutility[i / nodecount, i % nodecount] = 0.5 * modeldata[i % nodecount, 10] + .3 * modeldata[i % nodecount, 11] + .2 * modeldata[i % nodecount, 12];
-                    else
-                        firstorderutility[i / nodecount, i % nodecount] = 0.2 * modeldata[i % nodecount, 10] + .5 * modeldata[i % nodecount, 11] + .3 * modeldata[i % nodecount, 12];
-                }
-                else
-                {
-                    firstorderutility[i / nodecount, i % nodecount] = 0.0;
-                }
-            }
-
-            Matrix secondorderutility = new Matrix(nodecount, nodecount);
-            double utility, cost, netutility, secondutility;
+            List<double> firstorderutility = new List<double>();
+            double utility, cost, netutility;
             for (int i = 0; i < nodecount; ++i)
             {
-                utility = 0.0;
-                for (int j = 0; j < nodecount; ++j)
+                if (modeldata[row, 7] == 1)
                 {
-                    utility += firstorderutility[i, j];
+                    
+                    utility = (.5 * modeldata[row * nodecount + i, 7] * modeldata[row * nodecount + i, 10]) + (.3 * modeldata[row * nodecount + i, 8] * modeldata[row * nodecount + i, 11]) + (.2 * modeldata[row * nodecount + i, 9] * modeldata[row * nodecount + i, 12]);
+                    if (row == col)
+                        utility = 0;
+                    cost = netnodes > 0 ? utility / netnodes : 0;
+                    netutility = utility - cost > 0 ? utility - cost : 0;
+                    modeldata[row * nodecount + i, 26] = utility;
+                    modeldata[row * nodecount + i, 27] = cost;
+                    firstorderutility.Add(netutility);
                 }
-                cost = utility / (double) netnodes;
-                netutility = utility - cost > 0 ? utility - cost : 0;
-                for (int j = 0; j < nodecount; ++j)
+                else
                 {
-                    if (i != node1 && j != node1 && firstordermodel[j, i] == 1)
-                    {
-                        secondorderutility[j, i] = netutility;
-                    }
-                    else
-                    {
-                        secondorderutility[j, i] = 0;
-                    }
+
+                    utility = (.5 * modeldata[row * nodecount + i, 8] * modeldata[row * nodecount + i, 11]) + (.3 * modeldata[row * nodecount + i, 9] * modeldata[row * nodecount + i, 12]) + (.2 * modeldata[row * nodecount + i, 10]);
+                    if (row == col)
+                        utility = 0;
+                    cost = netnodes > 0 ? utility / netnodes : 0;
+                    netutility = utility - cost > 0 ? utility - cost : 0;
+                    modeldata[row * nodecount + i, 26] = utility;
+                    modeldata[row * nodecount + i, 27] = cost;
+                    firstorderutility.Add(netutility);
                 }
             }
-            List<double> utilityvector = new List<double>();
-            for (int j = 0; j < nodecount; ++j)
+            //List<double> secondorderutility = new List<double();
+            double secondutility = 0.0;
+            for (int i = 0; i < nodecount; ++i)
             {
-                secondutility = 0;
-                utility = 0;
-                for (int i = 0; i < nodecount; ++i)
+                if(i != row && col != row && modeldata[row * nodecount + i] == 1)
                 {
-                    utility += firstorderutility[j, i];
-                    secondutility += secondorderutility[j, i];
+                    secondutility += firstorderutility[i];
                 }
-                cost = utility / (double)netnodes;
-                netutility = utility - cost > 0 ? utility - cost : 0;
-                utilityvector.Add(netutility);
             }
+            modeldata[row * nodecount + col, 28] = secondutility * secondutility;
 
-            return utilityvector;
+            return firstorderutility[col] + secondutility * secondutility;
+                       
+            /*
+            double firstorderutility;
+            if (modeldata[node1, 7] == 1)
+                firstorderutility = 0.5 * modeldata[node1, 10] * modeldata[node2, 10] + .3 * modeldata[node1, 11] * modeldata[node2, 11] + .2 * modeldata[node1, 12] * modeldata[node2, 12];
+            else
+                firstorderutility = 0.2 * modeldata[node2, 10] + .5 * modeldata[node1, 11] * modeldata[node2, 11] + .3 * modeldata[node1, 12] * modeldata[node2, 12];
 
+            double cost = netnodes > 0 ? firstorderutility / netnodes : 0;
+            */
         }
 
         public Matrix updateModel(Matrix modeldata, List<int[]> tiecapacity, int nodecount)
@@ -5953,21 +5936,29 @@ namespace Network
             return modeldata;
         }
 
-        public Matrix updateUtility(Matrix utilitytable, Matrix modeldata, List<int[]> tiecapacity, int nodecount, int nete, int netn, bool homophily)
+        public Matrix updateUtility(Matrix utilitytable, ref Matrix modeldata, List<int[]> tiecapacity, int nodecount, int nete, int netn, bool homophily)
         {
             if (homophily)
             {
+                /*
                 List<double> utilityvector;
                 for (int i = 0; i < nodecount; ++i)
                 {
-                    utilityvector = calculateHomophilyUtility(i, nodecount, nete, modeldata);
+                    utilityvector = calculateHomophilyUtility(i, nodecount, nete, ref modeldata);
                     for (int j = 0; j < nodecount; ++j)
                     {
                         utilitytable[i * nodecount + j, 5] = tiecapacity[1][j];
                         utilitytable[i * nodecount + j, 4] = utilitytable[i * nodecount + j, 3] - utilitytable[i * nodecount + j, 5];
                         utilitytable[i * nodecount + j, 2] = utilityvector[j];
                     }
+                }*/
+                for (int i = 0; i < nodecount * nodecount; ++i)
+                {
+                    utilitytable[i, 5] = tiecapacity[1][i % nodecount];//update tie capacity
+                    utilitytable[i, 4] = utilitytable[i, 3] - utilitytable[i, 5];//update degree
+                    utilitytable[i, 2] = calculateHomophilyUtility(i / nodecount, i % nodecount, nodecount, netn, ref modeldata);//update utility
                 }
+
             }
             else
             {
@@ -5975,7 +5966,7 @@ namespace Network
                 {
                     utilitytable[i, 5] = tiecapacity[1][i % nodecount];//update tie capacity
                     utilitytable[i, 4] = utilitytable[i, 3] - utilitytable[i, 5];//update degree
-                    utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, modeldata, tiecapacity);//update utility
+                    utilitytable[i, 2] = calcUtility(i / nodecount, i % nodecount, nodecount, /*tiecapacity[2][i % nodecount],*/ nete, netn, ref modeldata, tiecapacity);//update utility
                     modeldata[i, 26] = utilitytable[i, 2];
                 }
             }
@@ -5996,6 +5987,11 @@ namespace Network
 
             int sequence = 1;
             int lastoutput = 0;
+            List<int> edges = new List<int>(nodecount * nodecount);
+            for (int i = 0; i < nodecount * nodecount; ++i)
+            {
+                edges.Add(-1);
+            }
             for (int k = 0; k < nodeselection.Count; ++k)
             {
                 rewired = false;
@@ -6133,7 +6129,7 @@ namespace Network
                             }
                         }
                         maxutil.Remove(offerednode);
-                        utilitytable = updateUtility(utilitytable, modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
+                        utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily);
                     }
                 }
                 rewireloopcount++;
@@ -6141,7 +6137,22 @@ namespace Network
                 {
                     System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
                     lastoutput++;
+                    bool quit = true;
+                    for (int i = 0; i < nodecount * nodecount; ++i)
+                    {
+                        if ((int)modeldata[i, 4] != edges[i])
+                        {
+                            edges[i] = (int)modeldata[i, 4];
+                            quit = false;
+                        }
+                    }
+                    if (quit)
+                    {
+                        apform.Invoke(apform.quitdelegate);
+                        break;
+                    }
                 }
+                
                 apform.Invoke(apform.abmdelegate);
             }
 
