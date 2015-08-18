@@ -5564,7 +5564,7 @@ namespace Network
             }
             System.IO.File.AppendAllText(words[0] + "-list.txt", Environment.NewLine);*/
 
-            System.IO.File.AppendAllText(words[0] + "-netform." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            System.IO.File.AppendAllText(words[0] + "-netform" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
 
             //Begin rewiring loop
             List<int> rewiringSequence = getSequence(nodecount);
@@ -5594,7 +5594,7 @@ namespace Network
 
             //Begin shock loop
             double shockSpread = RNGen.NextDouble();
-            System.IO.File.AppendAllText(words[0] + "-log.txt", "Network with runno " + runno + "'s shock spread is: " + (shockSpread * 100) + "%." + Environment.NewLine);
+            System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "Network with runno " + runno + "'s shock spread is: " + (shockSpread * 100) + "%." + Environment.NewLine);
             int affected = 0;
             List<int> shockedNodes = new List<int>();
             int candidate;
@@ -5635,19 +5635,19 @@ namespace Network
                         modeldata[j, 15] = tiecapacity[0][shockedNodes[i]];
                     }
                 }
-                System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockedNodes[i] + 1) + " in network with runno " + runno + "'s tie capacity was reduced by " + ((1 - shockSize) * 100) + "% (" + (oldcap - tiecapacity[0][shockedNodes[i]]) + ") due to a shock. New tie capacity: " + tiecapacity[0][shockedNodes[i]] + Environment.NewLine);
+                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Node " + (shockedNodes[i] + 1) + " in network with runno " + runno + "'s tie capacity was reduced by " + ((1 - shockSize) * 100) + "% (" + (oldcap - tiecapacity[0][shockedNodes[i]]) + ") due to a shock. New tie capacity: " + tiecapacity[0][shockedNodes[i]] + Environment.NewLine);
             }
-            /*System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: list = {" );
+            /*System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: list = {" );
             for (int i = 0; i < shockedNodes.Count; i++)
             {
-                System.IO.File.AppendAllText(words[0] + "-log.txt", shockedNodes[i] + " ");
+                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", shockedNodes[i] + " ");
             }
-            System.IO.File.AppendAllText(words[0] + "-log.txt", "}" + Environment.NewLine);*/
+            System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "}" + Environment.NewLine);*/
             while (shockedNodes.Count > 0)
             {
                 int shockNode = shockedNodes[0];
                 int continuecount = 0;
-                //System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Active Node: " + shockNode + Environment.NewLine);
+                //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Active Node: " + shockNode + Environment.NewLine);
                 int shockNodeCapacity = tiecapacity[0][shockNode] - tiecapacity[2][shockNode];
                 tiecapacity[1][shockNode] = shockNodeCapacity;
                 while (tiecapacity[0][shockNode] - tiecapacity[2][shockNode] < 0)//shockNodeCapacity < 0)
@@ -5662,7 +5662,7 @@ namespace Network
                         }
                         else
                         {
-                            System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + shockNode + " in network with runno " + runno + " failed to drop nodes when shocked." + Environment.NewLine);
+                            System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + shockNode + " in network with runno " + runno + " failed to drop nodes when shocked." + Environment.NewLine);
                             break;
                         }
                     }
@@ -5692,7 +5692,7 @@ namespace Network
                     if (tiecapacity[2][shockNode] <= 0)
                         netnodes++;
                     netedges--;
-                    System.IO.File.AppendAllText(words[0] + "-log.txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
+                    System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
                                          + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
 
                     utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
@@ -5701,7 +5701,7 @@ namespace Network
                 shockedNodes.Remove(shockNode);
 
             }
-            System.IO.File.AppendAllText(words[0] + "-shock." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            System.IO.File.AppendAllText(words[0] + "-shock" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
             rewiringSequence = getSequence(nodecount);
             for (int i = 0; i < 5; ++i)
             {
@@ -5712,7 +5712,7 @@ namespace Network
 
 
 
-            int actualdegree, tcap;//, dropped;
+            /*int actualdegree, tcap;//, dropped;
             for (int i = 0; i < nodecount; i++)
             {
                 tcap = (int)modeldata[i * nodecount, 15];
@@ -5724,8 +5724,8 @@ namespace Network
                     //dropped += (int)modeldata[i * nodecount + j, 17];
                 }
                 if (actualdegree > tcap)
-                    System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (i + 1) + " in network with runno " + runno + " exceeded its tie capacity." + Environment.NewLine);
-            }
+                    System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + (i + 1) + " in network with runno " + runno + " exceeded its tie capacity." + Environment.NewLine);
+            }*/
             //System.IO.File.AppendAllText(words[0] + "-preshock." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + modeldata.ToCSV(initialnodes, nodecount) + Environment.NewLine);
             return modeldata;
         }
@@ -5759,8 +5759,8 @@ namespace Network
                 if (modeldata[i, 4] == 1)
                     degree++;
             }
-            if (degree != 0 && minutillist.Count == 0)
-                System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + node + "had nonzero degree but no minimum utility edges. Minimum utility = " + minutil + " Degree = " + degree + Environment.NewLine);
+            //if (degree != 0 && minutillist.Count == 0)
+                //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + node + "had nonzero degree but no minimum utility edges. Minimum utility = " + minutil + " Degree = " + degree + Environment.NewLine);
             return minutillist;
         }
 
@@ -5977,7 +5977,7 @@ namespace Network
 
         public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily, ref ABMProgressForm apform)
         {
-            System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRING STAGE FOR NETWORK OF TYPE \"" + type + "\" BEGUN." + Environment.NewLine);
+            System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRING STAGE FOR NETWORK OF TYPE \"" + type + "\" BEGUN." + Environment.NewLine);
             int rewireloopcount = 0;
             int rewiringnode;
             bool rewired = false;
@@ -6019,7 +6019,7 @@ namespace Network
                     modeldata[rewiringnode * nodecount + i, 17] = sequence;
                     modeldata[i * nodecount + rewiringnode, 18] = sequence;
                 }
-                System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " was selected for rewiring with sequence number " + sequence + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " was selected for rewiring with sequence number " + sequence + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                 iteration++;
                 sequence++;
 
@@ -6027,15 +6027,15 @@ namespace Network
                 while (offercount < nodecount)
                 {
                     List<int> maxutil = maxUtility(utilitytable, rewiringnode, nodecount);
-                    //System.IO.File.AppendAllText(words[0] + "-log.txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                    //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "  REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had a MaxUtil of length " + maxutil.Count + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                     if (maxutil.Count == 0)
                         break;
                     while (maxutil.Count > 0)
                     {
                         int offerednode = maxutil[RNGen.Next(maxutil.Count)];
-                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                        //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "    REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " attempted to rewire with node " + offerednode + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                         offercount++;
-                        //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                        //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had edge stats of " + utilitytable[rewiringnode * nodecount + offerednode, 6] + " and " + modeldata[rewiringnode * nodecount + offerednode, 4] + ". File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                         if (utilitytable[rewiringnode * nodecount + offerednode, 6] == 0 || modeldata[rewiringnode * nodecount + offerednode, 4] == 0)
                         {
                             utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
@@ -6048,11 +6048,11 @@ namespace Network
                                 break;
                             }
                             int dropnode = minUtil[RNGen.Next(minUtil.Count)];
-                            //System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
+                            //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " had " + tiecapacity[1][rewiringnode] + " tie capacity and a degree of " + tiecapacity[2][rewiringnode] + ". Offered node had " + tiecapacity[1][offerednode] + " tie capacity. File: " + (rewireloopcount / nodecount + 1) + "N" + type + Environment.NewLine);
                             if (tiecapacity[1][rewiringnode] > 0 && tiecapacity[1][offerednode] > 0)// && tiecapacity[2][rewiringnode] > 0)
                             {
                                 //if (rewseq < 10)
-                                System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
+                                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "      REWIRE: Node " + (rewiringnode + 1) + " in network with runno " + runno + " formed a new edge with node " + (offerednode + 1) +
                                     ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
                                     + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
                                 rewseq++;
@@ -6118,14 +6118,14 @@ namespace Network
                                 */
                                 //if (rewseq < 10)
                                 rewired = true;
-                                System.IO.File.AppendAllText(words[0] + "-log.txt", "      REWIRE: Node " + (offerednode + 1) + " in network with runno " + runno + " added node " + (rewiringnode + 1) + " and dropped node " + (dropnode + 1)
+                                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "      REWIRE: Node " + (offerednode + 1) + " in network with runno " + runno + " added node " + (rewiringnode + 1) + " and dropped node " + (dropnode + 1)
                                     + ". Remaining tie Capacity of node " + (rewiringnode + 1) + ": " + tiecapacity[1][rewiringnode] + ". Remaining tie capacity of node " + (offerednode + 1) + ": "
                                     + tiecapacity[1][offerednode] + ". Iteration: " + rewireloopcount + " File: " + ((rewireloopcount + 1) / nodecount + 1) + "N" + type + Environment.NewLine);
                                 rewseq++;
                                 if (modeldata[offerednode * nodecount + dropnode, 4] == 1 || modeldata[dropnode * nodecount + offerednode, 4] == 1)
-                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not drop node " + (dropnode + 1) + "." + Environment.NewLine);
+                                    System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not drop node " + (dropnode + 1) + "." + Environment.NewLine);
                                 if (modeldata[rewiringnode * nodecount + offerednode, 4] != 1 || modeldata[offerednode * nodecount + rewiringnode, 4] != 1)
-                                    System.IO.File.AppendAllText(words[0] + "-log.txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not gain an edge with " + (rewiringnode + 1) + "." + Environment.NewLine);
+                                    System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + (offerednode + 1) + " in network with runno " + runno + " did not gain an edge with " + (rewiringnode + 1) + "." + Environment.NewLine);
                             }
                         }
                         maxutil.Remove(offerednode);
@@ -6135,7 +6135,7 @@ namespace Network
                 rewireloopcount++;
                 if (rewireloopcount % nodecount == 0)
                 {
-                    System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                    System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
                     lastoutput++;
                     bool quit = true;
                     for (int i = 0; i < nodecount * nodecount; ++i)
@@ -6148,12 +6148,12 @@ namespace Network
                     }
                     if (quit)
                     {
-                        apform.Invoke(apform.quitdelegate);
+                        //apform.Invoke(apform.quitdelegate);
                         break;
                     }
                 }
                 
-                apform.Invoke(apform.abmdelegate);
+                //apform.Invoke(apform.abmdelegate);
             }
 
 
@@ -6163,7 +6163,7 @@ namespace Network
             //{
             //System.IO.File.AppendAllText(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
             //}
-            System.IO.File.AppendAllText(words[0] + "-log.txt", "REWIRING: Rewiring stage finished after " + rewireloopcount + "iterations." + Environment.NewLine);
+            System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRING: Rewiring stage finished after " + rewireloopcount + "iterations." + Environment.NewLine);
         }
 
     }

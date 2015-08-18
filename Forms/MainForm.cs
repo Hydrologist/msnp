@@ -4172,6 +4172,7 @@ namespace NetworkGUI
                 {
                     sb.Append("," + labels[i]);
                 }
+                /*
                 System.IO.File.WriteAllText(words[0] + "-netform." + words[1], sb.ToString() + Environment.NewLine);
                 System.IO.File.WriteAllText(words[0] + "-shock." + words[1], sb.ToString() + Environment.NewLine);
                 
@@ -4181,36 +4182,49 @@ namespace NetworkGUI
                     System.IO.File.WriteAllText(words[0] + "-" + i + "NC." + words[1], sb.ToString() + Environment.NewLine);
                     System.IO.File.WriteAllText(words[0] + "-" + i + "NT." + words[1], sb.ToString() + Environment.NewLine);
                     
-                }
+                }*/
                 int runno = 1, runno2 = 1;
                 List<int> runnos = new List<int>(), iterations = new List<int>();
                 for (int i = min; i <= max; i += step)
                 {
                     for (int j = 0; j < netcount; j++)
                     {
+                        for (int k = 1; k <= 6; k++)
+                        {
+                            System.IO.File.WriteAllText(words[0] + "-" + k + "N" + "~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
+                            System.IO.File.WriteAllText(words[0] + "-" + k + "NC" + "~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
+                            System.IO.File.WriteAllText(words[0] + "-" + k + "NT" +  "~" + runno + "."  + words[1], sb.ToString() + Environment.NewLine);
+
+                        }
                         runnos.Add(runno2++);
                         iterations.Add(18 * i);
+                        runno++;
                     }
                 }
 
+                runno = 1;
                 runnos[0] = 1;
                 iterations[0] = iterations[0];
 
                 ABMProgressForm apform = new ABMProgressForm(runnos, iterations);
-                apform.Show();
+                //apform.Show();
+                List<Tuple<int, int>> netlist = new List<Tuple<int, int>>();
                 for (int i = min; i <= max; i += step)
                 {
                     for (int j = 0; j < netcount; j++)
                     {
-                        m = await Task.Run(() => net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform));
+                        netlist.Add(Tuple.Create<int, int>(i, j));
+                        /*m = await Task.Run(() => net.ABMShocksNetworkFormation(i, _ABMForm.netID + j, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform));
                         m.ColLabels.SetLabels(labels);
-                        net.mList.Add(m);
+                        net.mList.Add(m);*/
                     }
                 }
+
+                Parallel.For(0, netlist.Count, i => { net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform); });
                     
                 //}
-                net.mTable["Data"] = net.mList[0];
-                LoadData();
+                //net.mTable["Data"] = net.mList[0];
+                //LoadData();
             }
             else
             {
