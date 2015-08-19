@@ -6040,6 +6040,8 @@ namespace Network
                         {
                             utilitytable[rewiringnode * nodecount + offerednode, 7] = 1;
                             utilitytable[offerednode * nodecount + rewiringnode, 7] = 1;
+                            modeldata[rewiringnode * nodecount + offerednode, 19] = 1;
+                            modeldata[offerednode * nodecount + rewiringnode, 20] = 1;
 
                             List<int> minUtil = minUtility(utilitytable, modeldata, offerednode, nodecount, words);
                             if (minUtil.Count == 0)
