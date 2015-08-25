@@ -40,6 +40,28 @@ namespace NetworkGUI.Forms
             quitdelegate = new quitDelegate(quit);
         }
 
+        public ABMProgressForm(List<int> _runnos)
+        {
+            runnos = _runnos;
+            runnobar.Minimum = 0;
+            runnobar.Maximum = runnos.Count;
+            runnobar.Value = 0;
+
+            iterbar.Enabled = false;
+
+            label1.Text = "Simulation in progresss...";
+            abmdelegate = new updateDelegate(updateParallelProgress);
+            quitdelegate = new quitDelegate(quit);
+        }
+
+        public void updateParallelProgress()
+        {
+            runnobar.Value++;
+            if (runnobar.Value == runnobar.Maximum)
+                this.Close();
+
+        }
+
         public void updateProgress()
         {
             iterbar.Value += 1;

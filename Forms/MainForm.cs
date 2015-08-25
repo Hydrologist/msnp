@@ -4120,7 +4120,7 @@ namespace NetworkGUI
             displayMatrix = "Data";
             currentYear = _ABMForm.netID;
             _optionsForm.ReachNumMatrices = _ABMForm.N - 1;
-            string[] labels = new string[29] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "demrow", "enmyenmyrow", "cultismrow", "demcol", "enmyenmycol", "cultismcol", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial", "uij", "cij", "ujk^2"};
+            string[] labels = new string[29] { "runno", "iteration", "row", "col", "edge", "C0r", "C0c", "demrow", "enmyenmyrow", "cultsimrow", "demcol", "enmyenmycol", "cultsimcol", "kr", "kc", "Csr", "Csc", "Seqr", "Seqc", "Offerr", "Offerc", "Accr", "Accc", "droppedr", "droppedc", "initial", "uij", "cij", "ujk^2"};
             DialogResult result = saveFileDialog.ShowDialog();
             if (result == DialogResult.Yes || result == DialogResult.OK)
             {
@@ -4189,6 +4189,8 @@ namespace NetworkGUI
                 {
                     for (int j = 0; j < netcount; j++)
                     {
+                        System.IO.File.WriteAllText(words[0] + "-netform~" + runno +"." + words[1], sb.ToString() + Environment.NewLine);
+                        System.IO.File.WriteAllText(words[0] + "-shock~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
                         for (int k = 1; k <= 6; k++)
                         {
                             System.IO.File.WriteAllText(words[0] + "-" + k + "N" + "~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
@@ -4203,10 +4205,9 @@ namespace NetworkGUI
                 }
 
                 runno = 1;
-                runnos[0] = 1;
                 iterations[0] = iterations[0];
 
-                ABMProgressForm apform = new ABMProgressForm(runnos, iterations);
+                //ABMProgressForm apform = new ABMProgressForm(runnos);
                 //apform.Show();
                 List<Tuple<int, int>> netlist = new List<Tuple<int, int>>();
                 for (int i = min; i <= max; i += step)
@@ -4220,11 +4221,12 @@ namespace NetworkGUI
                     }
                 }
 
-                Parallel.For(0, netlist.Count, i => { net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily, ref apform); });
+                Parallel.For(0, netlist.Count, i => { net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily); });
                     
                 //}
                 //net.mTable["Data"] = net.mList[0];
                 //LoadData();
+                MessageBox.Show("Simulation complete.");
             }
             else
             {

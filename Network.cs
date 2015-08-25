@@ -5299,7 +5299,7 @@ namespace Network
             return degree;
         }
 
-        public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily, ref ABMProgressForm apform)
+        public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily)//, ref ABMProgressForm apform)
         {
             Matrix modeldata = new Matrix(nodecount * nodecount, 29);
             Matrix utilitytable = new Matrix(nodecount * nodecount, 9);
@@ -5572,7 +5572,7 @@ namespace Network
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily, ref apform);
+            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily);
 
             Matrix controlMatrix = new Matrix(modeldata);
             Matrix controlUtilityTable = new Matrix(utilitytable);
@@ -5707,8 +5707,8 @@ namespace Network
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily, ref apform);
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily, ref apform);
+            networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily);
+            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily);
 
 
 
@@ -5975,7 +5975,7 @@ namespace Network
 
 
 
-        public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily, ref ABMProgressForm apform)
+        public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily)
         {
             System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRING STAGE FOR NETWORK OF TYPE \"" + type + "\" BEGUN." + Environment.NewLine);
             int rewireloopcount = 0;
@@ -6008,6 +6008,9 @@ namespace Network
                         modeldata[i, 21] = 0;//accr
                         modeldata[i, 23] = 0;//droppedc
                         modeldata[i, 24] = 0;//droppedr
+                        modeldata[i, 26] = 0;
+                        modeldata[i, 27] = 0;
+                        modeldata[i, 28] = 0;
                         utilitytable[i, 7] = 0;
                         utilitytable[i, 8] = 0;
                     }
