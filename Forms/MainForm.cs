@@ -4185,27 +4185,15 @@ namespace NetworkGUI
                 }*/
                 int runno = 1, runno2 = 1;
                 List<int> runnos = new List<int>(), iterations = new List<int>();
-                for (int i = min; i <= max; i += step)
+                System.IO.File.WriteAllText(words[0] + "-netform." + words[1], sb.ToString() + Environment.NewLine);
+                System.IO.File.WriteAllText(words[0] + "-shock." + words[1], sb.ToString() + Environment.NewLine);
+                for (int k = 1; k <= 6; k++)
                 {
-                    for (int j = 0; j < netcount; j++)
-                    {
-                        System.IO.File.WriteAllText(words[0] + "-netform~" + runno +"." + words[1], sb.ToString() + Environment.NewLine);
-                        System.IO.File.WriteAllText(words[0] + "-shock~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
-                        for (int k = 1; k <= 6; k++)
-                        {
-                            System.IO.File.WriteAllText(words[0] + "-" + k + "N" + "~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
-                            System.IO.File.WriteAllText(words[0] + "-" + k + "NC" + "~" + runno + "." + words[1], sb.ToString() + Environment.NewLine);
-                            System.IO.File.WriteAllText(words[0] + "-" + k + "NT" +  "~" + runno + "."  + words[1], sb.ToString() + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + k + "N." + words[1], sb.ToString() + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + k + "NC." + words[1], sb.ToString() + Environment.NewLine);
+                    System.IO.File.WriteAllText(words[0] + "-" + k + "NT." + words[1], sb.ToString() + Environment.NewLine);
 
-                        }
-                        runnos.Add(runno2++);
-                        iterations.Add(18 * i);
-                        runno++;
-                    }
                 }
-
-                runno = 1;
-                iterations[0] = iterations[0];
 
                 //ABMProgressForm apform = new ABMProgressForm(runnos);
                 //apform.Show();
@@ -4220,12 +4208,34 @@ namespace NetworkGUI
                         net.mList.Add(m);*/
                     }
                 }
+                List<List<List<Matrix>>> matrices = new List<List<List<Matrix>>>(netlist.Count);
+                for (int i = 0; i < netlist.Count; ++i)
+                {
+                    matrices.Add(new List<List<Matrix>>());
+                }
 
-                Parallel.For(0, netlist.Count, i => { net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily); });
-                    
-                //}
-                //net.mTable["Data"] = net.mList[0];
-                //LoadData();
+                runno = 1;
+                Parallel.For(0, netlist.Count, i => { matrices[i] = net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily); });
+                matrices[0] = matrices[0];
+
+                for (int i = 0; i < matrices.Count; ++i)
+                {
+                    System.IO.File.AppendAllText(words[0] + "-netform" + "." + words[1], matrices[i][0][0].ToCSV() + Environment.NewLine);
+                    System.IO.File.AppendAllText(words[0] + "-shock" + "." + words[1], matrices[i][0][1].ToCSV() + Environment.NewLine);
+                    for (int j = 0; j < matrices[i][1].Count; ++j)
+                    {
+                        System.IO.File.AppendAllText(words[0] + "-" + (j + 1) + "N." + words[1], matrices[i][1][j].ToCSV() + Environment.NewLine);
+                    }
+                    for (int j = 0; j < matrices[i][2].Count; ++j)
+                    {
+                        System.IO.File.AppendAllText(words[0] + "-" + (j + 1) + "NC." + words[1], matrices[i][2][j].ToCSV() + Environment.NewLine);
+                    }
+                    for (int j = 0; j < matrices[i][3].Count; ++j)
+                    {
+                        System.IO.File.AppendAllText(words[0] + "-" + (j + 1) + "NT." + words[1], matrices[i][3][j].ToCSV() + Environment.NewLine);
+                    }
+                }
+
                 MessageBox.Show("Simulation complete.");
             }
             else

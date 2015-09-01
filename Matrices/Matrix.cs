@@ -696,7 +696,7 @@ namespace Network.Matrices
 
             return sb.ToString();
         }
-        public string ToCSV(List<int> initial, int nodecount)
+        public string ToCSV()
         {
             StringBuilder sb = new StringBuilder();
 

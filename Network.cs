@@ -5299,15 +5299,21 @@ namespace Network
             return degree;
         }
 
-        public Matrix ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily)//, ref ABMProgressForm apform)
+        public List<List<Matrix>> ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily)//, ref ABMProgressForm apform)
         {
             Matrix modeldata = new Matrix(nodecount * nodecount, 29);
             Matrix utilitytable = new Matrix(nodecount * nodecount, 9);
             List<int[]> tiecapacity = new List<int[]>();
             List<int> initialnodes = new List<int>();
             //System.IO.File.AppendAllText(filename, "NETWORK " + network + " OF SIZE " + nodecount + Environment.NewLine);
-            string modelstr;
 
+            List<List<Matrix>> output = new List<List<Matrix>>();
+            List<Matrix> temp;
+            Matrix tempout;
+
+            temp = new List<Matrix>();
+            output.Add(temp);
+            
 
             tiecapacity.Add(new int[nodecount]);
             tiecapacity.Add(new int[nodecount]);
@@ -5564,7 +5570,9 @@ namespace Network
             }
             System.IO.File.AppendAllText(words[0] + "-list.txt", Environment.NewLine);*/
 
-            System.IO.File.AppendAllText(words[0] + "-netform" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            //System.IO.File.AppendAllText(words[0] + "-netform" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            tempout = new Matrix(modeldata);
+            output[0].Add(tempout);
 
             //Begin rewiring loop
             List<int> rewiringSequence = getSequence(nodecount);
@@ -5572,7 +5580,7 @@ namespace Network
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily);
+            output.Add(networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "", rewiringSequence, homophily));
 
             Matrix controlMatrix = new Matrix(modeldata);
             Matrix controlUtilityTable = new Matrix(utilitytable);
@@ -5701,14 +5709,16 @@ namespace Network
                 shockedNodes.Remove(shockNode);
 
             }
-            System.IO.File.AppendAllText(words[0] + "-shock" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            //System.IO.File.AppendAllText(words[0] + "-shock" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+            tempout = new Matrix(modeldata);
+            output[0].Add(tempout);
             rewiringSequence = getSequence(nodecount);
             for (int i = 0; i < 5; ++i)
             {
                 rewiringSequence.AddRange(getSequence(nodecount));
             }
-            networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily);
-            networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily);
+            output.Add(networkRewiring(ref controlMatrix, nodecount, ref controlUtilityTable, ref controlTieCapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "C", rewiringSequence, homophily));
+            output.Add(networkRewiring(ref modeldata, nodecount, ref utilitytable, ref tiecapacity, initialnodes, words, runno, network, ref netnodes, ref netedges, "T", rewiringSequence, homophily));
 
 
 
@@ -5727,7 +5737,7 @@ namespace Network
                     System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + (i + 1) + " in network with runno " + runno + " exceeded its tie capacity." + Environment.NewLine);
             }*/
             //System.IO.File.AppendAllText(words[0] + "-preshock." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + modeldata.ToCSV(initialnodes, nodecount) + Environment.NewLine);
-            return modeldata;
+            return output;
         }
         public int outofNetwork(List<int[]> tiecap)
         {
@@ -5975,7 +5985,7 @@ namespace Network
 
 
 
-        public void networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily)
+        public List<Matrix> networkRewiring(ref Matrix modeldata, int nodecount, ref Matrix utilitytable, ref List<int[]> tiecapacity, List<int> initialnodes, string[] words, int runno, int network, ref int netnodes, ref int netedges, string type, List<int> nodeselection, bool homophily)
         {
             System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRING STAGE FOR NETWORK OF TYPE \"" + type + "\" BEGUN." + Environment.NewLine);
             int rewireloopcount = 0;
@@ -5985,6 +5995,10 @@ namespace Network
             int rewseq = 0;
             //List<int> selectednodes = new List<int>();
 
+            List<Matrix> matrixlist = new List<Matrix>();
+            Matrix temp;
+
+            
             int sequence = 1;
             int lastoutput = 0;
             List<int> edges = new List<int>(nodecount * nodecount);
@@ -6140,7 +6154,9 @@ namespace Network
                 rewireloopcount++;
                 if (rewireloopcount % nodecount == 0)
                 {
-                    System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                    //System.IO.File.AppendAllText(words[0] + "-" + (rewireloopcount / nodecount) + "N" + type +/* "-" + network +*/ "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
+                    temp = new Matrix(modeldata);
+                    matrixlist.Add(temp);
                     lastoutput++;
                     bool quit = true;
                     for (int i = 0; i < nodecount * nodecount; ++i)
@@ -6169,6 +6185,7 @@ namespace Network
             //System.IO.File.AppendAllText(words[0] + "-" + (i + 1) + "N" + type + /*"-" + network +*/ "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
             //}
             System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "REWIRING: Rewiring stage finished after " + rewireloopcount + "iterations." + Environment.NewLine);
+            return matrixlist;
         }
 
     }
