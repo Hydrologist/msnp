@@ -50,6 +50,21 @@ namespace NetworkGUI.Forms
             set { minbox.Text = value.ToString(); }
         }
 
+        public bool enemy
+        {
+            get { return shocks[0]; }
+        }
+        public bool democracy
+        {
+            get { return shocks[1]; }
+        }
+        public bool cultism
+        {
+            get { return shocks[2]; }
+        }
+
+        public bool[] shocks = new bool[3];
+
         public bool homophily;
 
         public bool useparams;
@@ -159,6 +174,28 @@ namespace NetworkGUI.Forms
                 int.Parse(netIdent.Text);
                 useparams = true;
                 homophily = homophilyButton.Checked;
+
+                shocks[0] = false;
+                shocks[1] = false;
+                shocks[2] = false;
+                if (checkedListBox1.CheckedItems.Count > 0)
+                {
+                    foreach (object checkeditem in checkedListBox1.CheckedItems)
+                    {
+                        if (string.Compare(checkeditem.ToString(), "Enemy") == 0)
+                        {
+                            shocks[0] = true;
+                        }
+                        else if (string.Compare(checkeditem.ToString(), "Democracy") == 0)
+                        {
+                            shocks[1] = true;
+                        }
+                        else if (string.Compare(checkeditem.ToString(), "Cultism") == 0)
+                        {
+                            shocks[2] = true;
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
@@ -170,7 +207,13 @@ namespace NetworkGUI.Forms
 
         private void prefAttachButton_CheckedChanged(object sender, EventArgs e)
         {
+            checkedListBox1.Enabled = false;
 
+        }
+
+        private void homophilyButton_CheckedChanged(object sender, EventArgs e)
+        {
+            checkedListBox1.Enabled = true;
         }
     }
 }

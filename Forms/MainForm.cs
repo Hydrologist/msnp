@@ -4104,6 +4104,11 @@ namespace NetworkGUI
             int min = 10;
             int max = 100;
             int step = 10;
+            bool enemy, democracy, cultism;
+            enemy = false;
+            democracy = false;
+            cultism = false;
+            bool ties = false;
             if (!_ABMForm.useparams)
             {
                 nodecount = _ABMForm.N;
@@ -4115,6 +4120,9 @@ namespace NetworkGUI
                 max = _ABMForm.maxsize;
                 step = _ABMForm.stepsize;
                 netcount = _ABMForm.networks;
+                enemy = _ABMForm.enemy;
+                democracy = _ABMForm.democracy;
+                cultism = _ABMForm.cultism;
             }
             SetFormTitle();
             displayMatrix = "Data";
@@ -4214,9 +4222,11 @@ namespace NetworkGUI
                     matrices.Add(new List<List<Matrix>>());
                 }
 
+                runno = ((max - min) / step) * netcount;//1;
+                ABMProgressForm progressform = new ABMProgressForm(runno);
+                //progressform.ShowDialog();
                 runno = 1;
-                Parallel.For(0, netlist.Count, i => { matrices[i] = net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily); });
-                matrices[0] = matrices[0];
+                Parallel.For(0, netlist.Count, i => { matrices[i] = net.ABMShocksNetworkFormation(netlist[i].Item1, _ABMForm.netID + netlist[i].Item2, saveFileDialog.FileName, runno++, _ABMForm.homophily, enemy, cultism, democracy, ref progressform);});
 
                 for (int i = 0; i < matrices.Count; ++i)
                 {

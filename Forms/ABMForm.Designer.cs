@@ -45,6 +45,7 @@
             this.prefAttachButton = new System.Windows.Forms.RadioButton();
             this.homophilyButton = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -173,7 +174,7 @@
             // 
             // paramsButton
             // 
-            this.paramsButton.Location = new System.Drawing.Point(83, 169);
+            this.paramsButton.Location = new System.Drawing.Point(84, 234);
             this.paramsButton.Name = "paramsButton";
             this.paramsButton.Size = new System.Drawing.Size(75, 23);
             this.paramsButton.TabIndex = 7;
@@ -203,6 +204,7 @@
             this.homophilyButton.TabIndex = 16;
             this.homophilyButton.Text = "Homophily";
             this.homophilyButton.UseVisualStyleBackColor = true;
+            this.homophilyButton.CheckedChanged += new System.EventHandler(this.homophilyButton_CheckedChanged);
             // 
             // panel1
             // 
@@ -213,11 +215,26 @@
             this.panel1.Size = new System.Drawing.Size(152, 45);
             this.panel1.TabIndex = 17;
             // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.CheckOnClick = true;
+            this.checkedListBox1.Enabled = false;
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Items.AddRange(new object[] {
+            "Enemy",
+            "Democracy",
+            "Cultism"});
+            this.checkedListBox1.Location = new System.Drawing.Point(60, 169);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(132, 49);
+            this.checkedListBox1.TabIndex = 18;
+            // 
             // ABMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(243, 204);
+            this.ClientSize = new System.Drawing.Size(243, 269);
+            this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.paramsButton);
             this.Controls.Add(this.label7);
@@ -261,5 +278,6 @@
         private System.Windows.Forms.RadioButton prefAttachButton;
         private System.Windows.Forms.RadioButton homophilyButton;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
     }
 }

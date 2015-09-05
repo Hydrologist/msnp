@@ -5299,7 +5299,219 @@ namespace Network
             return degree;
         }
 
-        public List<List<Matrix>> ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily)//, ref ABMProgressForm apform)
+        public Matrix shockHomophily(ref Matrix modeldata, ref Matrix utilitytable, ref List<int[]> tiecapacity, int nodecount, ref int netedges, ref int netnodes, int runno, string[] words, bool enemy, bool democracy, bool cultism)
+        {
+            if (enemy)
+            {
+                double shockSpread = RNGen.NextDouble();              
+                int affected = 0;
+                List<int> shockedNodes = new List<int>();
+                int candidate;
+                double shocksum = 0;
+                double shockpernode = 1.0 / nodecount;
+                while (shocksum < shockSpread)
+                {
+                    candidate = RNGen.Next(nodecount);
+                    if (!shockedNodes.Contains(candidate))
+                    {
+                        shocksum += shockpernode;
+                        shockedNodes.Add(candidate);
+                    }
+                }
+
+                for (int i = 0; i < shockedNodes.Count; ++i)
+                {
+                    for (int j = 0; j < nodecount * nodecount; ++j)
+                    {
+                        if (j % nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 11] = 0;
+                            else
+                                modeldata[j, 11] = 1;
+                        }
+                        if (j / nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 8] = 0;
+                            else
+                                modeldata[j, 8] = 1;
+                        }
+                    }
+                }
+            }
+            if (democracy)
+            {
+                double shockSpread = RNGen.NextDouble();
+                int affected = 0;
+                List<int> shockedNodes = new List<int>();
+                int candidate;
+                double shocksum = 0;
+                double shockpernode = 1.0 / nodecount;
+                while (shocksum < shockSpread)
+                {
+                    candidate = RNGen.Next(nodecount);
+                    if (!shockedNodes.Contains(candidate))
+                    {
+                        shocksum += shockpernode;
+                        shockedNodes.Add(candidate);
+                    }
+                }
+
+                for (int i = 0; i < shockedNodes.Count; ++i)
+                {
+                    for (int j = 0; j < nodecount * nodecount; ++j)
+                    {
+                        if (j % nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 10] = 0;
+                            else
+                                modeldata[j, 10] = 1;
+                        }
+                        if (j / nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 7] = 0;
+                            else
+                                modeldata[j, 7] = 1;
+                        }
+                    }
+                }
+
+            }
+            if (cultism)
+            {
+                double shockSpread = RNGen.NextDouble();
+                int affected = 0;
+                List<int> shockedNodes = new List<int>();
+                int candidate;
+                double shocksum = 0;
+                double shockpernode = 1.0 / nodecount;
+                while (shocksum < shockSpread)
+                {
+                    candidate = RNGen.Next(nodecount);
+                    if (!shockedNodes.Contains(candidate))
+                    {
+                        shocksum += shockpernode;
+                        shockedNodes.Add(candidate);
+                    }
+                }
+
+                for (int i = 0; i < shockedNodes.Count; ++i)
+                {
+                    for (int j = 0; j < nodecount * nodecount; ++j)
+                    {
+                        if (j % nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 12] = 0;
+                            else
+                                modeldata[j, 12] = 1;
+                        }
+                        if (j / nodecount == shockedNodes[i])
+                        {
+                            if (runno % 2 == 1)
+                                modeldata[j, 9] = 0;
+                            else
+                                modeldata[j, 9] = 1;
+                        }
+                    }
+                }
+            }
+
+            if (!democracy && !cultism && !enemy)
+            {
+                double shockSpread = RNGen.NextDouble();
+                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "Network with runno " + runno + "'s shock spread is: " + (shockSpread * 100) + "%." + Environment.NewLine);
+                int affected = 0;
+                List<int> shockedNodes = new List<int>();
+                int candidate;
+                double shocksum = 0;
+                double shockpernode = 1.0 / nodecount;
+                while (shocksum < shockSpread)
+                {
+                    candidate = RNGen.Next(nodecount);
+                    if (!shockedNodes.Contains(candidate))
+                    {
+                        shocksum += shockpernode;
+                        shockedNodes.Add(candidate);
+                    }
+                }
+                double shockSize;
+                int oldcap;
+                for (int i = 0; i < nodecount * nodecount; i++)
+                {
+                    modeldata[i, 15] = modeldata[i, 5];
+                    modeldata[i, 16] = modeldata[i, 6];
+                }
+                for (int i = 0; i < shockedNodes.Count; i++)
+                {
+                    shockSize = RNGen.NextDouble();
+                    oldcap = tiecapacity[0][shockedNodes[i]];
+                    //tiecapacity[0][shockedNodes[i]] = tiecapacity[0][shockedNodes[i]];
+                    tiecapacity[0][shockedNodes[i]] = (int)(tiecapacity[0][shockedNodes[i]] * shockSize);
+                    //tiecapacity[0][shockedNodes[i]] = tiecapacity[0][shockedNodes[i]];
+                    for (int j = 0; j < nodecount * nodecount; j++)
+                    {
+                        if (j % nodecount == shockedNodes[i])
+                        {
+                            utilitytable[j, 3] = tiecapacity[0][shockedNodes[i]];
+                            modeldata[j, 16] = tiecapacity[0][shockedNodes[i]];
+                        }
+                        if (j / nodecount == shockedNodes[i])
+                        {
+                            modeldata[j, 15] = tiecapacity[0][shockedNodes[i]];
+                        }
+                    }
+                    System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Node " + (shockedNodes[i] + 1) + " in network with runno " + runno + "'s tie capacity was reduced by " + ((1 - shockSize) * 100) + "% (" + (oldcap - tiecapacity[0][shockedNodes[i]]) + ") due to a shock. New tie capacity: " + tiecapacity[0][shockedNodes[i]] + Environment.NewLine);
+                }
+                while (shockedNodes.Count > 0)
+                {
+                    int shockNode = shockedNodes[0];
+                    int continuecount = 0;
+                    //System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Active Node: " + shockNode + Environment.NewLine);
+                    int shockNodeCapacity = tiecapacity[0][shockNode] - tiecapacity[2][shockNode];
+                    tiecapacity[1][shockNode] = shockNodeCapacity;
+                    while (tiecapacity[0][shockNode] - tiecapacity[2][shockNode] < 0)//shockNodeCapacity < 0)
+                    {
+                        List<int> minUtil = minUtility(utilitytable, modeldata, shockNode, nodecount, words);
+                        if (minUtil.Count == 0)
+                        {
+                            if (continuecount < 5)
+                            {
+                                continuecount++;
+                                continue;
+                            }
+                            else
+                            {
+                                System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + shockNode + " in network with runno " + runno + " failed to drop nodes when shocked." + Environment.NewLine);
+                                break;
+                            }
+                        }
+                        int selectedNode = minUtil[RNGen.Next(minUtil.Count)];
+
+                        //drop edge with node offering least utility
+                        dropEdge(ref modeldata, ref utilitytable, ref tiecapacity, shockNode, selectedNode, nodecount);
+                        if (tiecapacity[2][selectedNode] <= 0)
+                            netnodes++;
+                        if (tiecapacity[2][shockNode] <= 0)
+                            netnodes++;
+                        netedges--;
+                        System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
+                                         + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
+
+                        utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, true); //check netedges and netnodes
+                        shockNodeCapacity++;
+                    }
+                    shockedNodes.Remove(shockNode);
+
+                }
+            }
+            return modeldata;
+        }
+
+        public List<List<Matrix>> ABMShocksNetworkFormation(int nodecount, int network, string filename, int runno, bool homophily, bool enemy, bool cultism, bool democracy, ref ABMProgressForm apform)
         {
             Matrix modeldata = new Matrix(nodecount * nodecount, 29);
             Matrix utilitytable = new Matrix(nodecount * nodecount, 9);
@@ -5601,7 +5813,8 @@ namespace Network
 
 
             //Begin shock loop
-            double shockSpread = RNGen.NextDouble();
+            modeldata = shockHomophily(ref modeldata, ref utilitytable, ref tiecapacity, nodecount, ref netedges, ref netnodes, runno, words, enemy, democracy, cultism);
+            /*double shockSpread = RNGen.NextDouble();
             System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "Network with runno " + runno + "'s shock spread is: " + (shockSpread * 100) + "%." + Environment.NewLine);
             int affected = 0;
             List<int> shockedNodes = new List<int>();
@@ -5651,7 +5864,7 @@ namespace Network
                 System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", shockedNodes[i] + " ");
             }
             System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "}" + Environment.NewLine);*/
-            while (shockedNodes.Count > 0)
+            /*while (shockedNodes.Count > 0)
             {
                 int shockNode = shockedNodes[0];
                 int continuecount = 0;
@@ -5695,20 +5908,20 @@ namespace Network
                      tiecapacity[1][shockNode] += 1;
                      tiecapacity[2][shockNode] -= 1;
                      */
-                    if (tiecapacity[2][selectedNode] <= 0)
+                    /*if (tiecapacity[2][selectedNode] <= 0)
                         netnodes++;
                     if (tiecapacity[2][shockNode] <= 0)
                         netnodes++;
                     netedges--;
                     System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "SHOCK: Node " + (shockNode + 1) + " in network with runno " + runno + " dropped node " + (selectedNode + 1)/*
-                                         + " ShockNodeCap = " + (shockNodeCapacity + 1)  */+ "." + Environment.NewLine);
+                                         + " ShockNodeCap = " + (shockNodeCapacity + 1)  + "." + Environment.NewLine);
 
                     utilitytable = updateUtility(utilitytable, ref modeldata, tiecapacity, nodecount, netedges, netnodes, homophily); //check netedges and netnodes
                     shockNodeCapacity++;
                 }
                 shockedNodes.Remove(shockNode);
 
-            }
+            }*/
             //System.IO.File.AppendAllText(words[0] + "-shock" + "~" + runno + "." + words[1], /*"runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + */modeldata.ToCSV(initialnodes, nodecount));
             tempout = new Matrix(modeldata);
             output[0].Add(tempout);
@@ -5737,6 +5950,7 @@ namespace Network
                     System.IO.File.AppendAllText(words[0] + "-log" + "~" + runno + ".txt", "ERROR: Node " + (i + 1) + " in network with runno " + runno + " exceeded its tie capacity." + Environment.NewLine);
             }*/
             //System.IO.File.AppendAllText(words[0] + "-preshock." + words[1], "runno,iteration,row,col,edge,C0r,C0c,kr,kc,Csr,Csc,Seqr,Seqc,Offerr,Offerc,Accr,Accc,droppedr,droppedc,initial" + Environment.NewLine + modeldata.ToCSV(initialnodes, nodecount) + Environment.NewLine);
+            //apform.Invoke(apform.abmdelegate);
             return output;
         }
         public int outofNetwork(List<int[]> tiecap)

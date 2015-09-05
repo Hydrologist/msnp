@@ -11,81 +11,25 @@ namespace NetworkGUI.Forms
 {
     public partial class ABMProgressForm : Form
     {
-        List<int> runnos;
-        int currentno;
-        List<int> iters;
 
         public delegate void updateDelegate();
         public updateDelegate abmdelegate;
-        public delegate void quitDelegate();
-        public quitDelegate quitdelegate;
 
-        public ABMProgressForm(List<int> _runnos, List<int> _iters)
+        public ABMProgressForm(int networks)
         {
             InitializeComponent();
-            runnos = _runnos;
-            iters = _iters;
-            currentno = 0;
-            runnobar.Minimum = runnos[0];
-            runnobar.Maximum = runnos[runnos.Count - 1];
-            runnobar.Value = runnos[0];
-            iterbar.Minimum = 0;
-            iterbar.Maximum = iters[currentno];
-            iterbar.Value = 0;
-            label1.Text = "Currently simulating runno " + runnos[currentno] + " of " + runnos.Count;
-            label1.Update();
-            label1.Text = "Currently simulating runno " + runnos[currentno] + " of " + runnos.Count;
-            label1.Update();
-            abmdelegate = new updateDelegate(updateProgress);
-            quitdelegate = new quitDelegate(quit);
-        }
-
-        public ABMProgressForm(List<int> _runnos)
-        {
-            runnos = _runnos;
             runnobar.Minimum = 0;
-            runnobar.Maximum = runnos.Count;
+            runnobar.Maximum = networks;
             runnobar.Value = 0;
-
-            iterbar.Enabled = false;
-
-            label1.Text = "Simulation in progresss...";
-            abmdelegate = new updateDelegate(updateParallelProgress);
-            quitdelegate = new quitDelegate(quit);
-        }
-
-        public void updateParallelProgress()
-        {
-            runnobar.Value++;
-            if (runnobar.Value == runnobar.Maximum)
-                this.Close();
-
+            abmdelegate = new updateDelegate(updateProgress);
         }
 
         public void updateProgress()
         {
-            iterbar.Value += 1;
-            if (currentno == runnos.Count - 1 && iterbar.Value == iterbar.Maximum)
-            {
-                this.Close();
-            }
-            if (iterbar.Value == iterbar.Maximum && runnobar.Value < runnobar.Maximum)
-            {
-                currentno++;
+            if (runnobar.Value < runnobar.Maximum)
                 runnobar.Value += 1;
-                runnobar.Update();
-                label1.Text = "Currently simulating runno " + runnos[currentno] + " of " + runnos.Count;
-                label1.Update();
-                iterbar.Maximum = iters[currentno];
-                iterbar.Value = 0;
-                return;
-            }
-        }
-
-        public void quit()
-        {
-            iterbar.Value = ((iterbar.Value / (iterbar.Maximum / 3) + 1) * (iterbar.Maximum / 3)) - 1;
-            updateProgress();
+            if (runnobar.Value == runnobar.Maximum)
+                this.Close();
         }
 
         private void label2_Click(object sender, EventArgs e)
