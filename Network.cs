@@ -6103,7 +6103,7 @@ namespace Network
                 if (modeldata[row, 7] == 1)
                 {
                     
-                    utility = (.5 * modeldata[row * nodecount + i, 7] * modeldata[row * nodecount + i, 10]) + (.3 * modeldata[row * nodecount + i, 8] * modeldata[row * nodecount + i, 11]) + (.2 * modeldata[row * nodecount + i, 9] * modeldata[row * nodecount + i, 12]);
+                    utility = (.5 * modeldata[row * nodecount + i, 10]) + (.3 * modeldata[row * nodecount + i, 11]) + (.2 * modeldata[row * nodecount + i, 9] * modeldata[row * nodecount + i, 12]);
                     if (row == col)
                         utility = 0;
                     cost = netnodes > 0 ? utility / netnodes : 0;
@@ -6115,7 +6115,7 @@ namespace Network
                 else
                 {
 
-                    utility = (.5 * modeldata[row * nodecount + i, 8] * modeldata[row * nodecount + i, 11]) + (.3 * modeldata[row * nodecount + i, 9] * modeldata[row * nodecount + i, 12]) + (.2 * modeldata[row * nodecount + i, 10]);
+                    utility = (.5 * modeldata[row * nodecount + i, 11]) + (.3 * modeldata[row * nodecount + i, 12]) + (.2 * modeldata[row * nodecount + i, 10]);
                     if (row == col)
                         utility = 0;
                     cost = netnodes > 0 ? utility / netnodes : 0;
