@@ -251,7 +251,7 @@ namespace NetworkGUI.Triads
                 }
                 relevantTriads[i] = totalTriangles;
                 //localTransitivity[i] = (double)triangleCount / (double)totalTriangles;
-                localTransitivity[i] = (double)tempCount[i] / (double)(totalTriangles);
+                localTransitivity[i] = (double)tempCount[i] / (double)((numNodes - 1) * (numNodes - 2)) / 2;//(double)(totalTriangles);
                 
             }
         }
@@ -503,7 +503,7 @@ namespace NetworkGUI.Triads
                 if (triadListCount[i] == 0)
                     localTransitivity[i] = 0;
                 else
-                    localTransitivity[i] = (double)diadCount[i] / (double)triadListCount[i];
+                    localTransitivity[i] = (double)diadCount[i] / (double)triadListCount[i];//((numNodes - 1) * (numNodes - 2))/2;
             }
         }
 
