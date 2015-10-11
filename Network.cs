@@ -3398,8 +3398,16 @@ namespace Network
             mTable["Triadic"].ColLabels[11] = "BCA";
             mTable["Triadic"].ColLabels[12] = "CAB";
             mTable["Triadic"].ColLabels[13] = "CBA";
+            mTable["Triadic"].ColLabels[14] = "abc";
+            mTable["Triadic"].ColLabels[15] = "acb";
+            mTable["Triadic"].ColLabels[16] = "bac";
+            mTable["Triadic"].ColLabels[17] = "bca";
+            mTable["Triadic"].ColLabels[18] = "cab";
+            mTable["Triadic"].ColLabels[19] = "cba";
 
             int row = 0;
+            double [] trTri = {13, 15, 17, 20, 23, 25, 27, 29, 30, 35, 36};
+            List<double> transitiveTriads = new List<double>(trTri);
             for (int i = 0; i < n; ++i)
             {
                 for (int j = i + 1; j < n; ++j)
@@ -3420,7 +3428,12 @@ namespace Network
                         mTable["Triadic"][row, 11] = GetRoleEquivalenceType(GetRelationshipType(j, k, m), GetRelationshipType(j, i, m), GetRelationshipType(k, i, m));
                         mTable["Triadic"][row, 12] = GetRoleEquivalenceType(GetRelationshipType(k, i, m), GetRelationshipType(k, j, m), GetRelationshipType(i, j, m));
                         mTable["Triadic"][row, 13] = GetRoleEquivalenceType(GetRelationshipType(k, j, m), GetRelationshipType(k, i, m), GetRelationshipType(j, i, m));
-
+                        mTable["Triadic"][row, 14] = transitiveTriads.Contains(mTable["Triadic"][row, 8]) ? 1 : 0;
+                        mTable["Triadic"][row, 15] = transitiveTriads.Contains(mTable["Triadic"][row, 9]) ? 1 : 0;
+                        mTable["Triadic"][row, 16] = transitiveTriads.Contains(mTable["Triadic"][row, 10]) ? 1 : 0;
+                        mTable["Triadic"][row, 17] = transitiveTriads.Contains(mTable["Triadic"][row, 11]) ? 1 : 0;
+                        mTable["Triadic"][row, 18] = transitiveTriads.Contains(mTable["Triadic"][row, 12]) ? 1 : 0;
+                        mTable["Triadic"][row, 19] = transitiveTriads.Contains(mTable["Triadic"][row, 13]) ? 1 : 0;
                         ++row;
                     }
                 }
