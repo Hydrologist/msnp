@@ -1330,6 +1330,7 @@ namespace NetworkGUI
             this.discreteCommunitiesToolStripMenuItem.Name = "discreteCommunitiesToolStripMenuItem";
             this.discreteCommunitiesToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.discreteCommunitiesToolStripMenuItem.Text = "Discrete Communities";
+            this.discreteCommunitiesToolStripMenuItem.Click += new System.EventHandler(this.discreteCommunitiesToolStripMenuItem_Click);
             // 
             // communityAffiliationMatrixToolStripMenuItem
             // 

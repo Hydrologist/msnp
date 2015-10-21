@@ -4253,6 +4253,11 @@ namespace NetworkGUI
                 MessageBox.Show("Invalid file name.");
             }
         }
+
+        private void discreteCommunitiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
         
     }
 }
