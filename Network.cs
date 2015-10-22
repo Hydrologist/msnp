@@ -3383,7 +3383,7 @@ namespace Network
             int n = mTable[m].Rows;
             int triadCount = n * (n - 1) * (n - 2) / 6;
 
-            mTable["Triadic"] = new Matrix(triadCount, 14); // year, triad id, ab, ac, bc
+            mTable["Triadic"] = new Matrix(triadCount, 20); // year, triad id, ab, ac, bc
             mTable["Triadic"].ColLabels[0] = "Year";
             mTable["Triadic"].ColLabels[1] = "Triad ID";
             mTable["Triadic"].ColLabels[2] = "A --> B";
@@ -3438,6 +3438,7 @@ namespace Network
                     }
                 }
             }
+            //return row;
         }
 
         protected int GetRelationshipType(int i, int j, string m)
@@ -12432,6 +12433,55 @@ namespace Network
             for (int i = 0; i < labelParts.Length; ++i)
                 data.Columns.Add(labelParts[i], labelParts[i]);
 
+            LoadTriadic("Data", networkID);
+
+            int triadCount = mTable["Triadic"].Rows;
+            int nodes = mTable["Data"].Rows;
+
+            List<int> transitiveCountList = new List<int>();
+
+            for (int i = 0; i < nodes; ++i)
+            {
+                transitiveCountList.Add(0);
+            }
+
+            int prog = 0;
+            for (int i = 0; i < nodes; ++i)
+            {
+                for (int j = i + 1; j < nodes; ++j)
+                {
+                    for (int k = j + 1; k < nodes; ++k)
+                    {
+                        for (int l = 0; l < 6; ++l)
+                        {
+                            switch (l)
+                            {
+                                case 0:
+                                case 1:
+                                    transitiveCountList[i] += (int)mTable["Triadic"][prog, 14 + l];
+                                    break;
+                                case 2:
+                                case 3:
+                                    transitiveCountList[j] += (int)mTable["Triadic"][prog, 14 + l];
+                                    break;
+                                case 4:
+                                case 5:
+                                    transitiveCountList[k] += (int)mTable["Triadic"][prog, 14 + l];
+                                    break;
+                            }
+                        }
+                        ++prog;
+                    }
+                }
+            }
+
+            double[] localTrans = new double[nodes];
+
+            for (int i = 0; i < transitiveCountList.Count; ++i)
+            {
+                localTrans[i] = transitiveCountList[i]/((nodes - 1) * (nodes - 2));
+            }
+
             int colCount = labelParts.Length; // there are 6 columns in this grid
 
             Matrix lt = mTable.AddMatrix(ms, mTable["Data"].Rows, colCount);
@@ -12455,8 +12505,8 @@ namespace Network
                 lt[i, 2] = triad.getDegree(i);
                 lt[i, 3] = triad.getClosureTriangle(i);
                 lt[i, 4] = triad.getLocalClosure(i);
-                lt[i, 5] = triad.getRelevantTriad(i);
-                lt[i, 6] = triad.getLocalTransitivity(i);
+                lt[i, 5] = transitiveCountList[i];// triad.getRelevantTriad(i);
+                lt[i, 6] = localTrans[i]; //triad.getLocalTransitivity(i);
             }
 
             for (int row = 0; row < lt.Rows; row++)
