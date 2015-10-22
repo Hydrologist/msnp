@@ -3405,10 +3405,9 @@ namespace Network
             mTable["Triadic"].ColLabels[18] = "cab";
             mTable["Triadic"].ColLabels[19] = "cba";
 
-            double[] tempTriads = { 13, 15, 17, 20, 23, 25, 27, 29, 30, 35, 36 };
-            List<double> transitiveTriads = new List<double>(tempTriads);
-
             int row = 0;
+            double [] trTri = {13, 15, 17, 20, 23, 25, 27, 29, 30, 35, 36};
+            List<double> transitiveTriads = new List<double>(trTri);
             for (int i = 0; i < n; ++i)
             {
                 for (int j = i + 1; j < n; ++j)
@@ -12424,10 +12423,6 @@ namespace Network
             data.Columns.Clear();
             if (mTable["Data"] == null)
                 throw new Exception("Data matrix required before Clique Affiliation Matrix is valid!");
-
-            LoadTriadic("Data", networkID);
-            int triads = mTable["Data"].Rows;
-
 
             string ms = "LocalTransitivity";
             Triads triad = new Triads(mTable["Data"], Triads.TriadType.NonBalance, binaryCutoff);
