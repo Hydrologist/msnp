@@ -12479,7 +12479,7 @@ namespace Network
 
             for (int i = 0; i < transitiveCountList.Count; ++i)
             {
-                localTrans[i] = transitiveCountList[i]/((nodes - 1) * (nodes - 2));
+                localTrans[i] = (double) transitiveCountList[i]/((nodes - 1) * (nodes - 2));
             }
 
             int colCount = labelParts.Length; // there are 6 columns in this grid
