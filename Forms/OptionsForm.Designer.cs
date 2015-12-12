@@ -99,7 +99,7 @@ namespace NetworkGUI
             this.filenamelabel = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.fileSelectButton = new System.Windows.Forms.Button();
-            this.intputTypeAtt = new System.Windows.Forms.RadioButton();     //currently working
+            this.inputTypeAtt = new System.Windows.Forms.RadioButton();     //currently working
             this.inputTypeStructEquiv = new System.Windows.Forms.RadioButton();
             this.inputTypeNone = new System.Windows.Forms.RadioButton();
             this.inputTypeDyadic = new System.Windows.Forms.RadioButton();
