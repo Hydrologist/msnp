@@ -1048,7 +1048,7 @@ namespace NetworkGUI
             this.inputTypeAtt.TabIndex = 5;
             this.inputTypeAtt.Text = "Attributes Vector";
             this.inputTypeAtt.UseVisualStyleBackColor = true;
-            //this.inputTypeAtt.CheckedChanged += new System.EventHandler(this.inputTypeAtt_CheckedChanged_1);
+            this.inputTypeAtt.CheckedChanged += new System.EventHandler(this.inputTypeAtt_CheckedChanged_1);
             // 
             // groupBox6
             // 
