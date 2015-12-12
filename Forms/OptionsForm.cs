@@ -82,6 +82,8 @@ namespace NetworkGUI
                     return "Matrix";
                 else if (inputTypeStructEquiv.Checked)
                     return "StructEquiv";
+                else if (inputTypeAtt.Checked)  //added (12/12/15)
+                    return "Attribute";
                 else
                     return "None";
             }
@@ -361,7 +363,7 @@ namespace NetworkGUI
             else if (lowerExtraction.Checked)
                 net.cet = Network.CliqueExtractionType.Lower;
 
-            if (inputTypeMatrix.Checked || inputTypeDyadic.Checked)
+            if (inputTypeMatrix.Checked || inputTypeDyadic.Checked || inputTypeAtt.Checked) //(12/12/15) for invalid file selection
             {
                 net.CohesionFilename = CohesionFileName;
                 net.CohesionMatrix = MatrixReader.ReadMatrixFromFile(CohesionFilename);
@@ -625,6 +627,11 @@ namespace NetworkGUI
             UpdateCheckBoxes();
         }
 
+        private void inputTypeAtt_CheckedChanged_1(object sender, EventArgs e) //added for Attribute option (12/12/15)
+        {
+            UpdateCheckBoxes();
+        }
+        
         private void fileSelectButton_Click_1(object sender, EventArgs e)
         {
             openFileDialog.ShowDialog();
@@ -808,7 +815,14 @@ namespace NetworkGUI
         {
 
         }
-
+       
+       
+        private void inputTypeAtt_CheckedChanged(object sender, EventArgs e) //For Attribute Option (12/12/15)
+        {
+            EnableButton();
+        }
+        
+        
         private void radioButton1_CheckedChanged(object sender, EventArgs e) //New Discrete Communities Button
         {
             if (radioButton1.Checked == true)
