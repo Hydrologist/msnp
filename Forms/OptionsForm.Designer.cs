@@ -99,6 +99,7 @@ namespace NetworkGUI
             this.filenamelabel = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.fileSelectButton = new System.Windows.Forms.Button();
+            this.inputTypeAtt = new System.Windows.Forms.RadioButton();     //currently working
             this.inputTypeStructEquiv = new System.Windows.Forms.RadioButton();
             this.inputTypeNone = new System.Windows.Forms.RadioButton();
             this.inputTypeDyadic = new System.Windows.Forms.RadioButton();
@@ -951,6 +952,7 @@ namespace NetworkGUI
             this.groupBox5.Controls.Add(this.filenamelabel);
             this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Controls.Add(this.fileSelectButton);
+            this.groupBox5.Controls.Add(this.inputTypeAtt);            //attribute vector option
             this.groupBox5.Controls.Add(this.inputTypeStructEquiv);
             this.groupBox5.Controls.Add(this.inputTypeNone);
             this.groupBox5.Controls.Add(this.inputTypeDyadic);
@@ -994,7 +996,7 @@ namespace NetworkGUI
             // inputTypeStructEquiv
             // 
             this.inputTypeStructEquiv.AutoSize = true;
-            this.inputTypeStructEquiv.Location = new System.Drawing.Point(6, 65);
+            this.inputTypeStructEquiv.Location = new System.Drawing.Point(6, 66); //modified
             this.inputTypeStructEquiv.Name = "inputTypeStructEquiv";
             this.inputTypeStructEquiv.Size = new System.Drawing.Size(163, 17);
             this.inputTypeStructEquiv.TabIndex = 8;
@@ -1006,7 +1008,7 @@ namespace NetworkGUI
             // 
             this.inputTypeNone.AutoSize = true;
             this.inputTypeNone.Checked = true;
-            this.inputTypeNone.Location = new System.Drawing.Point(6, 88);
+            this.inputTypeNone.Location = new System.Drawing.Point(6, 84);  //modified
             this.inputTypeNone.Name = "inputTypeNone";
             this.inputTypeNone.Size = new System.Drawing.Size(190, 17);
             this.inputTypeNone.TabIndex = 7;
@@ -1018,7 +1020,7 @@ namespace NetworkGUI
             // inputTypeDyadic
             // 
             this.inputTypeDyadic.AutoSize = true;
-            this.inputTypeDyadic.Location = new System.Drawing.Point(6, 42);
+            this.inputTypeDyadic.Location = new System.Drawing.Point(6, 30); //modified
             this.inputTypeDyadic.Name = "inputTypeDyadic";
             this.inputTypeDyadic.Size = new System.Drawing.Size(118, 17);
             this.inputTypeDyadic.TabIndex = 6;
@@ -1029,13 +1031,24 @@ namespace NetworkGUI
             // inputTypeMatrix
             // 
             this.inputTypeMatrix.AutoSize = true;
-            this.inputTypeMatrix.Location = new System.Drawing.Point(6, 19);
+            this.inputTypeMatrix.Location = new System.Drawing.Point(6, 12); //modified
             this.inputTypeMatrix.Name = "inputTypeMatrix";
             this.inputTypeMatrix.Size = new System.Drawing.Size(113, 17);
-            this.inputTypeMatrix.TabIndex = 5;
+            this.inputTypeMatrix.TabIndex = 4;                            //modified
             this.inputTypeMatrix.Text = "External Matrix File";
             this.inputTypeMatrix.UseVisualStyleBackColor = true;
             this.inputTypeMatrix.CheckedChanged += new System.EventHandler(this.inputTypeMatrix_CheckedChanged_1);
+            //
+            //inputTypeAtt (12/12/15)
+            //
+            this.inputTypeAtt.AutoSize = true;
+            this.inputTypeAtt.Location = new System.Drawing.Point(6, 48);
+            this.inputTypeAtt.Name = "inputTypeAtt";
+            this.inputTypeAtt.Size = new System.Drawing.Size(103, 17);
+            this.inputTypeAtt.TabIndex = 5;
+            this.inputTypeAtt.Text = "Attributes Vector";
+            this.inputTypeAtt.UseVisualStyleBackColor = true;
+            this.inputTypeAtt.CheckedChanged += new System.EventHandler(this.inputTypeAtt_CheckedChanged_1);
             // 
             // groupBox6
             // 
@@ -1553,6 +1566,7 @@ namespace NetworkGUI
         private System.Windows.Forms.CheckBox transCheck;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button fileSelectButton;
+        private System.Windows.Forms.RadioButton inputTypeAtt;    //Currently working on
         private System.Windows.Forms.RadioButton inputTypeStructEquiv;
         private System.Windows.Forms.RadioButton inputTypeNone;
         private System.Windows.Forms.RadioButton inputTypeDyadic;
