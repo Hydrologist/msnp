@@ -63,6 +63,51 @@ namespace Network.IO
             }
         }
 
+
+        public static Matrix ReadAttributeVector(string filename, int netID) //working here
+        {
+            return createTransposeMatrix(filename, netID);
+        }
+
+        public static Matrix createTransposeMatrix(string filename, int netID) // working here - working for integers and random nodes
+        {
+            Dictionary <int, double> d = new Dictionary<int,double>();
+
+            BufferedFileReader reader = BufferedFileTable.GetFile(filename);
+            reader.GoToLine(0);
+
+            while (!reader.EndOfStream) //reading file
+            {
+                string line = reader.ReadLine();
+
+                if (line == null)
+                {
+                    break;
+                }
+
+                string[] line_parts = line.Split(',');
+
+                if (Int64.Parse(line_parts[0]) == netID)
+                {
+                    d.Add(ExtractNode(line_parts[1]), ExtractDouble(line_parts[2])); // need to work here for string case
+                }
+            }
+
+            Matrix m = new Matrix(d.Count, d.Count);  //transpose matrix
+
+
+            //calculation
+            for (int i = 0; i < d.Count; i++)
+            {
+                for (int j = 0; j < d.Count; j++)
+                {
+                    m[i,j] = d[i + 1] * d[j + 1]; 
+                }
+            }
+           
+           return m;
+        }
+        
         private static Matrix ReadMatrixFromVectorFile(BufferedFileReader reader, int networkId)
         {
             networkId = reader.JumpToNetworkId(networkId, true);
@@ -242,6 +287,22 @@ namespace Network.IO
                 throw new FileLoadException("Expecting floating point value: " + s);
 
             return tmp;
+        }
+        
+        private static int ExtractNode(string s) //working
+        {
+            int node = 0;
+            string number = "";
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (Char.IsDigit(s[i]))
+                    number += s[i];
+            }
+
+            node = Int32.Parse(number);
+
+            return node;
         }
     }
 }
