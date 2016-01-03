@@ -365,8 +365,19 @@ namespace NetworkGUI
 
             if (inputTypeMatrix.Checked || inputTypeDyadic.Checked || inputTypeAtt.Checked) //(12/12/15) for invalid file selection
             {
-                net.CohesionFilename = CohesionFileName;
-                net.CohesionMatrix = MatrixReader.ReadMatrixFromFile(CohesionFilename);
+              net.CohesionFilename = CohesionFileName;
+
+                if (inputTypeAtt.Checked) //attribute vector
+                {
+                    //obtains the Network Id from the main Matrix
+                    net.CohesionMatrix = MatrixReader.ReadAttributeVector(CohesionFilename, net.GetMatrix("Data").NetworkId);
+                    
+                }
+
+                else // other options
+                {
+                    net.CohesionMatrix = MatrixReader.ReadMatrixFromFile(CohesionFilename);
+                }
             }
             double tmp;
             if ((binaryCutoff.Text != Constants.FileSelected && !double.TryParse(binaryCutoff.Text, out tmp)
